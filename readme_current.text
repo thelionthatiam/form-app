@@ -28,6 +28,7 @@ Bugs & problems:
   -P much better password reset options exist:
      https://security.stackexchange.com/questions/59415/implementing-password-reset-in-a-web-application-by-authtoken-over-email
   -P the UI for the change account setting sucks on too many levels to iterate
+  -P many passwords on github, none that I care about
 
 Questions:
   - I've read that the order of the required packages matter, but why and how?
