@@ -1,0 +1,49 @@
+<div class="flex pageWrapper">
+  <div class="flex column userWrapper">
+   <h3 class="formTitle">Changing account information</h3>
+   {{# if emailChange }}
+   <form action="/change_email" method="post">
+     <p>email</p>
+     <input
+      id="email"
+      name="email"
+      class="userFormItem"
+      type="text"
+      placeholder="email"/>
+     <p class="formErrorReport" id="emailError"></p>
+     <button class="yes" method="submit"></button>
+   </form>
+   <form action='/back_change' method="get">
+      <button class="no">back</button>
+   </form>
+   {{ else if phoneChange}}
+   <form action="/change_phone" method="post">
+     <p>email</p>
+     <input
+      id="email"
+      name="email"
+      class="userFormItem"
+      type="text"
+      placeholder="email"/>
+     <p class="formErrorReport" id="emailError"></p>
+     <button class="yes" method="submit"></button>
+   </form>
+   <form action='/back_change' method="get">
+      <button class="no">back</button>
+   </form>
+   {{ else }}
+       <p>email</p>
+       <p class="inputMimic">{{ email }}</p>
+       <p>phone #</p>
+       <p class="inputMimic">{{ phone }}</p>
+       <p>password (this will need more work later)</p>
+       <p class="inputMimic"> success </p>
+
+     {{/if}}
+   <form action='/back_account_actions' method="get">
+      <button action='submit' class="no"> back </button>
+   </form>
+   <p class="formErrorReport">{{ dbError }}</p>
+  </div>
+ </div>
+ <!-- <script src="/behavior/formAction.js"></script> -->

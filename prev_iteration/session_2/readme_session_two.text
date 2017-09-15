@@ -1,0 +1,49 @@
+FORM-APP:
+This will be a test space for understanding forms.
+
+Main steps:
+1. Use templator to dynamically render HTML changes
+2. Linking back and front-end validation so both work together
+
+Environment:
+Machine -- macOS Sierra 10.12.6, 3.5GHz i5, 8GB
+Node -- Node and all modules are most current, version manager is active
+
+QUESTIONS:
+Why does static file need to be used to connect layot.hbs to html docs?
+Why did formAction only get accepted when it was written in the body rather the head?
+
+
+
+next steps
+ 1. get client-side behavior running
+>>success 4app.js<<''
+
+next steps
+ 1. make success page template
+ 2. add stylesheet
+ 3. make password field in form
+ 4. rebuild table to receive password NOT NULL, certain chars (?)
+>>success 3app.js<<
+
+
+next steps
+ 1. redirect to index
+ 2. connect handlebars if statement, to db query err/res
+ 3. show something different based on db query err/res
+ 4. use validation interpreter to generate specific text based on response
+ 5. use validation interpreter and handlebars to put err res on same page
+ >>success 2app.js<<
+
+next steps
+ 1. use handlebars to display form values
+ 2. use handlebars to display two form values
+ >>success 1app.js<<
+
+
+next steps
+ 1. be sure handlebars is installed and in package.json
+ 2. establish handlebars as the engine
+ 3. make a base layout for handlebars
+ 4. generate a title with handlebars
+ >>success 0app.js<<
