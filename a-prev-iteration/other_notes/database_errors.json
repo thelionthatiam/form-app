@@ -1,0 +1,29 @@
+//UNIQUE ERROR FORMAT
+{
+	"name":"error",
+	"length":217,
+	"severity":"ERROR",
+	"code":"23505",
+	"detail":"Key (email)=(asdf@asdkfm.sadf) already exists.",
+	"schema":"public",
+	"table":"form_app",
+	"constraint":"form_app_email_key",
+	"file":"nbtinsert.c",
+	"line":"433",
+	"routine":"_bt_check_unique"
+}
+
+//
+{
+  "name":"error",
+  "length":235,
+  "severity":"ERROR",
+  "code":"23514",
+  "detail":"Failing row contains (asdfasddkfmsadf, 643164384).",
+  "schema":"public",
+  "table":"form_app",
+  "constraint":"form_app_email_check",
+  "file":"execMain.c",
+  "line":"1760",
+  "routine":"ExecConstraints"
+}

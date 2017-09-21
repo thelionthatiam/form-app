@@ -1,0 +1,89 @@
+FORM-APP:
+This will be a test space for understanding forms.
+
+Main steps:
+1. Make some more informed UI decisions
+    a. what restricted chars should be used?
+    b. use more legitimate regex for email both on client and db
+    c. make a phone auto formatter for USA
+2. start and end sessions
+3. encrypt password
+4. enable https
+5. password recovery
+
+
+Environment:
+Machine -- macOS Sierra 10.12.6, 3.5GHz i5, 8GB
+Node -- Node and all modules are most current, version manager is active
+
+Unresolved bugs:
+  1. password sometimes is undefined even when there are numbers
+
+5app.js
+Next steps
+  1. make page to change account information
+  2. write function to alter table
+  3. as soon as it's stable, save.
+    a. back to account actions renders account information
+    b. to change renders the account information page
+    >>success 5app.js
+5app.js
+Next steps
+  1. test the whole lifecycle:
+    a. create account
+    b. log in
+    c. view something in the account
+    d. log out
+    e. log back in
+    >>success<<
+  2. generalize session check function
+  3. apply session check function to account information and store page
+    >>success 5app.js<< (accidentally forgot to save)
+
+3app.js/4app.js
+Next steps
+  1. move routes into subfolder for export
+    a. try to move the index route first because it has the least repercussions
+    b. move two more
+    c. move all
+    >>mixed success notes: the dependencies for queries did not work.
+    >>could put all the routes in a sparate file and then try to call DB
+    >>queries inside?
+  2. loop logout back to index page
+  3. create login that adds user information to login
+    >>success 3app.js<<
+    a. prove that there is a background check to access parts of user
+  4. loop back to login after session rather than going straight to account_actions
+  5. destroy user information when they log out
+  6. prove that the cookie has been terminated
+  >>success 4app.js<<
+
+
+2app.js
+Next steps
+  1. display result in console and render page
+    a. carry active email from success page to account_info
+      - see if session can store the email of the current user YES
+      - store email in session so that it can be queried later on
+      >>success<<
+  2. display result on client-side
+  3. render page with user information as variables
+    >>success 2app.js<<
+
+1app.js
+Next steps
+  1. parse SELECT query into json
+    a. figure out how to end the function async
+    b. try HTML tag method="get" to match function app.js
+    c. try the prepared statement method
+    d. try HTML tag method="post" to match function in app.js
+    e. change res in query to result, so that there is no overlapping definition
+    >>success 1app.js<<
+
+0app.js
+Next steps
+  1. create a render for the sign up/sign in page
+  2. enable sessions
+  3. start sessions when form is submitted successfully
+  4. require ('bcrypt')
+  >>failed, focusing on table queries first<<
