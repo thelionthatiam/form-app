@@ -113,6 +113,8 @@ function inputValidator(id, val) {
   return phoneChecker(val);
  } else if (id === "password" || id === "confirmPassword") {
   return passwordChecker(val);
+ } else if (id === "passwordLogin") {
+	return "OK"
  } else {
   return "None of these ids are correct";
  }
