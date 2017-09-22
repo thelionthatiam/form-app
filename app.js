@@ -17,7 +17,7 @@ const toAccountInformation = require('./routes/inSession/account-information');
 const index = require('./routes/index');
 const login = require('./routes/login');
 // const mailer = require('./routes/inSession/mailer')
-// const createAccount = require('./routes/create-account');
+const createAccount = require('./routes/create-account');
 // const shop = require('./routes/inSession/shop');
 
 const app = express();
@@ -40,7 +40,7 @@ app.use(session({
   saveUninitialized: true
 }));
 
-app.all('/inSesssion/*', sessionCheck.check)
+app.all('/routes/inSesssion/*', sessionCheck.check)
 
 app.use('/', toAccountInformation);
 // app.use('/', toChangeAccount);
@@ -48,7 +48,7 @@ app.use('/', toAccountInformation);
 app.use('/', index);
 app.use('/', login);
 // app.use('/', mailer);
-// app.use('/', createAccount);
+app.use('/', createAccount);
 // app.use('/', shop);
 
 
