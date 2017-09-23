@@ -2,7 +2,7 @@
   <div class="flex column userWrapper">
    <h3 class="formTitle">Changing account information</h3>
    {{# if emailChange }}
-   <form action="/change-email" method="post">
+   <form action="/inSession/change-email" method="post">
      <p>email</p>
      <input
       id="email"
@@ -13,11 +13,11 @@
      <p class="formErrorReport" id="emailError"></p>
      <button class="yes" method="submit"></button>
    </form>
-   <form action='/back-change' method="get">
+   <form action='/inSession/back-change' method="get">
       <button class="no">back</button>
    </form>
    {{ else if phoneChange}}
-   <form action="/change-phone" method="post">
+   <form action="/inSession/change-phone" method="post">
      <p>email</p>
      <input
       id="email"
@@ -28,7 +28,7 @@
      <p class="formErrorReport" id="emailError"></p>
      <button class="yes" method="submit"></button>
    </form>
-   <form action='/back-change' method="get">
+   <form action='/inSession/back-change' method="get">
       <button class="no">back</button>
    </form>
    {{ else }}
@@ -40,7 +40,7 @@
        <p class="inputMimic"> success </p>
 
      {{/if}}
-   <form action='/back-account-actions' method="get">
+   <form action='/inSession/back-account-actions' method="get">
       <button action='submit' class="no"> back </button>
    </form>
    <p class="formErrorReport">{{ dbError }}</p>

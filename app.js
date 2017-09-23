@@ -10,15 +10,6 @@ const validation = require('./middleware/validation');
 const dbMiddleware = require('./middleware/database');
 const session = require('express-session');
 const sessionCheck = require('./middleware/session-check')
-//routes
-const toAccountInformation = require('./routes/inSession/account-information');
-// const toChangeAccount = require('./routes/inSession/change-account');
-// const deleteAccount = require('./routes/inSession/delete-account');
-const index = require('./routes/index');
-const login = require('./routes/login');
-// const mailer = require('./routes/inSession/mailer')
-const createAccount = require('./routes/create-account');
-// const shop = require('./routes/inSession/shop');
 
 const app = express();
 
@@ -39,17 +30,15 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
-
-app.all('/routes/inSesssion/*', sessionCheck.check)
-
-app.use('/', toAccountInformation);
-// app.use('/', toChangeAccount);
-// app.use('/', deleteAccount);
-app.use('/', index);
-app.use('/', login);
-// app.use('/', mailer);
-app.use('/', createAccount);
-// app.use('/', shop);
+app.all('/inSession*', sessionCheck.check)
+app.use('/inSession', require('./routes/account-information'));
+app.use('/inSession', require('./routes/change-account'));
+app.use('/inSession', require('./routes/delete-account');
+app.use('/', require('./routes/index'));
+app.use('/', require('./routes/login'));
+app.use('/inSession', require('./routes/mailer');
+app.use('/', require('./routes/create-account'));
+app.use('/inSession', require('./routes/inSession/shop'));
 
 
 app.listen(3000, function () {

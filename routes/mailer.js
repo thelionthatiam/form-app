@@ -37,7 +37,7 @@ function sendMail (req, res, next) {
     } else {
       console.log('Email sent: ' + info.response);
       req.session.token = makeString();
-
+      //now I need to query the user_id (which I may start storing as session data)
       var text = 'INSERT INTO nonce(email, nonce) VALUES ($1, $2)';
       var values = [req.session.user[0], req.session.token];
       console.log('initial query', req.session.token)

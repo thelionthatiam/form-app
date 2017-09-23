@@ -6,7 +6,7 @@
    </p>
      <p>email</p>
      {{#if emailChange}}
-       <form action="/change-email" method="post">
+       <form action="/inSession/change-email" method="post">
          <input
           id="email"
           name="email"
@@ -22,14 +22,14 @@
 
      {{ else }}
        <p class="preInputMimic">{{ email }}</p>
-       <form action="/to-change-email" method="get">
+       <form action="/inSession/to-change-email" method="get">
          <button class="yes" type="submit"> change </button>
        </form>
      {{/if}}
 
      <p>phone #</p>
        {{#if phoneChange}}
-         <form action="/change-phone" method="post">
+         <form action="/inSession/change-phone" method="post">
            <input
             id="phone"
             name="phone"
@@ -39,13 +39,13 @@
            <p class="formErrorReport" id="phoneError"></p>
            <button class="yes" method="submit"> submit </button>
          </form>
-         <form action='/to-account-info' method="post">
+         <form action='/inSession/to-account-info' method="post">
             <button class="no">nevermind</button>
          </form>
 
        {{ else }}
          <p class="preInputMimic">{{ phone }}</p>
-         <form action="/to-change-phone" method="get">
+         <form action="/inSession/to-change-phone" method="get">
            <button class="yes" type="submit"> change </button>
          </form>
        {{/if}}
@@ -53,7 +53,7 @@
 
      <p>password</p>
      {{#if passwordChange}}
-     <form action="/change-password" method="post">
+     <form action="/inSession/change-password" method="post">
        <input
         id="changePassword"
         name="changePassword"
@@ -63,12 +63,12 @@
        <p class="formErrorReport" id="changePasswordError"></p>
        <button class="yes" method="submit"> change password </button>
      </form>
-     <form action='/to-account-info' method="post">
+     <form action='/inSession/to-account-info' method="post">
         <button class="no">nevermind</button>
      </form>
      {{ else }}
       {{# if mailSent }}
-       <form action="/recieveToken" method="post">
+       <form action="/inSession/recieveToken" method="post">
          <input
           id="tokenReciever"
           name="tokenReciever"
@@ -78,7 +78,7 @@
          <button class="yes"> authorize change </button>
        </form>
        {{ else }}
-       <form action="/mailer" method="post">
+       <form action="/inSession/mailer" method="post">
          <input
           id="passwordReset"
           name="passwordReset"
@@ -89,10 +89,10 @@
        </form>
        {{/if}}
      {{/if}}
-     <form action='/delete' method="post">
+     <form action='/inSession/delete' method="post">
         <button action='submit' class="no"> delete account </button>
      </form>
-     <form action='/back-account-actions' method="get">
+     <form action='/inSession/back-account-actions' method="get">
         <button action='submit' class="no"> back </button>
      </form>
      <p class="formErrorReport">{{ dbError }}</p>
