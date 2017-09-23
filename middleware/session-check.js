@@ -17,9 +17,9 @@ function sessionCheck(req, res, next) {
       } else {
           req.user = {
             email: result.rows[0].email,
-            phone: result.rows[0].phone
+            phone: result.rows[0].phone,
+            userID: result.rows[0].user_uuid
           }
-          console.log('session checked');
           next();
       }
     })

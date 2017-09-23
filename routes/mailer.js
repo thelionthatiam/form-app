@@ -26,9 +26,9 @@ function sendMail (req, res, next) {
 
   var mailOptions = {
     from: 'juliantheberge@gmail.com',
-    to: req.body.passwordReset,
+    to: req.user.email,
     subject: 'Password reset from form app',
-    text: "http://localhost:3000/recieveToken"
+    text: "http://localhost:3000/inSession/recieveToken"
   };
 
   transporter.sendMail(mailOptions, function(error, info){
@@ -37,16 +37,14 @@ function sendMail (req, res, next) {
     } else {
       console.log('Email sent: ' + info.response);
       req.session.token = makeString();
-      //now I need to query the user_id (which I may start storing as session data)
-      var text = 'INSERT INTO nonce(email, nonce) VALUES ($1, $2)';
-      var values = [req.session.user[0], req.session.token];
-      console.log('initial query', req.session.token)
+      var text = 'INSERT INTO nonce(user_uuid, nonce) VALUES ($1, $2)';
+      var values = [req.user.userID, req.session.token];
 
       req.conn.query(text, values, function(err, result) {
         if (err) {
           res.render('account-info', { dbError: err});
         } else {
-          res.render('account-info', { mailSent: true });
+          res.render('account-info', { mailSent:true, email: req.user.email, phone: req.user.phone });
         }
       })
     }
@@ -54,21 +52,23 @@ function sendMail (req, res, next) {
 }
 
 router.get('/recieveToken', function(req, res, next) {
-  var text = 'SELECT nonce FROM nonce WHERE email = $1'
-  var values = [req.session.user[0]];
+  var text = 'SELECT nonce, theTime FROM nonce WHERE user_uuid = $1'
+  var values = [req.user.userID];
 
     req.conn.query(text, values, function (err, result) {
       if (err) {
         res.render('account-info', { dbError: err});
       } else {
         var nonce = result.rows[0].nonce;
-        var oldTime = new Date(result.rows[0].theTime)
-        var currentTime = new Date();
+        var oldDate = new Date(result.rows[0].thetime);
+        var oldTime = oldDate.getTime();
+        var currentDate = new Date();
+        var currentTime = currentDate.getTime();
 
         if (req.session.token === nonce && currentTime < oldTime + 120000) {
           req.session.token = null;
-          var text = 'DELETE FROM nonce WHERE email = ($1)';
-          var values = [req.session.user[0]]
+          var text = 'DELETE FROM nonce WHERE user_uuid = ($1)';
+          var values = [req.user.userID]
           req.conn.query(text, values, function(err, result) {
             if (err) {
               console.log(err)
@@ -80,8 +80,8 @@ router.get('/recieveToken', function(req, res, next) {
 
         } else {
           req.session.token = null;
-          var text = 'DELETE FROM nonce WHERE email = ($1)';
-          var values = [req.session.user[0]];
+          var text = 'DELETE FROM nonce WHERE user_uuid = ($1)';
+          var values = [req.user.userID];
 
           req.conn.query(text, values, function(err, result) {
             if (err) {
