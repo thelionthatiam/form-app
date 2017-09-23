@@ -5,28 +5,24 @@ const sessionCheck = require('../middleware/session-check');
 
 // render change email page
 router.get('/to-change-email', function(req,res,next) {
-  sessionCheck.check(req, res, function(resultingRow) {
-    req.render('account-info',{
-      title: "Change your information",
-      subtitle: "type in a new email",
-      email: resultingRow.email,
-      phone: resultingRow.phone,
-      emailChange: true
-    });
-  })
+  res.render('account-info',{
+    title: "Change your information",
+    subtitle: "type in a new email",
+    email: req.user.email,
+    phone: req.user.phone,
+    emailChange: true
+  });
 });
 
 //render change phone page
 router.get('/to-change-phone', function(req,res,next) {
-  sessionCheck.check(req, res, function(resultingRow) {
-    req.render('account-info',{
-      title: "Change your information",
-      subtitle: "type in a new phone number",
-      email: resultingRow.email,
-      phone: resultingRow.phone,
-      phoneChange: true
-    });
-  })
+  res.render('account-info',{
+    title: "Change your information",
+    subtitle: "type in a new phone number",
+    email: req.user.email,
+    phone: req.user.phone,
+    phoneChange: true
+  });
 });
 
 
@@ -34,7 +30,7 @@ router.get('/to-change-phone', function(req,res,next) {
 // change email: update database, update session, check the session
 router.post('/change-email', function (req, res, next) {
   var text = "UPDATE users SET email = $1 WHERE email = $2"
-  var values = [req.body.email, req.session.user[0]];
+  var values = [req.body.email, req.user.email];
 
   req.conn.query(text, values, function(err, result) {
     if(err) {
@@ -43,14 +39,12 @@ router.post('/change-email', function (req, res, next) {
     } else {
       console.log(result);
       req.session.user[0] = req.body.email
-      sessionCheck.check(req, res, function(resultingRow) {
-        res.render('account-info', {
-          subtitle: 'email updated',
-          email: resultingRow.email,
-          phone: resultingRow.phone,
-          changeEmail:false
-        });
-      })
+      res.render('account-info', {
+        subtitle: 'email updated',
+        email: req.user.email,
+        phone: req.user.phone,
+        changeEmail:false
+      });
     }
   })
 })
@@ -58,8 +52,7 @@ router.post('/change-email', function (req, res, next) {
 // change phone: update database, check the session
 router.post('/change-phone', function (req, res, next) {
   var text = "UPDATE users SET phone = $1 WHERE email = $2"
-  console.log(req.body.phone, req.session.user[0]);
-  var values = [req.body.phone, req.session.user[0]];
+  var values = [req.body.phone, req.user.email];
 
   req.conn.query(text, values, function(err, result) {
     if(err) {
@@ -67,14 +60,13 @@ router.post('/change-phone', function (req, res, next) {
       res.render('account-info', {dbError: "Could not delete, try again." });
     } else {
       console.log(result);
-      sessionCheck.check(req, res, function(resultingRow) {
-        res.render('account-info', {
-          subtitle: 'phone number updated',
-          email: resultingRow.email,
-          phone: resultingRow.phone,
-          changePhone:false
-        });
-      })
+      req.user.phone = req.body.phone
+      res.render('account-info', {
+        subtitle: 'phone number updated',
+        email: req.user.email,
+        phone: req.user.phone,
+        changePhone:false
+      });
     }
   })
 })
@@ -91,23 +83,19 @@ router.post('/change-password', function (req, res, next) {
       res.render('account-info', {dbError: "Could not delete, try again." });
     } else {
       req.session.user[1] = password
-      sessionCheck.check(req, res, function(resultingRow) {
         res.render('account-info', {
           subtitle: 'password updated',
-          email: resultingRow.email,
-          phone: resultingRow.phone,
+          email: req.user.email,
+          phone: req.user.phone,
           changePassword:false
         });
-      })
-    }
+      }
   })
 })
 
 //render shop
 router.get('/back-account-actions', function(req,res,next) {
-  sessionCheck.check(req, res, function(resultingRow) {
-    res.render('account-actions', { title: "back to the account action page", email: resultingRow.email });
-  })
+  res.render('account-actions', { title: "back to the account action page", email: req.user.email});
 });
 
 module.exports = router;

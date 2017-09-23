@@ -65,7 +65,7 @@ router.get('/recieveToken', function(req, res, next) {
         var oldTime = new Date(result.rows[0].theTime)
         var currentTime = new Date();
 
-        if (req.session.token === nonce) && (currentTime < oldTime + 120000) {
+        if (req.session.token === nonce && currentTime < oldTime + 120000) {
           req.session.token = null;
           var text = 'DELETE FROM nonce WHERE email = ($1)';
           var values = [req.session.user[0]]

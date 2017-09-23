@@ -5,11 +5,7 @@ const sessionCheck = require('../middleware/session-check');
 
 //render shop
 router.get('/shop', function(req, res, next) {
-  console.log(req.session.user);
-  // res.render('shop', { success:true });
-  sessionCheck.check(req, res, function() {
-    res.render('shop', { success:true });
-  })
+  res.render('shop', { success:true });
 });
 
 module.exports = router;

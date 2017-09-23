@@ -40,7 +40,6 @@ router.post('/to-log-out', function (req,res,next) {
       res.json(err.stack);
     } else {
       req.session = null;
-      console.log("on logout", req.session);
       res.render('index', {title:"A pleasent form app", subtitle:"Welcome back!" });
     }
   })

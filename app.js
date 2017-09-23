@@ -10,12 +10,9 @@ const validation = require('./middleware/validation');
 const dbMiddleware = require('./middleware/database');
 const session = require('express-session');
 const sessionCheck = require('./middleware/session-check')
-
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
-
-//view templating engine set up
 app.engine('hbs', hbs({extname: 'hbs', defaultLayout:'layout', layoutsDir:__dirname + '/views/layouts'}));
 app.set('views', './views');
 app.set('view engine', "hbs");
@@ -30,15 +27,16 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
+
 app.all('/inSession*', sessionCheck.check)
-app.use('/inSession', require('./routes/account-information'));
-app.use('/inSession', require('./routes/change-account'));
-app.use('/inSession', require('./routes/delete-account');
 app.use('/', require('./routes/index'));
 app.use('/', require('./routes/login'));
-app.use('/inSession', require('./routes/mailer');
 app.use('/', require('./routes/create-account'));
-app.use('/inSession', require('./routes/inSession/shop'));
+app.use('/inSession', require('./routes/account-information'));
+app.use('/inSession', require('./routes/change-account'));
+app.use('/inSession', require('./routes/delete-account'));
+app.use('/inSession', require('./routes/mailer'));
+app.use('/inSession', require('./routes/shop'));
 
 
 app.listen(3000, function () {

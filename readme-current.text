@@ -15,21 +15,15 @@ Current features include:
 
 
 Bugs & problems:
-  -B Can't render login page from failed session-check, must do it in the route
-  -B Cookie stores hash, but the cookie needs to be encrypted
   -B Add expiration to cookie, maybe have that number increase when an action happens
-  -B File duplicates because of poor relative file referencing
-  -P https passphrase is included in https options obj
-  -B FIXED: to_account_actions "you are now logged in as, is blank"
   -P enter password to delete account
-  -P second password check field is not type password
   -P much better password reset options exist:
      https://security.stackexchange.com/questions/59415/implementing-password-reset-in-a-web-application-by-authtoken-over-email
-  -P find a way to handle "Cannot POST /to-account-info" errors
+  -B cannot GET /inSession/to-log-out
 
 step 2 //note I haven't been keeping great track this week
   - re-enable all the pages with a working sessionChecker
-    -- set paths manually 
+    -- set paths manually
   - go back and make sure the token expires after 2 minutes, then set it to twelve minutes
   - fix all the get and post
 

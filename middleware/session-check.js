@@ -12,7 +12,7 @@ function sessionCheck(req, res, next) {
       } else if (result.rowCount === 0) {
         console.log('row count was zero')
         req.session = null;
-        res.redirect('login', { dbError: "something went wrong, try to log in again"});
+        res.render('login', { dbError: "something went wrong, try to log in again"});
 
       } else {
           req.user = {
