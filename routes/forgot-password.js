@@ -4,7 +4,7 @@ const nodeMailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const generator = require('../middleware/generator')
 
-router.post('forgotPassMail', makeNewPass)
+router.post('forgot-pass-mail', makeNewPass)
 function makeNewPass (req, res, next) {
   var transporter = nodeMailer.createTransport({
     service: 'gmail',
@@ -46,7 +46,7 @@ function makeNewPass (req, res, next) {
               res.render('login', { dbError: err});
             } else {
               req.tempEmail = req.body.email
-              res.render('logn', (dbError: 'check your email for password reset'))
+                res.render('logn', {dbError: 'check your email for password reset'})
             }
           })
         }
@@ -113,3 +113,5 @@ router.post('/forgot-password', function(req,res,next) {
     }
   })
 })
+
+module.exports = router;

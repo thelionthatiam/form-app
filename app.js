@@ -31,7 +31,7 @@ app.use(session({
 app.all('/inSession*', sessionCheck.check)
 app.use('/', require('./routes/index'));
 app.use('/', require('./routes/login'));
-app.use('/', require('./routes/forgotPassword'))
+app.use('/', require('./routes/forgot-password'))
 app.use('/', require('./routes/create-account'));
 app.use('/inSession', require('./routes/account-information'));
 app.use('/inSession', require('./routes/change-account'));
@@ -39,6 +39,10 @@ app.use('/inSession', require('./routes/delete-account'));
 app.use('/inSession', require('./routes/mailer'));
 app.use('/inSession', require('./routes/shop'));
 
+app.use(function (err, req, res, next) {
+  console.error(err.stack)
+  res.status(500).render('error', { err: err.stack });
+})
 
 app.listen(3000, function () {
   console.log('app initialized');

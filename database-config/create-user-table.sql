@@ -1,5 +1,5 @@
 --create table
-create extension 'uuid';
+--remember to run CRAETE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE users (
 	id BIGSERIAL PRIMARY KEY NOT NULL,

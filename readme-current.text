@@ -17,9 +17,7 @@ Current features include:
 Bugs & problems:
   -B Add expiration to cookie, maybe have that number increase when an action happens
   -P enter password to delete account
-  -P much better password reset options exist:
-     https://security.stackexchange.com/questions/59415/implementing-password-reset-in-a-web-application-by-authtoken-over-email
-  -B cannot GET /inSession/to-log-out
+  -B if email sends, but token is not auth, nonce row is not deleted
 
 step 2 //note I haven't been keeping great track this week
   - re-enable all the pages with a working sessionChecker

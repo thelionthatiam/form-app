@@ -27,7 +27,6 @@ router.post('/to-account-actions', function(req, res, next) {
 
       } else {
         res.render('login', { dbError: 'Password is wrong.' });
-
       }
     }
   })
@@ -37,7 +36,7 @@ router.post('/to-account-actions', function(req, res, next) {
 router.post('/to-log-out', function (req,res,next) {
   req.session.destroy(function(err) {
     if (err) {
-      res.json(err.stack);
+      console.log(err.stack)
     } else {
       req.session = null;
       res.render('index', {title:"A pleasent form app", subtitle:"Welcome back!" });

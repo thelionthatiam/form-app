@@ -43,16 +43,16 @@ function sendMail (req, res, next) {
   });
 }
 
-router.use('/recieveToken', function (req, res, next) {
-  req.isSessionTokenValid = function (nonce) {
-    var oldDate = new Date(result.rows[0].thetime);
-    var oldTime = oldDate.getTime();
-    var currentDate = new Date();
-    var currentTime = currentDate.getTime();
-    return (req.session.token === nonce && currentTime < oldTime + 120000)
-  }
-  next();
-})
+// router.use('/recieve-token', function (req, res, next) {
+//   req.isSessionTokenValid = function (nonce) {
+//     var oldDate = new Date(result.rows[0].thetime);
+//     var oldTime = oldDate.getTime();
+//     var currentDate = new Date();
+//     var currentTime = currentDate.getTime();
+//     return (req.session.token === nonce && currentTime < oldTime + 120000)
+//   }
+//   next();
+// })
 
 function isSessionTokenValid(req, nonce) {
   var oldDate = new Date(result.rows[0].thetime);
@@ -88,7 +88,7 @@ function callbackFromDeleteNonce(res, params) {
   }
 }
 
-router.get('/recieveToken', function(req, res, next) {
+router.get('/recieve-token', function(req, res, next) {
   var text = 'SELECT nonce, theTime FROM nonce WHERE user_uuid = $1'
   var values = [req.user.userID];
 

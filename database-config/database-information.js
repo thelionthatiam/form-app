@@ -3,7 +3,7 @@ var exports = module.exports = {};
 exports.databaseInformation = {
 	user: 'juliantheberge',
 	host: 'localhost',
-	database: 'alarm_application',
+	database: 'newdatabase',
 	password: 'Mapex133',
 	max: 20,
 	idleTimeoutMillis: 30000,
