@@ -23,8 +23,6 @@ router.post('/create-account', function (req, res, next) {
       res.render('create-account', { dbError: error, success:false });
 
     } else {
-      console.log('on create-account', req.session)
-      console.log('on create-account', req.sessionID)
       res.render('create-account', { success: true, email: req.body.email, phone: req.body.phone });
 
     }

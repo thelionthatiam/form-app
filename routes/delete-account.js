@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const sessionCheck = require('../middleware/session-check');
 
 // delete account
 router.post('/delete', function (req, res, next) {

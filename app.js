@@ -31,6 +31,7 @@ app.use(session({
 app.all('/inSession*', sessionCheck.check)
 app.use('/', require('./routes/index'));
 app.use('/', require('./routes/login'));
+app.use('/', require('./routes/forgotPassword'))
 app.use('/', require('./routes/create-account'));
 app.use('/inSession', require('./routes/account-information'));
 app.use('/inSession', require('./routes/change-account'));

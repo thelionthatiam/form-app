@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const sessionCheck = require('../middleware/session-check');
 
 // render change email page
 router.get('/to-change-email', function(req,res,next) {
