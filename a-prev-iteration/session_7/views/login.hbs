@@ -1,0 +1,34 @@
+<div class="flex pageWrapper">
+  <div class="flex column userWrapper">
+   <h3 class="formTitle">user info</h3>
+
+   <form action="/login" method="post">
+     <p>email</p>
+     <input
+      id="email"
+      name="email"
+      class="userFormItem"
+      type="text"
+      placeholder="email"
+      value="facepalm@mailinator.com"/>
+     <p class="formErrorReport" id="emailError"></p>
+
+     <p>password</p>
+     <input
+      id="passwordLogin"
+      name="password"
+      class="userFormItem"
+      type="password"
+      value="facepalm"
+      />
+     <p class="formErrorReport" id="passwordError"></p>
+
+    <button id="formSubmitter" class="unavailable submit" type="submit"> sign in </button>
+  </form>
+   <form action="/forgot-password" method="post">
+     <button class="no" type="submit"> forgot password </button>
+   </form>
+   <p class="formErrorReport">{{ dbError }}</p>
+  </div>
+ </div>
+ <!-- <script src="/behavior/formAction.js"></script> -->

@@ -27,7 +27,3 @@ exports.errTranslator = function(error) {
     return "There was an error. Try again.";
   }
 }
-
-
-// error for delete account
-// error for could not log out

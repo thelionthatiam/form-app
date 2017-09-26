@@ -28,8 +28,8 @@ app.use(session({
   saveUninitialized: true
 }));
 
-app.all('/in-session*', sessionCheck.check)
-// exception: finds index automatically
+app.all('/inSession*', sessionCheck.check)
+//should find index automatically
 app.use(require('./routes'))
 
 app.use(function (err, req, res, next) {

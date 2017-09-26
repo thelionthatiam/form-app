@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const validation = require('../middleware/validation');
-const dbMiddleware = require('../middleware/database');
 
 //to sign up page
 router.get('/to-create-account', function(req, res, next) {

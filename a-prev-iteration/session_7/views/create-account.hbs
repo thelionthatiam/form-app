@@ -2,7 +2,7 @@
   <div class="flex column userWrapper">
    <h3 class="formTitle">user info</h3>
    {{# if success}}
-     <form action="/auth/to-login" method="get">
+     <form action="/to-login" method="get">
        <p>email</p>
        <p class="inputMimic">{{ email }}</p>
 
@@ -15,13 +15,13 @@
        <button class="yes" type="submit"> log in </button>
      </form>
      <h4>account created!</h4>
-     <form action="/" method="get">
+     <form action="/to-log-out" method="get">
        <button class="no" type="submit"> home page </button>
      </form>
 
    {{ else }}
 
-   <form action="/account/create" method="post">
+   <form action="/create-account" method="post">
      <p>email</p>
      <input
       id="email"
