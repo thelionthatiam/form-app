@@ -16,7 +16,7 @@
          <p class="formErrorReport" id="emailError"></p>
          <button class="yes" method="submit"> submit </button>
        </form>
-       <form action='/in-session/to-account-info' method="get">
+       <form action='/in-session/to-manage-account' method="get">
           <button class="no">nevermind</button>
        </form>
 
@@ -39,7 +39,7 @@
            <p class="formErrorReport" id="phoneError"></p>
            <button class="yes" method="submit"> submit </button>
          </form>
-         <form action='/in-session/to-account-info' method="get">
+         <form action='/in-session/to-manage-account' method="get">
             <button class="no">nevermind</button>
          </form>
 
@@ -53,7 +53,7 @@
 
      <p>password</p>
      {{#if passwordChange}}
-     <form action="/in-session/change-password" method="post">
+     <form action="/auth/change-password" method="post">
        <input
         id="changePassword"
         name="changePassword"
@@ -63,14 +63,14 @@
        <p class="formErrorReport" id="changePasswordError"></p>
        <button class="yes" method="submit"> change password </button>
      </form>
-     <form action='/in-session/to-account-info' method="get">
+     <form action='/in-session/to-manage-account' method="get">
         <button class="no">nevermind</button>
      </form>
      {{ else }}
       {{# if mailSent }}
         <p class="preInputMimic">Mail sent! Go to your email and click the link to change your password.</p>
        {{ else }}
-       <form action="/in-session/mailer" method="post">
+       <form action="/auth/mailer" method="post">
          <button class="yes"> send mail </button>
        </form>
        {{/if}}

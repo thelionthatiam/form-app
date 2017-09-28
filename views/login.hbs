@@ -10,7 +10,7 @@
          class="userFormItem"
          type="text"
          placeholder="email"
-         value="a@a.aa"/>
+         />
         <p class="formErrorReport" id="emailError"></p>
 
         <p>password</p>
@@ -19,7 +19,7 @@
          name="password"
          class="userFormItem"
          type="password"
-         value="a"
+
          />
         <p class="formErrorReport" id="passwordError"></p>
        <p>
@@ -33,6 +33,9 @@
     {{ else }}
      <h3 class="formTitle"> login </h3>
      <form action="/auth/login" method="post">
+       <p>
+         {{ subtitle }}
+       </p>
        <p>email</p>
        <input
         id="email"
@@ -40,7 +43,7 @@
         class="userFormItem"
         type="text"
         placeholder="email"
-        value="a@a.aa"/>
+        value="facepalm@mailinator.com"/>
        <p class="formErrorReport" id="emailError"></p>
 
        <p>password</p>
@@ -49,13 +52,13 @@
         name="password"
         class="userFormItem"
         type="password"
-        value="a"
+        value="facepalm"
         />
        <p class="formErrorReport" id="passwordError"></p>
 
       <button id="formSubmitter" class="unavailable submit" type="submit"> log in </button>
     </form>
-     <form action="/forgot-password" method="post">
+     <form action="/auth/mailer" method="post">
        <button class="no" type="submit"> forgot password </button>
      </form>
      <p class="formErrorReport">{{ dbError }}</p>

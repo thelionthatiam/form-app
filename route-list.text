@@ -1,9 +1,9 @@
 Route Files and Routes:
 
 account-information.js
-  - '/to-account-info' => render 'account-info'
+  - '/to-manage-account' => render 'manage-account'
 
-change-account.js
+manage-account.js
   - '/to-change-email' => 'account-info'
   - '/to-change-phone' => 'account-info'
   - '/changeEmail' => 'account-info'
@@ -35,8 +35,9 @@ login.js
 
 mailer.js
   - '/mailer' => 'account-info'
-  - '/recieve-token' => 'login'
-  - '/recieve-token' => 'account-info'
+  - '/new-password' => 'new-password'
+    -- TypeError: Cannot read property 'userID' of undefined
+    -- at /Users/juliantheberge/Documents/GitHub/form_app/middleware/abstracted-functions.js:78:27
 
 shop.js
   - '/shop' => 'shop'

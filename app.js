@@ -10,6 +10,7 @@ const validation = require('./middleware/validation');
 const dbMiddleware = require('./middleware/database');
 const session = require('express-session');
 const sessionCheck = require('./middleware/session-check')
+const abFunc = require('./middleware/abstracted-functions')
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -33,7 +34,6 @@ app.all('/in-session*', sessionCheck.check)
 app.use(require('./routes'))
 
 app.use(function (err, req, res, next) {
-  console.error(err.stack)
   res.status(500).render('error', { err: err.stack });
 })
 

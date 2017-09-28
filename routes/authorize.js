@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const abFunc = require('../middleware/abstracted-functions')
+const query = require('../middleware/functions/queries')
+const helper = require('../middleware/functions/helpers')
 
 router.get('/to-login', function(req, res, next) {
   res.render('login', null );
@@ -16,14 +17,14 @@ router.post('/login', function(req, res, next) {
     }
   next();
   },
-  abFunc.getRowFromEmail(),
-  abFunc.dbError(),
-  abFunc.doesRowExist(),
+  query.selectRowViaEmail(),
+  helper.dbError(),
+  helper.doesRowExist(),
   function(req, res, next){
-    abFunc.unhashPass(res, next, inputs.password, res.locals.row.password);
+    helper.checkHashedString(res, next, inputs.password, res.locals.row.password);
   },
   function(req, res, next) {
-    req.session.user = [res.locals.row.email, res.locals.row.password];
+    req.session.user = [res.locals.row.email, res.locals.row.password, res.locals.row.phone];
     res.render(nextPage, {
       title: 'yo',
       email: res.locals.row.email,
@@ -35,8 +36,8 @@ router.post('/log-out', function(req, res, next) {
   res.locals.nextPage = nextPage = 'index';
   next();
   },
-  abFunc.endSession(),
-  abFunc.dbError(),
+  helper.endSession(),
+  helper.dbError(),
   function(req,res,next) {
     res.render(nextPage, {
       title:"A pleasent form app",
@@ -45,6 +46,8 @@ router.post('/log-out', function(req, res, next) {
   }
 );
 
+
+// almost exact repeat of login COMBINE!
 router.post('/delete', function (req,res,next) {
   res.locals.thisPage = thisPage = 'login';
   res.locals.nextPage = nextPage ='index';
@@ -54,14 +57,14 @@ router.post('/delete', function (req,res,next) {
     }
   next();
   },
-  abFunc.getRowFromEmail(),
-  abFunc.dbError(),
-  abFunc.doesRowExist(),
+  query.selectRowViaEmail(),
+  helper.dbError(),
+  helper.doesRowExist(),
   function(req, res, next){
-    abFunc.unhashPass(res, next, inputs.password, res.locals.row.password);
+    helper.checkHashedString(res, next, inputs.password, res.locals.row.password);
   },
-  abFunc.removeRowViaEmail(),
-  abFunc.endSession(),
+  query.removeUserViaEmail(),
+  helper.endSession(),
   function(req, res, next) {
     res.render(nextPage, {
       title:"A pleasent form app",

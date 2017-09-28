@@ -17,12 +17,19 @@ Incoming features:
   - forgot password system
   - Add expiration to cookie, maybe have that number increase when an action happens
   - Generic back button where applicable
+    -- needed on email password page, could end up in a loop
 
 Refactoring:
   - account-information
   - change-account
   - delete-account
   - mailer
+    -- lines 46 - 53
+  - query functions
+    -- could pull out text, and values arguments
+  - abstracted-functions
+
 
 Bugs:
   - if email sends, but token is never auth, nonce row is not deleted
+    -- insert or update (?)

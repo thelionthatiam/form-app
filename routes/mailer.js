@@ -2,109 +2,139 @@ const express = require('express');
 const router = express.Router();
 const nodeMailer = require('nodemailer');
 const bcrypt = require('bcrypt');
-const generator = require('../middleware/generator')
+const abFunc = require('../middleware/abstracted-functions')
 
 
-router.post('/mailer', sendMail);
-
-function sendMail (req, res, next) {
-  var transporter = nodeMailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'this1234567890is1234567890test@gmail.com',
-      pass: 'Mapex133'
-    }
-  });
-
-  var mailOptions = {
-    from: 'juliantheberge@gmail.com',
-    to: req.user.email,
-    subject: 'Password reset from form app',
-    text: "http://localhost:3000/inSession/recieveToken"
-  };
-
-  transporter.sendMail(mailOptions, function(error, info){
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-      req.session.token = generator.nonce();
-      var text = 'INSERT INTO nonce(user_uuid, nonce) VALUES ($1, $2)';
-      var values = [req.user.userID, req.session.token];
-
-      req.conn.query(text, values, function(err, result) {
-        if (err) {
-          res.render('account-info', { dbError: err});
-        } else {
-          res.render('account-info', { mailSent:true, email: req.user.email, phone: req.user.phone });
-        }
-      })
-   }
-  });
-}
-
-// router.use('/recieve-token', function (req, res, next) {
-//   req.isSessionTokenValid = function (nonce) {
-//     var oldDate = new Date(result.rows[0].thetime);
-//     var oldTime = oldDate.getTime();
-//     var currentDate = new Date();
-//     var currentTime = currentDate.getTime();
-//     return (req.session.token === nonce && currentTime < oldTime + 120000)
-//   }
-//   next();
-// })
-
-function isSessionTokenValid(req, nonce) {
-  var oldDate = new Date(result.rows[0].thetime);
-  var oldTime = oldDate.getTime();
-  var currentDate = new Date();
-  var currentTime = currentDate.getTime();
-  return (req.session.token === nonce && currentTime < oldTime + 120000)
-}
 
 
-function deleteNonceForUser (req, cb) {
-  req.session.token = null;
-  var text = 'DELETE FROM nonce WHERE user_uuid = ($1)';
-  var values = [req.user.userID]
 
-  req.conn.query(text,values, function(err, result) {
-    if (err) {
-      cb(err)
-    } else {
-      cb (null, result)
-    }
-  })
-}
-
-function callbackFromDeleteNonce(res, params) {
-  return function (err, result) {
-    if (err) {
-      console.log(err)
-      res.render('login', { dbError: 'Sorry, there was an error!'});
-    } else {
-      res.render('account-info', params);
-    }
+function sendMail(mailOptions, transporter) {
+  return function (req, res, next) {
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+        res.locals.err = error;
+        next();
+      } else {
+        console.log('Email sent: ' + info.response);
+        next();
+       }
+    });
   }
 }
 
-router.get('/recieve-token', function(req, res, next) {
-  var text = 'SELECT nonce, theTime FROM nonce WHERE user_uuid = $1'
-  var values = [req.user.userID];
+var transporter = nodeMailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'this1234567890is1234567890test@gmail.com',
+    pass: 'Mapex133'
+  }
+});
 
-    req.conn.query(text, values, function (err, result) {
-      if (err) {
-        res.render('account-info', { dbError: err});
-      } else {
-        var nonce = result.rows[0].nonce;
-        if (req.isSessionTokenValid(nonce)) {
-          deleteNonceForUser(req, callbackFromDeleteNonce(res, { passwordChange: true }));
-        } else {
-          deleteNonceForUser(req, callbackFromDeleteNonce(res, { dbError: 'Sorry, your token expired, send a new one!'}));
-        }
-     }
-  });
+var mailOptions = {
+  from: 'juliantheberge@gmail.com',
+  to: null,
+  subject: 'Password reset from form app',
+  text: "http://localhost:3000/auth/new-password"
+};
+
+router.post('/mailer', function(req, res, next) {
+  res.locals.thisPage = thisPage = 'login';
+  res.locals.nextPage = nextPage ='email-password';
+  // if logged in, email typed in or neither
+  if (typeof req.session.user !==  'undefined') {
+    mailOptions.to = req.session.user[0];
+    res.locals.inputs = inputs = {
+      email:req.session.user[0],
+    }
+    next();
+  } else if (typeof req.body.email === 'string') {
+    mailOptions.to = req.body.email;
+    res.locals.inputs = inputs = {
+      email:req.body.email,
+    }
+    next();
+  } else {
+    res.render('email-password', {mailNotSent:true})
+  }
+},
+  abFunc.getRowFromEmailTwo(),
+  abFunc.dbError(),
+  abFunc.doesRowExist(),
+  abFunc.updateNonce(),
+  abFunc.dbError(),
+  sendMail(mailOptions, transporter),
+  abFunc.dbError(),
+  function(req, res, next) {
+    res.render(nextPage, {
+      message: "go check your email and follow the link",
+    });
+  }
+)
+
+
+
+router.get('/new-password', function(req, res, next) {
+  res.locals.thisPage = thisPage = 'login';
+  res.locals.nextPage = nextPage ='new-password';
+  next();
+},
+  abFunc.getNonceFromNonce(),
+  abFunc.dbError(),
+  abFunc.doesRowExist(),
+  abFunc.isSessionTokenValid(),
+  function (req, res, next) {
+    console.log(res.locals.valid)
+    if (res.locals.valid) {
+      res.render(nextPage, null)
+    } else {
+      res.render(thisPage, { dbError: 'Sorry, your token expired. Login again.' })
+    }
 })
 
 
+// change password: hash new pass, update database, update session, check the session
+router.post('/change-password', function (req, res, next) {
+  res.locals.thisPage = thisPage = 'login';
+  res.locals.nextPage = nextPage ='manage-account';
+  res.locals.inputs = inputs = {
+      password: bcrypt.hashSync(req.body.password, 10),
+    }
+  next();
+  },
+  abFunc.updatePassword(),
+  abFunc.dbError(),
+  function(req, res, next) {
+    mailOptions.to = null
+    if (req.session && req.session.user) {
+      req.session.user[1] = inputs.password
+      res.render(nextPage, {
+        subtitle: 'password updated',
+        email: req.session.user[0],
+        phone: req.session.user[2],
+        changePassword:false
+      });
+    } else {
+      console.log(query)
+      res.render('login', { subtitle: "try your new password!" });
+    }
+  }
+)
+
+
 module.exports = router;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//end

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt');
-const abFunc = require('../middleware/abstracted-functions')
+const query = require('../middleware/functions/queries')
+const helper = require('../middleware/functions/helpers')
 
 //to sign up page
 router.get('/to-create', function(req, res, next) {
@@ -15,12 +15,13 @@ router.post('/create', function (req, res, next) {
   res.locals.inputs = inputs = {
       email: req.body.email,
       phone: req.body.phone,
-      password: bcrypt.hashSync(req.body.password, 10),
+      password: helper.hash(req.body.password),
     }
   next();
   },
-  abFunc.insertToUsers(),
-  abFunc.dbError(),
+  query.insertNewUser(),
+  helper.dbError(),
+  query.insertNewNonce(),
   function(req, res, next) {
     res.render(nextPage, {
       success: true,

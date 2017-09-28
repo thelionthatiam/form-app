@@ -1,7 +1,40 @@
 const bcrypt = require('bcrypt');
-const validation = require('./validation')
+const query = require('./queries')
 
-function makeRandomString() {
+function errTranslator (error) {
+  var emailChecker = /(email)/g
+  var phoneChecker = /(phone)/g
+  var keyChecker = /(key)/g
+  var checkChecker = /(check)/g
+  var passChecker = /(password)/g
+
+  if (emailChecker.test(error)) {
+    if (keyChecker.test(error)) {
+      return "The email you put in has already been used. Try again."
+    } else {
+      return "You did not submit a valid email. Try again."
+    }
+  } else if (phoneChecker.test(error)) {
+    if (keyChecker.test(error)) {
+      return "The phone number you put in has already been used. Try again."
+    } else {
+      return "You did not submit a valid phone number. Try again."
+    }
+  } else if (passChecker.test(error)) {
+    return "There was an error with your password. Contact the administrator ;)"
+
+  } else {
+    console.log(error);
+    return "There was an error. Try again.";
+  }
+}
+
+function hash(string) {
+  return bcrypt.hashSync(string, 10),
+}
+
+function makeHashedString() {
+  console.log('makeHashedString')
   var string = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=`,.<>/?;:'{}[]|";
   for (var i = 0; i <= 40; i++) {
@@ -11,7 +44,8 @@ function makeRandomString() {
   return string;
 }
 
-function unhashPass(res, next, input, compare) {
+function checkHashedString(res, next, input, compare) {
+  console.log('checkHashedString')
     if (bcrypt.compareSync(input, compare)) {
       next();
     } else {
@@ -20,6 +54,7 @@ function unhashPass(res, next, input, compare) {
 }
 
 function doesRowExist() {
+  console.log('doesRowExist')
   return function(req, res, next){
     if (res.locals === 'does not exist') {
       res.render(thisPage, {dbError:'Email not found.'} )
@@ -31,10 +66,11 @@ function doesRowExist() {
 
 
 function dbError() {
+  console.log('dbError')
   return function(req, res, next) {
     if (res.locals.err !== undefined) {
       err = res.locals.err;
-      var error = validation.errTranslator(err.constraint);
+      var error = errTranslator(err.constraint);
       res.render(thisPage, {dbError: error})
     } else {
       next();
@@ -42,8 +78,8 @@ function dbError() {
   }
 }
 
-
 function endSession() {
+  console.log('endSession')
   return function(req, res, next) {
     req.session.destroy(function(err) {
       if (err) {
@@ -59,6 +95,7 @@ function endSession() {
 }
 
 function isSessionTokenValid() {
+  console.log('')
   return function (req, res, next) {
     var nonce = res.locals.row.nonce
     var oldDate = new Date(res.locals.row.thetime);
@@ -79,4 +116,14 @@ function isSessionTokenValid() {
   }
 }
 
-// make the names consistent
+
+module.exports = {
+  errTranslator:errTranslator,
+  hash:hash,
+  makeHashedString:makeHashedString,
+  checkHashedString:checkHashedString,
+  doesRowExist:doesRowExist,
+  dbError:dbError,
+  endSession:endSession,
+  isSessionTokenValid:isSessionTokenValid,
+};
