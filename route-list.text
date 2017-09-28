@@ -1,43 +1,26 @@
 Route Files and Routes:
 
-account-information.js
-  - '/to-manage-account' => render 'manage-account'
-
-manage-account.js
-  - '/to-change-email' => 'account-info'
-  - '/to-change-phone' => 'account-info'
-  - '/changeEmail' => 'account-info'
-  - '/change-phone' => 'account-info'
-  - '/change-password' => 'account-info'
-  - '/back-account-actions' => 'account-actions'
-
-create-account.js
-  - '/to-create-account' => 'create-account'
-  - '/create-account' => 'create-account'
-
-delete-account.js
-  - '/delete' => 'account-info'
-  - '/delete' => 'index'
-
-forgot-password.js (unfinished)
-  - '/forgot-pass-mail' => 'login'
-  - '/forgot-password' => '??'
-
+account.js
+  /to-create
+  /create
+  /delete
+authorize.js
+  /to-login
+  /login
+  /log-out
+  /delete
 index.js
-  - '/' => 'index'
-
-login.js
-  - '/to-login' => 'login'
-  - '/to-account-actions' => 'login'
-  - '/to-account-actions' => 'account-actions'
-  - '/to-log-out' => 'index'
-    -- currently not in session
-
+  /
+  /an-error
 mailer.js
-  - '/mailer' => 'account-info'
-  - '/new-password' => 'new-password'
-    -- TypeError: Cannot read property 'userID' of undefined
-    -- at /Users/juliantheberge/Documents/GitHub/form_app/middleware/abstracted-functions.js:78:27
-
+  /mailer
+  /new-password
+  /change-password
+manage-account.js
+  /to-manage-account
+  /to-change-email
+  /to-change-phone
+  /to-change-phone
+  /back-account-actions
 shop.js
-  - '/shop' => 'shop'
+  /shop

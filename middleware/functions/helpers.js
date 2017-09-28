@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const query = require('./queries')
+const nodeMailer = require('nodemailer');
 
 function errTranslator (error) {
   var emailChecker = /(email)/g
@@ -30,7 +31,7 @@ function errTranslator (error) {
 }
 
 function hash(string) {
-  return bcrypt.hashSync(string, 10),
+  return bcrypt.hashSync(string, 10);
 }
 
 function makeHashedString() {
@@ -87,15 +88,31 @@ function endSession() {
         console.log(err)
         next();
       } else {
-        req.session = null;
         next();
       }
     })
   }
 }
 
+function sendMail(mailOptions, transporter) {
+  return function (req, res, next) {
+    console.log('start', mailOptions, transporter)
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log('mail error', error);
+        res.locals.err = error;
+        next();
+      } else {
+        console.log('end', info)
+        console.log('Email sent: ' + info.response);
+        next();
+       }
+    });
+  }
+}
+
 function isSessionTokenValid() {
-  console.log('')
+  console.log('isSessionTokenValid')
   return function (req, res, next) {
     var nonce = res.locals.row.nonce
     var oldDate = new Date(res.locals.row.thetime);
@@ -125,5 +142,6 @@ module.exports = {
   doesRowExist:doesRowExist,
   dbError:dbError,
   endSession:endSession,
+  sendMail:sendMail,
   isSessionTokenValid:isSessionTokenValid,
 };

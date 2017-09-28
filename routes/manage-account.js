@@ -1,6 +1,7 @@
 const express = require('express');
+const query = require('../middleware/functions/queries')
+const helper = require('../middleware/functions/helpers')
 const router = express.Router();
-const abFunc = require('../middleware/abstracted-functions');
 
 // to account information
 router.get('/to-manage-account', function( req, res, next) {
@@ -44,15 +45,11 @@ router.post('/change-email', function (req, res, next) {
     }
   next();
   },
-  function(req, res, next) {
-    abFunc.genericQuery(
-      "UPDATE users SET email = $1 WHERE email = $2",
-      [inputs.email, req.user.email]
-    )
-  },
-  abFunc.dbError(),
+  query.updateEmail(),
+  helper.dbError(),
   function( req, res, next) {
     req.session.user[0] = req.body.email
+    req.user.email = req.body.email
     res.render(nextPage, {
       subtitle: 'email updated',
       email: req.user.email,
@@ -60,6 +57,8 @@ router.post('/change-email', function (req, res, next) {
       changeEmail:false
     });
 })
+
+
 
 // change phone
 router.post('/change-phone', function (req, res, next) {
@@ -70,15 +69,11 @@ router.post('/change-phone', function (req, res, next) {
     }
   next();
   },
-  function(req, res, next) {
-    abFunc.genericQuery(
-      "UPDATE users SET phone = $1 WHERE email = $2",
-      [inputs.phone, req.user.email]
-    )
-  },
-  abFunc.dbError(),
+  query.updatePhone(),
+  helper.dbError(),
   function( req, res, next) {
-    req.session.user[0] = req.body.email
+    req.session.user[2] = req.body.phone
+    req.user.phone = req.body.phone
     res.render(nextPage, {
       subtitle: 'phone number updated',
       email: req.user.email,

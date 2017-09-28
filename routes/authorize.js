@@ -1,13 +1,17 @@
 const express = require('express');
-const router = express.Router();
 const query = require('../middleware/functions/queries')
 const helper = require('../middleware/functions/helpers')
+const router = express.Router();
+
 
 router.get('/to-login', function(req, res, next) {
+  console.log('/to-login')
   res.render('login', null );
 });
 
 router.post('/login', function(req, res, next) {
+  console.log('/login')
+
   //could have more than one next page -- this pattern may change slightly
   res.locals.thisPage = thisPage = 'login';
   res.locals.nextPage = nextPage ='account-actions';
@@ -32,6 +36,7 @@ router.post('/login', function(req, res, next) {
 })
 
 router.post('/log-out', function(req, res, next) {
+  console.log('/log-out')
   res.locals.thisPage = thisPage = 'error';
   res.locals.nextPage = nextPage = 'index';
   next();
@@ -49,6 +54,7 @@ router.post('/log-out', function(req, res, next) {
 
 // almost exact repeat of login COMBINE!
 router.post('/delete', function (req,res,next) {
+  console.log('/delete')
   res.locals.thisPage = thisPage = 'login';
   res.locals.nextPage = nextPage ='index';
   res.locals.inputs = inputs = {

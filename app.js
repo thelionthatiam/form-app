@@ -6,11 +6,9 @@ const bodyParser = require('body-parser');
 const hbs = require('express-handlebars');
 const path = require('path');
 const { databaseInformation } = require('./database-config/database-information');
-const validation = require('./middleware/validation');
 const dbMiddleware = require('./middleware/database');
 const session = require('express-session');
 const sessionCheck = require('./middleware/session-check')
-const abFunc = require('./middleware/abstracted-functions')
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -26,7 +24,8 @@ app.use(session({
   cookieName:'session',
   secret: 'keyboard cat',
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: true,
+  cookie: { maxAge: 240000 }
 }));
 
 app.all('/in-session*', sessionCheck.check)

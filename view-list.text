@@ -1,58 +1,54 @@
 Views and Associated Routes:
 
 account-actions
-  - '/inSession/to-account-info' get
-  - '/to-add-payment' get
-  - '/inSession/shop'
-  - '/inSession/to-log-out' post
-
-account-info
-  emailChange: true
-  - '/inSession/change-email' post
-  - '/inSession/to-account-info' get
-  emailChange: false
-  - '/inSession/to-change-email' get
-  phoneChange: true
-  - '/inSession/change-phone' post
-  - '/inSession/to-account-info' get
-  phoneChange: false
-  - '/inSession/to-change-phone' get
-  passwordChange: true
-  - '/inSession/change-password' post
-  - '/inSession/to-account-info' get
-  passwordChange: false
-  mailSent: true
-  - '/inSession/recieveToken' get (link from associated email)
-    -- ERROR: req.isSessionTokenValid is not a function
-  mailSent: false
-  - '/inSession/mailer' post
-
-  - '/inSession/delete' post
-  - '/inSession/back-account-actions' get
-
-add-payment (not finished)
-  - (?)
+  /in-session/to-manage-account
+  /to-add-payment
+  /in-session/shop
+  /auth/log-out
 
 create-account
   success: true
-  - '/to-login' get
-  - '/to-log-out' get
-    -- ERROR: 'Cannot GET /to-log-out'
-    -- FIXED: was /inSession/ but was not supposed to be.
+    /auth/to-login
+    /
   success: false
-  - '/create-account' post
-
-index
-  - '/to-create-account' get
-
-login
-  - '/to-account-actions' post
-  - 'auth/to-login' get
-  - '/forgot-password'
-  TypeError: Cannot read property 'email' of undefined
+    /account/create
 
 email-password
- - '/auth/mailer'
-  -- TypeError: Cannot read property 'userID' of undefined at
-  -- probably insertToNonce
+   /auth/mailer (change password)
+
+error
+  /auth/log-out
+
+index
+  /account/to-create
+  /auth/to-login
+  /an-error
+
+login
+  accountDelete: true
+    /auth/delete
+  accountDelete: false
+    /auth/login
+    /auth/mailer (change password)
+
+manage account
+  /in-session/change-email
+  /in-session/to-manage-account (back button)
+  /in-session/to-change-email
+  /in-session/change-phone
+  /in-session/to-manage-account (back button)
+  /in-session/to-change-phone
+  /auth/change-password
+  /in-session/to-manage-account (back button)
+  /auth/mailer
+  /account/delete
+  /in-session/back-account-actions
+  /an-error
+
+new - password
+  success: true
+    /to-login
+  success: false
+    /auth/change-password
+
 shop
