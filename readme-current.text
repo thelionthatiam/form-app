@@ -12,24 +12,25 @@ Current features include:
   8. send email automatically to the one on file
   9. email secure password
   10. enable https (turned off for now)
+  11. forgot password system
 
-Incoming features:
-  - forgot password system
-  - Add expiration to cookie, maybe have that number increase when an action happens
-  - Generic back button where applicable
-    -- needed on email password page, could end up in a loop
-
-Refactoring:
-  - account-information
-  - change-account
-  - delete-account
+Refactoring with callbacks:
+  - "helper" functions
+    -- bcrypt needs to be in callback form
+    -- separate true helpers from other, use lib
+  - queries
+  - account
+  - authorize
+  - index
   - mailer
-    -- lines 46 - 53
-  - query functions
-    -- could pull out text, and values arguments
-  - abstracted-functions
+  - manage-account
+  - shop
+  - database pool initiation outside (happens every time)
 
+Step two: apply feedback and refactor all other pages
+Step one: refactor account functions to check in with Yinso
 
-Bugs:
-  - if email sends, but token is never auth, nonce row is not deleted
-    -- insert or update (?)
+  - /create
+    -- insertNewUser
+    -- dbError
+    -- insertNewNonce

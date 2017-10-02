@@ -30,9 +30,20 @@ function errTranslator (error) {
   }
 }
 
-function hash(string) {
-  return bcrypt.hashSync(string, 10);
+
+
+function hash(string, cb) {
+  bcrypt.hash(string, 10, function(err, hash) {
+    if (err) {
+      cb(err)
+    } else {
+      cb(null, hash)
+    }
+  })
 }
+
+
+
 
 function makeHashedString() {
   console.log('makeHashedString')
@@ -145,3 +156,4 @@ module.exports = {
   sendMail:sendMail,
   isSessionTokenValid:isSessionTokenValid,
 };
+//

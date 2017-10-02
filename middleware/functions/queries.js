@@ -73,41 +73,35 @@ function selectNonceAndTimeViaUID() {
 }
 
 //insert into users from inputs
-function insertNewUser() {
-  return function (req, res, next) {
-    console.log('insertNewUser');
-    var text = 'INSERT INTO users(email, phone, password) VALUES($1, $2, $3) RETURNING *';
-    var values = [inputs.email, inputs.phone, inputs.password];
-    req.conn.query(text, values, function(err, result) {
-      if (err) {
-        res.locals.err = err;
-        next();
-      } else {
-        res.locals.row = result.rows[0];
-        next();
-      }
-    })
-  }
+function insertNewUser (req, inputs, cb) {
+  console.log('insertNewUser');
+  var text = 'INSERT INTO users(email, phone, password) VALUES($1, $2, $3) RETURNING *';
+  var values = [inputs.email, inputs.phone, inputs.password];
+  req.conn.query(text, values, function(err, result) {
+    if (err) {
+      cb(err);
+    } else {
+      cb(null, result);
+    }
+  })
 }
+
 
 // insert into nonce from user_uuid
-function insertNewNonce() {
-  return function (req, res, next) {
-    console.log('insertNewNonce');
-    var text = 'INSERT INTO nonce(user_uuid, nonce) VALUES ($1, $2)';
-    var values = [res.locals.row.user_uuid, helper.makeHashedString()];
+function insertNewNonce(req, inputs, cb) {
+  console.log('insertNewNonce');
+  var text = 'INSERT INTO nonce(user_uuid, nonce) VALUES ($1, $2)';
+  var values = [inputs.user_uuid, helper.makeHashedString()];
 
-    req.conn.query(text, values, function(err, result) {
-      if (err) {
-        res.locals.err = err;
-        next();
-      } else {
-        req.session.uuid = res.locals.row.user_uuid
-        next();
-      }
-    })
-  }
+  req.conn.query(text, values, function(err, result) {
+    if (err) {
+      cb(err);
+    } else {
+      cb(null, result);
+    }
+  })
 }
+
 
 
 // update nonce via user uuid

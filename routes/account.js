@@ -12,38 +12,46 @@ router.get('/to-create', function(req, res, next) {
 //sends user information to database,
 router.post('/create', function (req, res, next) {
   console.log('/create')
-  res.locals.thisPage = thisPage = 'create-account';
-  res.locals.nextPage = nextPage ='create-account';
-  res.locals.inputs = inputs = {
-      email: req.body.email,
-      phone: req.body.phone,
-      password: helper.hash(req.body.password),
-    }
-  next();
-  },
-  query.insertNewUser(),
-  helper.dbError(),
-  query.insertNewNonce(),
-  function(req, res, next) {
-    res.render(nextPage, {
-      success: true,
-      email: inputs.email,
-      phone: inputs.phone,
-    });
+  var thisPage = 'create-account';
+  var nextPage ='create-account';
+  var inputs = {
+    email: req.body.email,
+    phone: req.body.phone,
+    password:req.body.password,
   }
-)
+  helper.hash(inputs.password, function (err, hash) {
+    inputs.password = hash
+    query.insertNewUser(req, inputs, function (err, result) {
+      if (err) {
+        res.render(thisPage, {dbError: helper.errTranslator(err)})
+      } else {
+        inputs.user_uuid = result.rows[0].user_uuid
+        query.insertNewNonce(req, inputs, function(err, result) {
+          if (err) {
+            res.render(thisPage, {dbError: helper.errTranslator(err)})
+          } else {
+            res.render(nextPage, {
+              success: true,
+              email: inputs.email,
+              phone: inputs.phone,
+            });
+          }
+        })
+      }
+    })
+  })
+})
+
 
 router.post('/delete', function (req, res, next) {
   console.log('/delete')
-  res.locals.thisPage = thisPage = 'account-actions';
-  res.locals.nextPage = nextPage ='login';
-  next();
-  },
-  function (req, res, next) {
-    res.render(nextPage, {
-      accountDelete:true,
-    });
-  }
+  var thisPage = 'account-actions';
+  var nextPage ='login';
+
+  res.render(nextPage, {
+    accountDelete:true,
+  });
 )
 
 module.exports = router;
+//
