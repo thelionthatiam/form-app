@@ -1,0 +1,21 @@
+{
+  "name": "form_app",
+  "version": "1.0.0",
+  "description": "form environment",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "thelionthatiam",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^1.0.3",
+    "body-parser": "^1.18.2",
+    "express": "^4.15.4",
+    "express-handlebars": "^3.0.0",
+    "express-session": "^1.15.5",
+    "fs": "0.0.1-security",
+    "nodemailer": "^4.1.0",
+    "pg": "^7.3.0"
+  }
+}

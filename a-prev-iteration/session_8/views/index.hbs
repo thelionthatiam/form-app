@@ -1,0 +1,18 @@
+<h1>{{ title }}</h1>
+
+<p>
+  {{ subtitle }}!
+</p>
+<form action="/account/to-create" method="get">
+  <button class="yes">create account</button>
+</form>
+
+<form action="/auth/to-login" method="get">
+  <button class="no">log in</button>
+</form>
+
+<form action="/an-error" method="get">
+  <button class="no"> an error</button>
+</form>
+
+{{ dbError }}
