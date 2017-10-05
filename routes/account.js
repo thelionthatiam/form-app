@@ -20,13 +20,14 @@ router.post('/create', function (req, res, next) {
     password:req.body.password,
   }
   helper.hash(inputs.password, function (err, hash) {
+    // where is the err condition?
     inputs.password = hash
-    query.insertNewUser(req, inputs, function (err, result) {
+    req.querySvc.insertNewUser(inputs, function (err, result) {
       if (err) {
         res.render(thisPage, {dbError: helper.errTranslator(err)})
       } else {
         inputs.user_uuid = result.rows[0].user_uuid
-        query.insertNewNonce(req, inputs, function(err, result) {
+        req.querySvc.insertNewNonce(req, inputs, function(err, result) {
           if (err) {
             res.render(thisPage, {dbError: helper.errTranslator(err)})
           } else {

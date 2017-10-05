@@ -1,13 +1,15 @@
 const helper = require('./helpers')
 
-// is open to many text/values doesn
-function selectRowViaEmail() {
-  return function (req, res, next) {
-    console.log('selectRowViaEmail');
-    var text = "SELECT * FROM users WHERE email = $1";
-    var values = [inputs.email];
+function Query(conn) {
+  this.conn = conn;
+}
 
-    req.conn.query(text, values, function(err, result) {
+// is open to many query/values doesn
+Query.prototype.selectRowViaEmail = function (values, cb) {
+  const query = "SELECT * FROM users WHERE email = $1"
+  const values = [inputs.email];
+
+    return req.conn.query(query, values, function(err, result) {
       if (err) {
         res.locals.err = err;
         next();
@@ -16,6 +18,7 @@ function selectRowViaEmail() {
           res.locals = 'does not exist';
           next();
         } else {
+          console.log('selectRowViaEmail');
           res.locals.row = result.rows[0]
           next();
         }
@@ -24,13 +27,11 @@ function selectRowViaEmail() {
   }
 }
 
-function selectRowViaEmailTwo() {
-  return function (req, res, next) {
-    console.log('selectRowViaEmailTwo');
-    var text = "SELECT * FROM users WHERE email = $1";
-    var values = [inputs.email];
+Query.prototype.selectRowViaEmailTwo = function (values, cb) {
+  const query = "SELECT * FROM users WHERE email = $1"
+  const values = [inputs.email];
 
-    req.conn.query(text, values, function(err, result) {
+    return req.conn.query(query, values, function(err, result) {
       if (err) {
         res.locals.err = err;
         next();
@@ -39,6 +40,7 @@ function selectRowViaEmailTwo() {
           res.locals = 'does not exist';
           next();
         } else {
+          console.log('selectRowViaEmailTwo');
           res.locals.row = result.rows[0]
           next();
         }
@@ -49,13 +51,11 @@ function selectRowViaEmailTwo() {
 
 // select a nonce row from UUID
 
-function selectNonceAndTimeViaUID() {
-  return function (req, res, next) {
-    var text = 'SELECT nonce, theTime FROM nonce WHERE user_uuid = $1'
-    console.log('selectNonceAndTimeViaUID');
-    var values = [req.session.uuid];
+Query.prototype.selectNonceAndTimeViaUID = function (values, cb) {
+  const query = 'SELECT nonce, theTime FROM nonce WHERE user_uuid = $1'
+  const values = [req.session.uuid];
 
-    req.conn.query(text, values, function(err, result) {
+    return req.conn.query(query, values, function(err, result) {
       if (err) {
         res.locals.err = err;
         next();
@@ -64,6 +64,7 @@ function selectNonceAndTimeViaUID() {
           res.locals = 'does not exist';
           next();
         } else {
+          console.log('selectNonceAndTimeViaUID');
           res.locals.row = result.rows[0]
           next();
         }
@@ -73,11 +74,11 @@ function selectNonceAndTimeViaUID() {
 }
 
 //insert into users from inputs
-function insertNewUser (req, inputs, cb) {
-  console.log('insertNewUser');
-  var text = 'INSERT INTO users(email, phone, password) VALUES($1, $2, $3) RETURNING *';
-  var values = [inputs.email, inputs.phone, inputs.password];
-  req.conn.query(text, values, function(err, result) {
+Query.prototype.insertNewUser (values, cb) {
+  const query = 'INSERT INTO users(email, phone, password) VALUES($1, $2, $3) RETURNING *';
+  const values = [inputs.email, inputs.phone, inputs.password];
+
+  return req.conn.query(query, values, function(err, result) {
     if (err) {
       cb(err);
     } else {
@@ -88,12 +89,11 @@ function insertNewUser (req, inputs, cb) {
 
 
 // insert into nonce from user_uuid
-function insertNewNonce(req, inputs, cb) {
-  console.log('insertNewNonce');
-  var text = 'INSERT INTO nonce(user_uuid, nonce) VALUES ($1, $2)';
-  var values = [inputs.user_uuid, helper.makeHashedString()];
+Query.prototype.insertNewNonce(values, cb) {
+  const query = 'INSERT INTO nonce(user_uuid, nonce) VALUES ($1, $2)';
+  const values = [inputs.user_uuid, helper.makeHashedString()];
 
-  req.conn.query(text, values, function(err, result) {
+  return req.conn.query(query, values, function(err, result) {
     if (err) {
       cb(err);
     } else {
@@ -103,20 +103,20 @@ function insertNewNonce(req, inputs, cb) {
 }
 
 
-
+// THIS MAY HAVE PROBLEMS NOT FIXED
 // update nonce via user uuid
-function updateNonce() {
-  return function(req,res,next) {
-    console.log('updateNonce');
-    var nonce = helper.makeHashedString()
-    req.session.token = nonce
-    var text = "UPDATE nonce SET nonce = $1, theTime = default WHERE user_uuid = $2";
-    var values = [nonce, res.locals.row.user_uuid];
-    req.conn.query(text, values, function(err, result) {
+Query.prototype.updateNonce = function (values, cb) {
+  const query = "UPDATE nonce SET nonce = $1, theTime = default WHERE user_uuid = $2";
+  const nonce = helper.makeHashedString()
+  const values = [nonce, res.locals.row.user_uuid];
+  req.session.token = nonce
+
+    return req.conn.query(query, values, function(err, result) {
       if (err) {
         res.locals.err = err;
         next();
       } else {
+        console.log('updateNonce');
         req.session.uuid = res.locals.row.user_uuid
         next();
       }
@@ -125,16 +125,16 @@ function updateNonce() {
 }
 
 // update email
-function updateEmail() {
-  return function(req, res, next) {
-    console.log('updateEmail');
-    var text = "UPDATE users SET email = $1 WHERE email = $2";
-    var values = [inputs.email, req.user.email];
-    req.conn.query(text, values, function(err, result) {
+Query.prototype.updateEmail = function (values, cb) {
+  const query = "UPDATE users SET email = $1 WHERE email = $2";
+  const values = [inputs.email, req.user.email];
+
+    return req.conn.query(query, values, function(err, result) {
       if (err) {
         res.locals.err = err;
         next();
       } else {
+        console.log('updateEmail');
         next();
       }
     })
@@ -142,16 +142,16 @@ function updateEmail() {
 }
 
 // update phone
-function updatePhone(a, b) {
-  return function(req, res, next) {
-    console.log('updatePhone');
-    var text = "UPDATE users SET phone = $1 WHERE email = $2";
-    var values = [inputs.phone, req.user.email];
-    req.conn.query(text, values, function(err, result) {
+Query.prototype.updatePhone(a,  = function bvalues, cb) {
+  const query = "UPDATE users SET phone = $1 WHERE email = $2";
+  const values = [inputs.phone, req.user.email];
+
+    return req.conn.query(query, values, function(err, result) {
       if (err) {
         res.locals.err = err;
         next();
       } else {
+        console.log('updatePhone');
         next();
       }
     })
@@ -159,16 +159,16 @@ function updatePhone(a, b) {
 }
 
 // update password
-function updatePassword() {
-  return function(req, res, next) {
-    console.log('updatePassword');
-    var text = "UPDATE users SET password = $1 WHERE user_uuid = $2";
-    var values = [inputs.password, req.session.uuid];
-    req.conn.query(text, values, function(err, result) {
+Query.prototype.updatePassword = function (values, cb) {
+  const query = "UPDATE users SET password = $1 WHERE user_uuid = $2";
+  const values = [inputs.password, req.session.uuid];
+
+    return req.conn.query(query, values, function(err, result) {
       if (err) {
         res.locals.err = err;
         next();
       } else {
+        console.log('updatePassword');
         next();
       }
     })
@@ -176,32 +176,32 @@ function updatePassword() {
 }
 
 //remove row through email
-function removeUserViaEmail() {
-  return function(req, res, next) {
-    console.log('removeUserViaEmail');
-    var text = "DELETE FROM users WHERE email = $1"
-    var values = [inputs.email];
+Query.prototype.removeUserViaEmail = function (values, cb) {
+  const query = "DELETE FROM users WHERE email = $1"
+  const values = [inputs.email];
 
-    req.conn.query( text, values, function (err, result) {
+    return req.conn.query( query, values, function (err, result) {
       if (err) {
         res.locals.err = err;
         next();
       } else {
+        console.log('removeUserViaEmail');
         next();
       }
     })
   }
 }
+module.exports = { Query: Query };
 
-module.exports = {
-  selectRowViaEmail: selectRowViaEmail,
-  selectRowViaEmailTwo: selectRowViaEmailTwo,
-  selectNonceAndTimeViaUID: selectNonceAndTimeViaUID,
-  insertNewUser: insertNewUser,
-  insertNewNonce: insertNewNonce,
-  updateEmail: updateEmail,
-  updatePhone: updatePhone,
-  updateNonce: updateNonce,
-  updatePassword: updatePassword,
-  removeUserViaEmail: removeUserViaEmail,
-};
+// module.exports = {
+//   selectRowViaEmail: selectRowViaEmail,
+//   selectRowViaEmailTwo: selectRowViaEmailTwo,
+//   selectNonceAndTimeViaUID: selectNonceAndTimeViaUID,
+//   insertNewUser: insertNewUser,
+//   insertNewNonce: insertNewNonce,
+//   updateEmail: updateEmail,
+//   updatePhone: updatePhone,
+//   updateNonce: updateNonce,
+//   updatePassword: updatePassword,
+//   removeUserViaEmail: removeUserViaEmail,
+// };

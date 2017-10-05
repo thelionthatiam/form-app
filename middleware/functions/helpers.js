@@ -52,8 +52,15 @@ function makeHashedString() {
   for (var i = 0; i <= 40; i++) {
     string += possible.charAt(Math.floor(Math.random() * possible.length));
   }
-  var string = bcrypt.hashSync(string, 10);
-  return string;
+
+  hash(string, function (err, hash) {
+    if (err) {
+      console.log(err)
+    } else {
+      return hash;
+    }
+  })
+
 }
 
 function checkHashedString(res, next, input, compare) {

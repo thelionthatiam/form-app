@@ -1,10 +1,11 @@
 const { Pool } = require('pg');
+const { Query } = require('./functions/queries');
 
 function init(databaseInformation) {
-  return function (req, res, next) {
-    const pool = new Pool(databaseInformation);
-    req.conn = pool;
+  const pool = new Pool(databaseInformation);
 
+  return function (req, res, next) {
+    req.conn = client;
     req.conn.connect((err, client, release) => {
       if (err) {
         return console.error('Error acquiring client', err.stack)
@@ -18,6 +19,7 @@ function init(databaseInformation) {
       })
     })
 
+  req.querySvc = new Query(conn);
   next();
   };
 }
@@ -25,3 +27,5 @@ function init(databaseInformation) {
 module.exports = {
   init: init
 };
+
+//
