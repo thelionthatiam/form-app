@@ -96,7 +96,6 @@ Query.prototype.insertNewNonce = function (inputs, cb) {
     if (err) {
       cb(err);
     } else {
-      console.log(result);
       cb(null, result);
     }
   })
