@@ -27,7 +27,7 @@ router.post('/create', function (req, res, next) {
         res.render(thisPage, {dbError: helper.errTranslator(err)})
       } else {
         inputs.user_uuid = result.rows[0].user_uuid
-        req.querySvc.insertNewNonce(req, inputs, function(err, result) {
+        req.querySvc.insertNewNonce(inputs, function(err, result) {
           if (err) {
             res.render(thisPage, {dbError: helper.errTranslator(err)})
           } else {
@@ -52,7 +52,7 @@ router.post('/delete', function (req, res, next) {
   res.render(nextPage, {
     accountDelete:true,
   });
-)
+})
 
 module.exports = router;
 //
