@@ -45,7 +45,7 @@ function hash(string, cb) {
 
 
 
-function makeHashedString() {
+function makeHashedString(cb) {
   console.log('makeHashedString')
   var string = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=`,.<>/?;:'{}[]|";
@@ -53,14 +53,7 @@ function makeHashedString() {
     string += possible.charAt(Math.floor(Math.random() * possible.length));
   }
 
-  hash(string, function (err, hash) {
-    if (err) {
-      console.log(err)
-    } else {
-      return hash;
-    }
-  })
-
+  hash(string, cb)
 }
 
 function checkHashedString(res, next, input, compare) {

@@ -7,7 +7,6 @@ function init(databaseInformation) {
   return function (req, res, next) {
 
     pool.connect((err, client, release) => {
-      // client is defined in the connect method
       req.conn = client;
       req.querySvc = new Query(req.conn);
       if (err) {
