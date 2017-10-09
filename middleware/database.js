@@ -10,15 +10,15 @@ function init(databaseInformation) {
       req.conn = client;
       req.querySvc = new Query(req.conn);
       if (err) {
-        return console.error('Error acquiring client', err.stack)
+        return console.error('Error acquiring client', err.stack);
       }
       client.query('SELECT NOW()', (err, result) => {
-        release()
+        release();
         if (err) {
-          return console.error('Error executing query', err.stack)
+          return console.error('Error executing query', err.stack);
         }
-      })
-    })
+      });
+    });
 
 
   next();

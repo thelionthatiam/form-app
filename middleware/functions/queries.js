@@ -1,15 +1,15 @@
-const helper = require('./helpers')
+const helper = require('./helpers');
 
 function Query(conn) {
   this.conn = conn;
 }
 
 // is open to many query/values doesn
-Query.prototype.selectRowViaEmail = function (values, cb) {
-  const query = "SELECT * FROM users WHERE email = $1"
-  const inputs = [inputs.email];
+Query.prototype.selectRowViaEmail = function (inputs, cb) {
+  const query = "SELECT * FROM users WHERE email = $1";
+  const values = [inputs.email];
 
-  return req.conn.query(query, inputs, function(err, result) {
+  return this.conn.query(query, values, function(err, result) {
     if (err) {
       res.locals.err = err;
       next();
@@ -19,18 +19,18 @@ Query.prototype.selectRowViaEmail = function (values, cb) {
         next();
       } else {
         console.log('selectRowViaEmail');
-        res.locals.row = result.rows[0]
+        res.locals.row = result.rows[0];
         next();
       }
     }
-  })
-}
+  });
+};
 
-Query.prototype.selectRowViaEmailTwo = function (values, cb) {
-  const query = "SELECT * FROM users WHERE email = $1"
-  const inputs = [inputs.email];
+Query.prototype.selectRowViaEmailTwo = function (inputs, cb) {
+  const query = "SELECT * FROM users WHERE email = $1";
+  const values = [inputs.email];
 
-  return req.conn.query(query, inputs, function(err, result) {
+  return this.conn.query(query, values, function(err, result) {
     if (err) {
       res.locals.err = err;
       next();
@@ -40,21 +40,20 @@ Query.prototype.selectRowViaEmailTwo = function (values, cb) {
         next();
       } else {
         console.log('selectRowViaEmailTwo');
-        res.locals.row = result.rows[0]
+        res.locals.row = result.rows[0];
         next();
       }
     }
-  })
-}
+  });
+};
 
 
 // select a nonce row from UUID
+Query.prototype.selectNonceAndTimeViaUID = function (inputs, cb) {
+  const query = 'SELECT nonce, theTime FROM nonce WHERE user_uuid = $1';
+  const values = [req.session.uuid];
 
-Query.prototype.selectNonceAndTimeViaUID = function (values, cb) {
-  const query = 'SELECT nonce, theTime FROM nonce WHERE user_uuid = $1'
-  const inputs = [req.session.uuid];
-
-  return req.conn.query(query, inputs, function(err, result) {
+  return this.conn.query(query, values, function(err, result) {
     if (err) {
       res.locals.err = err;
       next();
@@ -64,12 +63,12 @@ Query.prototype.selectNonceAndTimeViaUID = function (values, cb) {
         next();
       } else {
         console.log('selectNonceAndTimeViaUID');
-        res.locals.row = result.rows[0]
+        res.locals.row = result.rows[0];
         next();
       }
     }
-  })
-}
+  });
+};
 
 //insert into users from inputs
 Query.prototype.insertNewUser = function (inputs, cb) {
@@ -80,55 +79,57 @@ Query.prototype.insertNewUser = function (inputs, cb) {
     if (err) {
       cb(err);
     } else {
+      console.log('insertNewUser');
       cb(null, result);
     }
-  })
-}
+  });
+};
 
 
 // insert into nonce from user_uuid
 // nonce failed
 Query.prototype.insertNewNonce = function (inputs, cb) {
   const query = 'INSERT INTO nonce(user_uuid, nonce) VALUES ($1, $2)';
-  const values = [inputs.user_uuid, helper.makeHashedString()];
+  const values = [inputs.user_uuid, inputs.nonce];
 
   return this.conn.query(query, values, function(err, result) {
     if (err) {
       cb(err);
     } else {
+      console.log('insertNewNonce');
       cb(null, result);
     }
-  })
-}
+  });
+};
 
 
 // THIS MAY HAVE PROBLEMS NOT FIXED
 // update nonce via user uuid
-Query.prototype.updateNonce = function (values, cb) {
+Query.prototype.updateNonce = function (inputs, cb) {
 const query = "UPDATE nonce SET nonce = $1, theTime = default WHERE user_uuid = $2";
-const nonce = helper.makeHashedString()
-const inputs = [nonce, res.locals.row.user_uuid];
-req.session.token = nonce
+const nonce = helper.makeHashedString();
+const values = [nonce, res.locals.row.user_uuid];
+req.session.token = nonce;
 
-  return req.conn.query(query, inputs, function(err, result) {
+  return this.conn.query(query, values, function(err, result) {
     if (err) {
       res.locals.err = err;
       next();
     } else {
       console.log('updateNonce');
-      req.session.uuid = res.locals.row.user_uuid
+      req.session.uuid = res.locals.row.user_uuid;
       next();
     }
-  })
-}
+  });
+};
 
 
 // update email
-Query.prototype.updateEmail = function (values, cb) {
+Query.prototype.updateEmail = function (inputs, cb) {
   const query = "UPDATE users SET email = $1 WHERE email = $2";
-  const inputs = [inputs.email, req.user.email];
+  const values = [inputs.email, req.user.email];
 
-  return req.conn.query(query, inputs, function(err, result) {
+  return this.conn.query(query, values, function(err, result) {
     if (err) {
       res.locals.err = err;
       next();
@@ -136,16 +137,16 @@ Query.prototype.updateEmail = function (values, cb) {
       console.log('updateEmail');
       next();
     }
-  })
-}
+  });
+};
 
 
 // update phone
-Query.prototype.updatePhone = function (values, cb) {
+Query.prototype.updatePhone = function (inputs, cb) {
   const query = "UPDATE users SET phone = $1 WHERE email = $2";
-  const inputs = [inputs.phone, req.user.email];
+  const values = [inputs.phone, req.user.email];
 
-  return req.conn.query(query, inputs, function(err, result) {
+  return this.conn.query(query, values, function(err, result) {
     if (err) {
       res.locals.err = err;
       next();
@@ -153,16 +154,16 @@ Query.prototype.updatePhone = function (values, cb) {
       console.log('updatePhone');
       next();
     }
-  })
-}
+  });
+};
 
 
 // update password
-Query.prototype.updatePassword = function (values, cb) {
+Query.prototype.updatePassword = function (inputs, cb) {
   const query = "UPDATE users SET password = $1 WHERE user_uuid = $2";
-  const inputs = [inputs.password, req.session.uuid];
+  const values = [inputs.password, req.session.uuid];
 
-  return req.conn.query(query, inputs, function(err, result) {
+  return this.conn.query(query, values, function(err, result) {
     if (err) {
       res.locals.err = err;
       next();
@@ -170,16 +171,16 @@ Query.prototype.updatePassword = function (values, cb) {
       console.log('updatePassword');
       next();
     }
-  })
-}
+  });
+};
 
 
 //remove row through email
-Query.prototype.removeUserViaEmail = function (values, cb) {
-  const query = "DELETE FROM users WHERE email = $1"
-  const inputs = [inputs.email];
+Query.prototype.removeUserViaEmail = function (inputs, cb) {
+  const query = "DELETE FROM users WHERE email = $1";
+  const values = [inputs.email];
 
-  return req.conn.query( query, values, function (err, result) {
+  return this.conn.query( query, values, function (err, result) {
     if (err) {
       res.locals.err = err;
       next();
@@ -187,20 +188,7 @@ Query.prototype.removeUserViaEmail = function (values, cb) {
       console.log('removeUserViaEmail');
       next();
     }
-  })
-}
+  });
+};
 
 module.exports = { Query: Query };
-
-// module.exports = {
-//   selectRowViaEmail: selectRowViaEmail,
-//   selectRowViaEmailTwo: selectRowViaEmailTwo,
-//   selectNonceAndTimeViaUID: selectNonceAndTimeViaUID,
-//   insertNewUser: insertNewUser,
-//   insertNewNonce: insertNewNonce,
-//   updateEmail: updateEmail,
-//   updatePhone: updatePhone,
-//   updateNonce: updateNonce,
-//   updatePassword: updatePassword,
-//   removeUserViaEmail: removeUserViaEmail,
-// };

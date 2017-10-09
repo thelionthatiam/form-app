@@ -1,11 +1,11 @@
 const express = require('express');
-const query = require('../middleware/functions/queries')
-const helper = require('../middleware/functions/helpers')
+const query = require('../middleware/functions/queries');
+const helper = require('../middleware/functions/helpers');
 const router = express.Router();
 
 //to sign up page
 router.get('/to-create', function(req, res, next) {
-  console.log('/to-create')
+  console.log('/to-create');
   res.render('create-account', {success: false});
 });
 
@@ -26,16 +26,23 @@ router.post('/create', function (req, res, next) {
       if (err) {
         res.render(thisPage, {dbError: helper.errTranslator(err)})
       } else {
-        inputs.user_uuid = result.rows[0].user_uuid
-        req.querySvc.insertNewNonce(inputs, function(err, result) {
+        helper.makeHashedString(function(err, hash) {
           if (err) {
-            res.render(thisPage, {dbError: helper.errTranslator(err)})
+            console.log(err)
           } else {
-            res.render(nextPage, {
-              success: true,
-              email: inputs.email,
-              phone: inputs.phone,
-            });
+            inputs.user_uuid = result.rows[0].user_uuid;
+            inputs.nonce = hash;
+            req.querySvc.insertNewNonce(inputs, function(err, result) {
+              if (err) {
+                res.render(thisPage, {dbError: helper.errTranslator(err)})
+              } else {
+                res.render(nextPage, {
+                  success: true,
+                  email: inputs.email,
+                  phone: inputs.phone,
+                });
+              }
+            })
           }
         })
       }

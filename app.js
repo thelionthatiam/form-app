@@ -1,3 +1,5 @@
+//wrap everything in use-strict so I don't have to type it every time
+require('strict-mode') (function() {
 const fs = require('fs');
 const https = require('https');
 const http = require('http');
@@ -10,6 +12,7 @@ const dbMiddleware = require('./middleware/database');
 const session = require('express-session');
 const sessionCheck = require('./middleware/session-check')
 const app = express();
+
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.engine('hbs', hbs({extname: 'hbs', defaultLayout:'layout', layoutsDir:__dirname + '/views/layouts'}));
@@ -49,3 +52,4 @@ app.listen(3000, function () {
 //   app).listen(3000, function () {
 //    console.log('App running');
 //  });
+});
