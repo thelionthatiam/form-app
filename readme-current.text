@@ -16,10 +16,10 @@ Current features include:
 
 Refactoring with callbacks:
   - "helper" functions
-    -- bcrypt needs to be in callback form
+    -- >bcrypt needs to be in callback form
     -- separate true helpers from other, use lib
-  - queries
-  - account
+  - > queries
+  - > account
   - authorize
   - index
   - mailer
@@ -27,10 +27,10 @@ Refactoring with callbacks:
   - shop
   - database pool initiation outside (happens every time)
 
-Step two: apply feedback and refactor all other pages
-Step one: refactor account functions to check in with Yinso
+debug mode pool/client issue
+  - when email does not exist, sends err message first query works as expected
+  - when email exists, fails saying that client (or querySvc) is undefined
 
-  - /create
-    -- insertNewUser
-    -- dbError
-    -- insertNewNonce
+notes
+  - could make outputs into some consistent variable
+    -- on query result = result.row[0]

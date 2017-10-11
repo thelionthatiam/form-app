@@ -36,6 +36,7 @@ app.all('/in-session*', sessionCheck.check)
 app.use(require('./routes'))
 
 app.use(function (err, req, res, next) {
+  console.log(err.stack)
   res.status(500).render('error', { err: err.stack });
 })
 

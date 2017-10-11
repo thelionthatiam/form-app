@@ -11,38 +11,10 @@ Query.prototype.selectRowViaEmail = function (inputs, cb) {
 
   return this.conn.query(query, values, function(err, result) {
     if (err) {
-      res.locals.err = err;
-      next();
+      cb(err);
     } else {
-      if (result.rowCount === 0) {
-        res.locals = 'does not exist';
-        next();
-      } else {
-        console.log('selectRowViaEmail');
-        res.locals.row = result.rows[0];
-        next();
-      }
-    }
-  });
-};
-
-Query.prototype.selectRowViaEmailTwo = function (inputs, cb) {
-  const query = "SELECT * FROM users WHERE email = $1";
-  const values = [inputs.email];
-
-  return this.conn.query(query, values, function(err, result) {
-    if (err) {
-      res.locals.err = err;
-      next();
-    } else {
-      if (result.rowCount === 0) {
-        res.locals = 'does not exist';
-        next();
-      } else {
-        console.log('selectRowViaEmailTwo');
-        res.locals.row = result.rows[0];
-        next();
-      }
+      console.log('selectRowViaEmail');
+      cb(null, result);
     }
   });
 };
@@ -51,21 +23,14 @@ Query.prototype.selectRowViaEmailTwo = function (inputs, cb) {
 // select a nonce row from UUID
 Query.prototype.selectNonceAndTimeViaUID = function (inputs, cb) {
   const query = 'SELECT nonce, theTime FROM nonce WHERE user_uuid = $1';
-  const values = [req.session.uuid];
+  const values = [inputs.uuid];
 
   return this.conn.query(query, values, function(err, result) {
     if (err) {
-      res.locals.err = err;
-      next();
+      cb(err);
     } else {
-      if (result.rowCount === 0) {
-        res.locals = 'does not exist';
-        next();
-      } else {
-        console.log('selectNonceAndTimeViaUID');
-        res.locals.row = result.rows[0];
-        next();
-      }
+      console.log('selectNonceAndTimeViaUID');
+      cb(null, result);
     }
   });
 };
@@ -103,22 +68,17 @@ Query.prototype.insertNewNonce = function (inputs, cb) {
 };
 
 
-// THIS MAY HAVE PROBLEMS NOT FIXED
 // update nonce via user uuid
 Query.prototype.updateNonce = function (inputs, cb) {
 const query = "UPDATE nonce SET nonce = $1, theTime = default WHERE user_uuid = $2";
-const nonce = helper.makeHashedString();
-const values = [nonce, res.locals.row.user_uuid];
-req.session.token = nonce;
+const values = [inputs.nonce, inputs.user_uuid];
 
   return this.conn.query(query, values, function(err, result) {
     if (err) {
-      res.locals.err = err;
-      next();
+      cb(err);
     } else {
       console.log('updateNonce');
-      req.session.uuid = res.locals.row.user_uuid;
-      next();
+      cb(null, result);
     }
   });
 };
@@ -127,15 +87,14 @@ req.session.token = nonce;
 // update email
 Query.prototype.updateEmail = function (inputs, cb) {
   const query = "UPDATE users SET email = $1 WHERE email = $2";
-  const values = [inputs.email, req.user.email];
+  const values = [inputs.newEmail, inputs.oldEmail];
 
   return this.conn.query(query, values, function(err, result) {
     if (err) {
-      res.locals.err = err;
-      next();
+      cb(err);
     } else {
       console.log('updateEmail');
-      next();
+      cb(null, result);
     }
   });
 };
@@ -144,15 +103,14 @@ Query.prototype.updateEmail = function (inputs, cb) {
 // update phone
 Query.prototype.updatePhone = function (inputs, cb) {
   const query = "UPDATE users SET phone = $1 WHERE email = $2";
-  const values = [inputs.phone, req.user.email];
+  const values = [inputs.newPhone, inputs.email];
 
   return this.conn.query(query, values, function(err, result) {
     if (err) {
-      res.locals.err = err;
-      next();
+      cb(err);
     } else {
       console.log('updatePhone');
-      next();
+      cb(null, result);
     }
   });
 };
@@ -161,15 +119,14 @@ Query.prototype.updatePhone = function (inputs, cb) {
 // update password
 Query.prototype.updatePassword = function (inputs, cb) {
   const query = "UPDATE users SET password = $1 WHERE user_uuid = $2";
-  const values = [inputs.password, req.session.uuid];
+  const values = [inputs.hashedPassword, inputs.uuid];
 
   return this.conn.query(query, values, function(err, result) {
     if (err) {
-      res.locals.err = err;
-      next();
+      cb(err);
     } else {
-      console.log('updatePassword');
-      next();
+      console.log('update password')
+      cb(null, result);
     }
   });
 };
@@ -180,13 +137,11 @@ Query.prototype.removeUserViaEmail = function (inputs, cb) {
   const query = "DELETE FROM users WHERE email = $1";
   const values = [inputs.email];
 
-  return this.conn.query( query, values, function (err, result) {
+  return this.conn.query(query, values, function (err, result) {
     if (err) {
-      res.locals.err = err;
-      next();
+      cb(err);
     } else {
-      console.log('removeUserViaEmail');
-      next();
+      cb(null, result);
     }
   });
 };

@@ -1,6 +1,6 @@
 const express = require('express');
-const query = require('../middleware/functions/queries');
-const helper = require('../middleware/functions/helpers');
+const query = require('../functions/queries');
+const helper = require('../functions/helpers');
 const router = express.Router();
 
 //to sign up page
@@ -11,30 +11,30 @@ router.get('/to-create', function(req, res, next) {
 
 //sends user information to database,
 router.post('/create', function (req, res, next) {
-  console.log('/create')
+  console.log('/create');
   var thisPage = 'create-account';
   var nextPage ='create-account';
   var inputs = {
     email: req.body.email,
     phone: req.body.phone,
     password:req.body.password,
-  }
+  };
   helper.hash(inputs.password, function (err, hash) {
     // where is the err condition?
-    inputs.password = hash
+    inputs.password = hash;
     req.querySvc.insertNewUser(inputs, function (err, result) {
       if (err) {
-        res.render(thisPage, {dbError: helper.errTranslator(err)})
+        helper.dbError(res, thisPage, err);
       } else {
         helper.makeHashedString(function(err, hash) {
           if (err) {
-            console.log(err)
+            helper.genError(res, thisPage, "Password encryption error");
           } else {
             inputs.user_uuid = result.rows[0].user_uuid;
             inputs.nonce = hash;
             req.querySvc.insertNewNonce(inputs, function(err, result) {
               if (err) {
-                res.render(thisPage, {dbError: helper.errTranslator(err)})
+                helper.dbError(res, thisPage, err);
               } else {
                 res.render(nextPage, {
                   success: true,
@@ -42,24 +42,24 @@ router.post('/create', function (req, res, next) {
                   phone: inputs.phone,
                 });
               }
-            })
+            });
           }
-        })
+        });
       }
-    })
-  })
-})
+    });
+  });
+});
 
 
 router.post('/delete', function (req, res, next) {
-  console.log('/delete')
+  console.log('/delete');
   var thisPage = 'account-actions';
   var nextPage ='login';
 
   res.render(nextPage, {
     accountDelete:true,
   });
-})
+});
 
 module.exports = router;
 //
