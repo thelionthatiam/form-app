@@ -87,9 +87,4 @@ router.post('/change-phone', function (req, res, next) {
 });
 
 
-//render shop
-router.get('/back-account-actions', function(req,res,next) {
-  res.render('account-actions', { title: "back to the account action page", email: req.user.email});
-});
-
 module.exports = router;
