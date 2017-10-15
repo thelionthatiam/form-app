@@ -9,6 +9,7 @@ function dbErrTranslator (error) {
   var keyChecker = /(key)/g;
   var checkChecker = /(check)/g;
   var passChecker = /(password)/g;
+  var lengthChecker = /value too long/g;
 
   if (emailChecker.test(error)) {
     if (keyChecker.test(error)) {
@@ -25,6 +26,8 @@ function dbErrTranslator (error) {
   } else if (passChecker.test(error)) {
     return "There was an error with your password. Contact the administrator";
 
+  } else if (lengthChecker.test(error)) {
+    return "You typed in something over 100 characters. Keep things a shorter and try again.";
   } else {
     console.log(error);
     return "There was an error. Try again.";
@@ -40,6 +43,25 @@ function hash(string, cb) {
     }
   });
 }
+
+function passChecker(string) {
+  var passCheck = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/;
+  if (passCheck.test(string) === true) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function passHash(string, cb) {
+  var err = "Password must be at least 8 characters, contain one lowercase letter, one uppercase letter, and a symbol. Try again.";
+  if (passChecker(string)){
+    return hash(string, cb);
+  } else {
+    cb(err);
+  }
+}
+
 
 function hashCheck (string, hash, cb) {
   bcrypt.compare(string, hash, function(err, result) {
@@ -73,6 +95,8 @@ function genError(res, thisPage, param) {
 module.exports = {
   dbErrTranslator:dbErrTranslator,
   hash:hash,
+  passChecker:passChecker,
+  passHash:passHash,
   makeHashedString:makeHashedString,
   hashCheck:hashCheck,
   dbError:dbError,

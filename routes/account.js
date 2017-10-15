@@ -19,34 +19,37 @@ router.post('/create', function (req, res, next) {
     phone: req.body.phone,
     password:req.body.password,
   };
-  helper.hash(inputs.password, function (err, hash) {
-    // where is the err condition?
-    inputs.password = hash;
-    req.querySvc.insertNewUser(inputs, function (err, result) {
-      if (err) {
-        helper.dbError(res, thisPage, err);
-      } else {
-        helper.makeHashedString(function(err, hash) {
-          if (err) {
-            helper.genError(res, thisPage, "Password encryption error");
-          } else {
-            inputs.user_uuid = result.rows[0].user_uuid;
-            inputs.nonce = hash;
-            req.querySvc.insertNewNonce(inputs, function(err, result) {
-              if (err) {
-                helper.dbError(res, thisPage, err);
-              } else {
-                res.render(nextPage, {
-                  success: true,
-                  email: inputs.email,
-                  phone: inputs.phone,
-                });
-              }
-            });
-          }
-        });
-      }
-    });
+  helper.passHash(inputs.password, function (err, hash) {
+    if (err) {
+      helper.genError(res, thisPage, err);
+    } else {
+      inputs.password = hash;
+      req.querySvc.insertNewUser(inputs, function (err, result) {
+        if (err) {
+          helper.dbError(res, thisPage, err);
+        } else {
+          helper.makeHashedString(function(err, hash) {
+            if (err) {
+              helper.genError(res, thisPage, "Password encryption error");
+            } else {
+              inputs.user_uuid = result.rows[0].user_uuid;
+              inputs.nonce = hash;
+              req.querySvc.insertNewNonce(inputs, function(err, result) {
+                if (err) {
+                  helper.dbError(res, thisPage, err);
+                } else {
+                  res.render(nextPage, {
+                    success: true,
+                    email: inputs.email,
+                    phone: inputs.phone,
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+    }
   });
 });
 

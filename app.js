@@ -13,8 +13,7 @@ const session = require('express-session');
 const sessionCheck = require('./middleware/session-check')
 const app = express();
 
-
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false,limit:'50kb'}));
 app.engine('hbs', hbs({extname: 'hbs', defaultLayout:'layout', layoutsDir:__dirname + '/views/layouts'}));
 app.set('views', './views');
 app.set('view engine', "hbs");
@@ -35,9 +34,26 @@ app.all('/in-session*', sessionCheck.check)
 // exception: finds index automatically
 app.use(require('./routes'))
 
+app.use(function(req, res, next) {
+  console.log("statusCode: ", res.statusCode);
+  res.status(404);
+  console.log("statusCode: ", res.statusCode);
+  res.render('error', { title: "404 ERROR:", err: "Sorry, couldn't find this page. Go back home." });
+});
+
+app.use(function(err, req,res,next) {
+  console.log("statusCode: ", res.statusCode);
+  res.status(413);
+  console.log("statusCode: ", res.statusCode);
+  res.render('error', { title: "413 ERROR:", err: "You typed in something over 50kb, that was not necessary. Start over and try something more reasonable."});
+})
+
 app.use(function (err, req, res, next) {
+  console.log("statusCode: ", res.statusCode);
+  res.status(500);
+  console.log("statusCode: ", res.statusCode);
   console.log(err.stack)
-  res.status(500).render('error', { err: err.stack });
+  res.render('error', { title: "500 ERROR:", err: "Woah, something broke. Go back home." });
 })
 
 app.listen(3000, function () {

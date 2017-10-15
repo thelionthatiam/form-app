@@ -40,7 +40,7 @@ router.post('/login', function(req, res, next) {
             req.session.user = [output.email, output.password, output.phone];
             res.render(nextPage, {
               title: 'yo',
-              email: req.session.user.email,
+              email: req.session.user[0],
             });
           }
         });
