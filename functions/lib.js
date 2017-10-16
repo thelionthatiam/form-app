@@ -25,8 +25,8 @@ function sendMail(mailOptions, transporter, cb) {
   });
 }
 
-function isSessionTokenValid(token, outputs, cb) {
-  console.log('isSessionTokenValid');
+function sessionValid(token, outputs, cb) {
+  console.log('sessionValid');
   var nonce = outputs.nonce;
   var oldDate = new Date(outputs.thetime);
   var oldTime = oldDate.getTime();
@@ -41,8 +41,9 @@ function isSessionTokenValid(token, outputs, cb) {
   }
 }
 
+
 module.exports = {
   logout:logout,
   sendMail:sendMail,
-  sessionValid:isSessionTokenValid
+  sessionValid:sessionValid
 }

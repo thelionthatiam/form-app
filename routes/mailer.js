@@ -99,7 +99,7 @@ router.get('/new-password', function(req, res, next) {
     }
   });
 });
-
+//
 // change password: hash new pass, update database, update session, check the session
 router.post('/change-password', function (req, res, next) {
   console.log('/change-password');
