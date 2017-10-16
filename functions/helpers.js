@@ -9,7 +9,7 @@ function dbErrTranslator (error) {
   var keyChecker = /(key)/g;
   var checkChecker = /(check)/g;
   var passChecker = /(password)/g;
-  var lengthChecker = /value too long/g;
+  var lengthChecker = /(value too long)/g;
 
   if (emailChecker.test(error)) {
     if (keyChecker.test(error)) {
@@ -24,7 +24,7 @@ function dbErrTranslator (error) {
       return "You did not submit a valid phone number. Try again.";
     }
   } else if (passChecker.test(error)) {
-    return "There was an error with your password. Contact the administrator";
+    return "There was an error with your password. Contact the administrator.";
 
   } else if (lengthChecker.test(error)) {
     return "You typed in something over 100 characters. Keep things a shorter and try again.";

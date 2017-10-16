@@ -20,7 +20,7 @@ function sendMail(mailOptions, transporter, cb) {
       cb(error);
     } else {
       console.log('Email sent: ' + info.response);
-      cb(null);
+      cb(null, info);
      }
   });
 }

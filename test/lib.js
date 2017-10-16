@@ -1,12 +1,16 @@
 const expect = require("chai").expect;
+const chaiHTTP = require("chai-http");
 const lib = require('../functions/lib');
+const nodeMailer = require('nodemailer');
+const mailConfig = require('../gen-config/mail-config');
+
 
 var currentDate = new Date();
 var currentTime = currentDate.getTime();
 var aMinAgo = currentTime - 60000;
 var threeMinAgo = currentTime - 180000;
 
-// output obj arguements
+// sessionValid test objects
 var passingOutputObj = {
   nonce:'a',
   thetime: aMinAgo,
@@ -31,16 +35,58 @@ describe('Misc functions, ', function() {
         done();
       });
     });
-    it('compares token and time to db wrong nonce and timestamp ', function(done) {
+    it('compares token and time to db wrong nonce and timestamp', function(done) {
       var failingNonce = lib.sessionValid('a', failingNonceOutputObj, function(bool){
         expect(bool).to.equal(false);
         done();
       });
     });
-    it('compares token and time to db nonce and too old timestamp ', function(done) {
+    it('compares token and time to db nonce and too old timestamp', function(done) {
       var failingTime = lib.sessionValid('a', failingTimeOutputObj, function(bool){
         expect(bool).to.equal(false);
         done();
+      });
+    });
+  });
+});
+
+// sendMail testObjects
+
+var mailOptionsValid = {
+  from: 'juliantheberge@gmail.com',
+  to: 'thisisavalidmail@mailinator.com',
+  subject: 'Password reset from form app',
+  text: "http://localhost:3000/auth/new-password"
+};
+
+var mailOptionsString = {
+  from: 'juliantheberge@gmail.com',
+  to: 'thisisjustastring',
+  subject: 'Password reset from form app',
+  text: "http://localhost:3000/auth/new-password"
+};
+
+var mailOptionsNumber = {
+  from: 'juliantheberge@gmail.com',
+  to: 1234,
+  subject: 'Password reset from form app',
+  text: "http://localhost:3000/auth/new-password"
+};
+
+
+describe('Misc functions, ', function() {
+  describe('mail sender, ', function() {
+    xit('takes an email address and returns response information', function(done) {
+      this.timeout(5000);
+      lib.sendMail(mailOptionsValid, mailConfig.transporter, function(info){
+        // if (error) {
+        //   cb(error);
+        // } else {
+        //   console.log('Email sent: ' + info.response);
+        //   cb(null, info);
+        //  }
+        expect(info.response).to.be.an('object');
+        done()
       });
     });
   });
