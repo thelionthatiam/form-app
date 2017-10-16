@@ -56,19 +56,22 @@ describe('this helper function', function() {
   describe('hashes strings ', function() {
     it('takes in a string', function(done) {
       helper.hash('string', function(err, hash) {
-        expect(hash).to.be.a('string');
+        expect(hash).to.be.a('string').and.to.have.lengthOf(60);
+        expect(hash).to.have.lengthOf(60);
         done();
       });
     });
     it('takes in an int', function(done) {
       helper.hash(1234, function(err, hash) {
         should.not.exist(hash);
+        should.exist(err);
+        err.should.be.an.instanceOf(Error);
         done();
       });
     });
     it('takes in a robust password', function(done) {
       helper.hash("W00dhouse??", function(err, hash) {
-        expect(hash).to.be.a('string');
+        expect(hash).to.be.a('string').and.to.have.lengthOf(60);
         done();
       });
     });

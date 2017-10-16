@@ -87,14 +87,16 @@ describe('Misc functions, ', function() {
     it('takes non-email string and returns an error', function(done) {
       this.timeout(5000);
       lib.sendMail(mailOptionsString, mailConfig.transporter, function(error, info){
-        error.should.exist;
+        should.exist(error);
+        error.should.be.an.instanceOf(Error);
         done();
       });
     });
     it('takes in a non-string and returns an error', function(done) {
       this.timeout(5000);
       lib.sendMail(mailOptionsNumber, mailConfig.transporter, function(error, info){
-        error.should.exist;
+        should.exist(error);
+        error.should.be.an.instanceOf(Error);
         done();
       });
     });
