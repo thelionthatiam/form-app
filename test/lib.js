@@ -1,5 +1,6 @@
 const expect = require("chai").expect;
 const chaiHTTP = require("chai-http");
+const should = require("chai").should();
 const lib = require('../functions/lib');
 const nodeMailer = require('nodemailer');
 const mailConfig = require('../gen-config/mail-config');
@@ -76,17 +77,25 @@ var mailOptionsNumber = {
 
 describe('Misc functions, ', function() {
   describe('mail sender, ', function() {
-    xit('takes an email address and returns response information', function(done) {
+    it('takes an email address and returns response information', function(done) {
       this.timeout(5000);
-      lib.sendMail(mailOptionsValid, mailConfig.transporter, function(info){
-        // if (error) {
-        //   cb(error);
-        // } else {
-        //   console.log('Email sent: ' + info.response);
-        //   cb(null, info);
-        //  }
-        expect(info.response).to.be.an('object');
-        done()
+      lib.sendMail(mailOptionsValid, mailConfig.transporter, function(error, info){
+        info.should.exist;
+        done();
+      });
+    });
+    it('takes non-email string and returns an error', function(done) {
+      this.timeout(5000);
+      lib.sendMail(mailOptionsString, mailConfig.transporter, function(error, info){
+        error.should.exist;
+        done();
+      });
+    });
+    it('takes in a non-string and returns an error', function(done) {
+      this.timeout(5000);
+      lib.sendMail(mailOptionsNumber, mailConfig.transporter, function(error, info){
+        error.should.exist;
+        done();
       });
     });
   });
