@@ -10,6 +10,7 @@ const path = require('path');
 const { databaseInformation } = require('./database-config/database-information');
 const dbMiddleware = require('./middleware/database');
 const session = require('express-session');
+const test = require('./test')
 const sessionCheck = require('./middleware/session-check')
 const app = express();
 
@@ -35,25 +36,23 @@ app.all('/in-session*', sessionCheck.check)
 app.use(require('./routes'))
 
 app.use(function(req, res, next) {
-  console.log("statusCode: ", res.statusCode);
   res.status(404);
-  console.log("statusCode: ", res.statusCode);
-  res.render('error', { title: "404 ERROR:", err: "Sorry, couldn't find this page. Go back home." });
+  res.render('error', { errName: null, errMessage: "We couldn't find this page." });
 });
 
-app.use(function(err, req,res,next) {
-  console.log("statusCode: ", res.statusCode);
-  res.status(413);
-  console.log("statusCode: ", res.statusCode);
-  res.render('error', { title: "413 ERROR:", err: "You typed in something over 50kb, that was not necessary. Start over and try something more reasonable."});
-})
-
 app.use(function (err, req, res, next) {
-  console.log("statusCode: ", res.statusCode);
-  res.status(500);
-  console.log("statusCode: ", res.statusCode);
-  console.log(err.stack)
-  res.render('error', { title: "500 ERROR:", err: "Woah, something broke. Go back home." });
+  console.log('err name: ', err.name);
+
+  if (err.name === 'PayloadTooLargeError' ) {
+    res.status(413);
+    res.render('error', { errName: err.message, errMessage: "You entered something over 50kb. Please make your inputs are smaller and try again." });
+  } else if (err.name === 'ReferenceError') {
+    res.status(500);
+    res.render('error', { errName: err.message, errMessage: "Something was missing." });
+  } else {
+    res.status(500);
+    res.render('error', { errName: err.message, errMessage: null });
+  }
 })
 
 app.listen(3000, function () {

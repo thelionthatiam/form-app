@@ -1,6 +1,12 @@
-<h1>{{ title }}</h1>
+<h1>ERROR.</h1>
+<h5>
+  {{ errName }}
+</h5>
 <p>
-  {{ err }}
+  {{ errMessage }}
+</p>
+<p>
+  Sorry for the hangup! You can use the home button below to try again.
 </p>
 <form action='/auth/log-out' method='post'>
   <button class='no'> go back home </button>

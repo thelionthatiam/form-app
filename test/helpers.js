@@ -76,4 +76,95 @@ describe('this helper function', function() {
       });
     });
   });
+  describe('checks string for two upcase, one special, to num, three lowcase, min 8 length: ', function() {
+    it('passes when all criteria are met', function() {
+      var one = helper.passChecker('WW00dhouse$');
+      expect(one).to.equal(true);
+    });
+    it('passes with minimum one special char', function() {
+      var two = helper.passChecker('WW00dhouse$');
+      expect(two).to.equal(true);
+    })
+    // is allowed without caps
+    it('fails with no caps', function() {
+      var three = helper.passChecker('ww00dhouse$');
+      expect(three).to.equal(false);
+    })
+    // is allowed with no num
+    it('fails with no num', function() {
+      var four = helper.passChecker('ww0odhouse$');
+      expect(four).to.equal(false);
+    })
+    it('fails wtih only lower letters', function() {
+      var five = helper.passChecker('woodhouse');
+      expect(five).to.equal(false);
+    })
+    it('fails with a length of 1', function() {
+      var six = helper.passChecker('a');
+      expect(six).to.equal(false);
+    })
+    it('fails with int', function() {
+      var seven = helper.passChecker(1234);
+      expect(seven).to.equal(false);
+    })
+    it('fails with array', function() {
+      var eight = helper.passChecker(['asdf','asdf']);
+      expect(eight).to.equal(false);
+    })
+      var nine = helper.passChecker({});
+      expect(nine).to.equal(false);
+    it('fails wtih undefined', function() {
+      var ten = helper.passChecker(undefined);
+      expect(ten).to.equal(false);
+    })
+  })
+  // passHash -- very awk function because
+  describe('hashes passwords, after passChecker, gives informative error', function() {
+    it('takes in a valid password', function(done) {
+      helper.passHash('WW00dhouse$', function(err){
+        expect(err).to.equal(null);
+        done();
+      });
+    });
+    it('takes in an int', function(done) {
+      helper.hash(1234, function(err) {
+        should.exist(err);
+        err.should.be.an.instanceOf(Error);
+        done();
+      });
+    });
+  });
+  // hashCheck
+  describe('checks password against hashed version', function() {
+    var hash = "$2a$10$xKxTSC8oqqeO9IpMMYID0.mc.mnlkRI1M9XC6k3O36SJ9.zHuioJm"
+    var pass = "newbieNN11$"
+    it('takes in a valid password', function(done) {
+      helper.hashCheck(pass, hash, function(err, result) {
+        expect(result).to.equal(true);
+        done();
+      });
+    });
+    it('takes in an invald password', function(done) {
+      helper.hashCheck('anything', hash, function(err, result) {
+        expect(result).to.equal(false);
+        done();
+      });
+    });
+    it('takes in a non-string', function(done) {
+      helper.hashCheck([pass, 'anything'], hash, function(err, result) {
+        should.exist(err);
+        err.should.be.an.instanceOf(Error);
+        done();
+      });
+    });
+  });
+  describe('creates random string and hashes ', function() {
+    it('creates string', function(done) {
+      helper.makeHashedString(function(err, hash) {
+        expect(hash).to.be.a('string').and.to.have.lengthOf(60);
+        expect(hash).to.have.lengthOf(60);
+        done();
+      });
+    });
+  });
 });

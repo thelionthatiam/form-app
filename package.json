@@ -4,15 +4,15 @@
   "description": "form environment",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node app.js",
+    "test": "nyc mocha ./test/*",
+    "coverage": ""
   },
   "author": "thelionthatiam",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
-    "chai": "^4.1.2",
-    "chai-http": "^3.0.0",
     "express": "^4.15.4",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.5",
@@ -23,6 +23,10 @@
     "strict-mode": "^1.1.2"
   },
   "devDependencies": {
-    "mocha": "^4.0.1"
+    "chai": "^4.1.2",
+    "chai-http": "^3.0.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^4.0.1",
+    "nyc": "^11.2.1"
   }
 }

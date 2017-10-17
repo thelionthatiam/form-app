@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const query = require('./queries');
 
-
+//
 // expand to include bcrypt?
 function dbErrTranslator (error) {
   var emailChecker = /(email)/g;
@@ -45,7 +45,7 @@ function hash(string, cb) {
 }
 
 function passChecker(string) {
-  var passCheck = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/;
+  var passCheck = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/;
   if (passCheck.test(string) === true) {
     return true;
   } else {
@@ -54,10 +54,11 @@ function passChecker(string) {
 }
 
 function passHash(string, cb) {
-  var err = "Password must be at least 8 characters, contain one lowercase letter, one uppercase letter, and a symbol. Try again.";
+  var err = "";
   if (passChecker(string)){
     return hash(string, cb);
   } else {
+    err = "Password must be at least 8 characters, contain two uppercase letters, three lower case letters, one of these '!@#$&*', and two digits. Try again.";
     cb(err);
   }
 }
