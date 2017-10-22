@@ -10,7 +10,6 @@ const path = require('path');
 const { databaseInformation } = require('./database-config/database-information');
 const dbMiddleware = require('./middleware/database');
 const session = require('express-session');
-const test = require('./test')
 const sessionCheck = require('./middleware/session-check')
 const app = express();
 
@@ -32,8 +31,8 @@ app.use(session({
 }));
 
 app.all('/in-session*', sessionCheck.check)
-// exception: finds index automatically
-app.use(require('./routes'))
+
+app.use('/', require('./routes/index'))
 
 app.use(function(req, res, next) {
   res.status(404);
@@ -55,7 +54,7 @@ app.use(function (err, req, res, next) {
   }
 })
 
-app.listen(3000, function () {
+app.listen(8000, function () {
   console.log('app initialized');
 })
 
@@ -68,4 +67,5 @@ app.listen(3000, function () {
 //   app).listen(3000, function () {
 //    console.log('App running');
 //  });
+module.exports = app
 });

@@ -85,7 +85,7 @@ function makeHashedString(cb) {
 }
 
 function dbError(res, thisPage, err) {
-  res.render(thisPage, { dbError: dbErrTranslator(err)} );
+  res.render(thisPage, { dbError: dbErrTranslator(err)});
 }
 
 function genError(res, thisPage, param) {

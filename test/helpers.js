@@ -2,6 +2,15 @@ const expect = require("chai").expect;
 const should = require("chai").should();
 const chaiHTTP = require("chai-http");
 const helper = require('../functions/helpers');
+const supertest = require('supertest');
+const sinon = require('sinon')
+const hbs = require('express-handlebars')
+
+describe('conveys database answers to the client', function() {
+  it('should give me a ueful error when the error has email in it', function() {
+    helpers.dbError(res, thisPage, err)
+  })
+})
 
 // might want to get real errors
 var hasEmail = "lakjdsfgnemaildsgfd";
@@ -126,8 +135,23 @@ describe('this helper function', function() {
         done();
       });
     });
-    it('takes in an int', function(done) {
+    it('rejects an invalid password with a custom error', function(done) {
+      helper.passHash('1234567890', function(err){
+        expect(err).to.equal("Password must be at least 8 characters, contain two uppercase letters, three lower case letters, one of these '!@#$&*', and two digits. Try again.");
+        done();
+      })
+    })
+  })
+  describe('creates a hash using bcrypt', function() {
+    it('fails with takes in an int', function(done) {
       helper.hash(1234, function(err) {
+        should.exist(err);
+        err.should.be.an.instanceOf(Error);
+        done();
+      });
+    });
+    it('fails with takes in an object', function(done) {
+      helper.hash({dog:'SirWoofers'}, function(err) {
         should.exist(err);
         err.should.be.an.instanceOf(Error);
         done();
