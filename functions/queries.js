@@ -23,7 +23,7 @@ Query.prototype.selectRowViaEmail = function (inputs, cb) {
 // select a nonce row from UUID
 Query.prototype.selectNonceAndTimeViaUID = function (inputs, cb) {
   const query = 'SELECT nonce, theTime FROM nonce WHERE user_uuid = $1';
-  const values = [inputs.uuid];
+  const values = [inputs.user_uuid];
 
   return this.conn.query(query, values, function(err, result) {
     if (err) {
@@ -54,7 +54,7 @@ Query.prototype.insertNewUser = function (inputs, cb) {
 // insert into nonce from user_uuid
 // nonce failed
 Query.prototype.insertNewNonce = function (inputs, cb) {
-  const query = 'INSERT INTO nonce(user_uuid, nonce) VALUES ($1, $2)';
+  const query = 'INSERT INTO nonce(user_uuid, nonce) VALUES ($1, $2) RETURNING *';
   const values = [inputs.user_uuid, inputs.nonce];
 
   return this.conn.query(query, values, function(err, result) {
@@ -87,7 +87,7 @@ const values = [inputs.nonce, inputs.user_uuid];
 // update email
 Query.prototype.updateEmail = function (inputs, cb) {
   const query = "UPDATE users SET email = $1 WHERE email = $2";
-  const values = [inputs.newEmail, inputs.oldEmail];
+  const values = [inputs.newEmail, inputs.email];
 
   return this.conn.query(query, values, function(err, result) {
     if (err) {
@@ -119,7 +119,7 @@ Query.prototype.updatePhone = function (inputs, cb) {
 // update password
 Query.prototype.updatePassword = function (inputs, cb) {
   const query = "UPDATE users SET password = $1 WHERE user_uuid = $2";
-  const values = [inputs.hashedPassword, inputs.uuid];
+  const values = [inputs.hashedPassword, inputs.user_uuid];
 
   return this.conn.query(query, values, function(err, result) {
     if (err) {
