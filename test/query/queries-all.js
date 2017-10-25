@@ -223,7 +223,6 @@ describe('SELECT query function', function() {
       });
     })
     it('fails with nonExistantInputs', function(done){
-
     var querySvc = new Query(pool);
       querySvc.selectNonceAndTimeViaUID(nonExistantInputs, (err, result) => {
         should.not.exist(err);
@@ -233,9 +232,10 @@ describe('SELECT query function', function() {
       })
     })
     it('fails with checkInputs', function(done){
-
     var querySvc = new Query(pool);
       querySvc.selectNonceAndTimeViaUID(checkInputs, (err, result) => {
+        console.log('checkInputs',result);
+        console.log('checkInputs', err);
         should.exist(err);
         should.not.exist(result);
         err.should.be.an.instanceOf(Error);

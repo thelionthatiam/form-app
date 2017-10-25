@@ -7,7 +7,7 @@ const { Pool } = require('pg');
 const pool = new Pool(db.databaseInformation);
 
 // just testing db connection
-xdescribe('database test set up', function() {
+describe('database test set up', function() {
   it('where pool exists', function() {
     should.exist(pool);
   })

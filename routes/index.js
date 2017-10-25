@@ -13,9 +13,4 @@ router.get('/', function (req, res, next) {
   res.render('index', { title: 'A pleasent form app', subtitle:'Put all your cares aside' });
 })
 
-// general error handling testers
-router.get('/an-error', function(req, res, next) {
-  res.render('nowhere-land', null)
-})
-
 module.exports = router;
