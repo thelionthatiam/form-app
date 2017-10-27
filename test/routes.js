@@ -284,7 +284,7 @@ describe('This authorizing route', function() {
     .type('form')
     .send({
       'email': 'test@mailinator.com',
-      'password': 'nnnNN11$$'
+      'password': 'tttTT11$$'
     })
     .set('Accept', 'application/json')
     .expect(200)
