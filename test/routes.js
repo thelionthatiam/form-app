@@ -1,14 +1,12 @@
 const chai = require('chai');
 const expect = require("chai").expect;
 const should = require("chai").should();
-const chaiHTTP = require("chai-http");
 const app = require('../app');
 const request = require('supertest')
+const bodyParser = require('body-parser');
 
-// chai.use(require('chai-dom'))
-// const sinon = require('sinon');
-// const hbs = require('express-handlebars');
-var inputs = {}
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 describe('This index route', function(){
   it('renders the homepage', function(done) {
@@ -24,28 +22,46 @@ describe('This index route', function(){
 })
 
 describe('This account route', function(){
-  it('creates an account', function(done) {
+  it('creates a new account', function(done) {
 
     request(app)
     .post('/account/create')
+    .type('form')
     .send({
-      req.body.email = 'test@mailinator.com';
-      req.body.phone = '465789011';
-      req.body.password = 'testTEST11$$';
+      'email': 'test@mailinator.com',
+      'phone': '12341234',
+      'password': 'nnnNN11$$'
     })
+    .set('Accept', 'application/json')
+    .expect(200)
     .end((err, res) => {
+      if(err) throw err;
       var document = res.res.text;
-      console.log(document)
-      expect(res.statusCode).to.equal(200);
+      console.log(document);
       expect(document).to.match(/success/);
       done();
     })
   })
 })
 
+describe('This account route', function(){
+  it('logs into an existing account', function(done) {
 
-// res req ClientRequest res IncomingMessage text
-// inputs = {
-//   email:'test@mailinator.com',
-//   phone:'465789011',
-//   password:'testTEST11$$',
+    request(app)
+    .post('/auth/login')
+    .type('form')
+    .send({
+      'email': 'newbie@mailinator.com',
+      'password': 'nnnNN11$$'
+    })
+    .set('Accept', 'application/json')
+    .expect(200)
+    .end((err, res) => {
+      if(err) throw err;
+      var document = res.res.text;
+      console.log(document);
+      expect(document).to.match(/newbie@mailinator.com/);
+      done();
+    })
+  })
+})
