@@ -15,34 +15,18 @@ beforeEach(function() {
   testSession = session(app);
 });
 
-// describe('Session test TEST', function() {
-//   it('should fail accessing a resticted page', function(done) {
-//     testSession.get('/in-session/to-change-email')
-//       .expect(200)
-//       .end((err, res) => {
-//         var document = res.res.text;
-//         expect(res.statusCode).to.equal(200);
-//         expect(document).to.match(/login/);
-//         done();
-//       })
-//   })
-//
-//   it('should access page', function(done) {
-//     testSession.get('/in-session/to-change-email')
-//       .send({
-//         'email': 'test@mailinator.com',
-//         'password': '$2a$10$lt288mCKOoj7bo0w0jpujOvx.M5iJ.o.PvynckvrRC6mXKe7uxgne',
-//         'phone': '12341234'
-//       })
-//       .expect(200)
-//       .end((err, res) => {
-//         var document = res.res.text;
-//         expect(res.statusCode).to.equal(200);
-//         expect(document).to.match(/test@mailinator.com/);
-//         done();
-//       })
-//   })
-// })
+describe('Session test TEST', function() {
+  it('should fail accessing a resticted page', function(done) {
+    testSession.get('/in-session/to-change-email')
+      .expect(200)
+      .end((err, res) => {
+        var document = res.res.text;
+        expect(res.statusCode).to.equal(200);
+        expect(document).to.match(/login/);
+        done();
+      })
+  })
+})
 
 describe('This index route', function(){
   it('renders the homepage', function(done) {
@@ -221,7 +205,7 @@ describe('This account management route', function() {
     })
   })
 
-  it('sends mail to the account on file', function(done) {
+  xit('sends mail to the account on file', function(done) {
     authenticatedSession.post('/auth/mailer')
     .expect(200)
     .end((err, res) => {
@@ -249,7 +233,6 @@ describe('This account management route', function() {
 
 
     it('confirms token', function(done) {
-      this.timeout(5000);
       reAuthenticatedSession.get('/auth/new-password')
       .expect(200)
       .end((err, res) => {
@@ -260,22 +243,22 @@ describe('This account management route', function() {
         done();
       })
     })
-  })
 
-  it('allows user to change password', function(done){
-    authenticatedSession.post('/auth/change-password')
-    .type('form')
-    .send({
-      'password': 'tttTT11$$',
-    })
-    .set('Accept', 'application/json')
-    .expect(200)
-    .end((err, res) => {
-      if(err) throw err;
-      var document = res.res.text;
-      // console.log(document);
-      expect(document).to.match(/password updated/);
-      done();
+    it('allows user to change password', function(done){
+      reAuthenticatedSession.post('/auth/change-password')
+      .type('form')
+      .send({
+        'password': 'tttTT11$$',
+      })
+      .set('Accept', 'application/json')
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        var document = res.res.text;
+        // console.log(document);
+        expect(document).to.match(/password updated/);
+        done();
+      })
     })
   })
 })

@@ -107,7 +107,7 @@ router.post('/change-password', function (req, res, next) {
   var nextPage ='manage-account';
   var inputs = {
     newPassword: req.body.password,
-    uuid: req.session.userID
+    user_uuid: req.session.userID
   };
   console.log('password', req.body.password)
   console.log('uuid', req.session.userID)
