@@ -45,7 +45,7 @@ router.post('/mailer', function(req, res, next) {
             } else {
               var outputs = result.rows[0];
               inputs.user_uuid = outputs.user_uuid;
-              req.session.uuid = outputs.user_uuid
+              req.session.uuid = outputs.user_uuid;
               inputs.nonce = hash;
               req.querySvc.updateNonce(inputs, function(err, result) {
                 var outputs = result.rows[0]
@@ -53,6 +53,7 @@ router.post('/mailer', function(req, res, next) {
                 if (err) {
                   helper.dbError(res, thisPage, err);
                 } else {
+                  console.log('MAIL SESSION', req.session)
                   lib.sendMail(mailConfig.mailOptions, mailConfig.transporter, function (error, info) {
                     res.render(nextPage, {
                       message: "go check your email and follow the link",
@@ -68,16 +69,14 @@ router.post('/mailer', function(req, res, next) {
   }
 );
 
-
-
 router.get('/new-password', function(req, res, next) {
   console.log('/new-password');
   var thisPage = 'login';
   var nextPage ='new-password';
   var inputs = {
-    uuid: req.session.uuid
+    user_uuid: req.session.userID
   };
-  console.log('uuid', req.session.uuid)
+  console.log('SESSION', req.session)
   req.querySvc.selectNonceAndTimeViaUID(inputs, function(err, result) {
     if (err) {
       helper.dbError(res, thisPage, err);
@@ -86,6 +85,7 @@ router.get('/new-password', function(req, res, next) {
       if (result.rows.length === 0) {
         helper.genError(res, thisPage, "Account not found.");
       } else {
+        console.log('req session token', req.session.token)
         var outputs = result.rows[0];
         var token = req.session.token;
         lib.sessionValid(token, outputs, function(bool) {
@@ -99,7 +99,7 @@ router.get('/new-password', function(req, res, next) {
     }
   });
 });
-//
+
 // change password: hash new pass, update database, update session, check the session
 router.post('/change-password', function (req, res, next) {
   console.log('/change-password');
@@ -107,8 +107,10 @@ router.post('/change-password', function (req, res, next) {
   var nextPage ='manage-account';
   var inputs = {
     newPassword: req.body.password,
-    uuid: req.session.uuid
+    uuid: req.session.userID
   };
+  console.log('password', req.body.password)
+  console.log('uuid', req.session.userID)
   helper.hash(inputs.newPassword, function (err, hash) {
     if (err) {
       console.log(err);

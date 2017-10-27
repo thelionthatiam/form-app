@@ -38,6 +38,7 @@ router.post('/login', function(req, res, next) {
             helper.genError(res, thisPage, "Password incorrect.");
           } else {
             req.session.user = [output.email, output.password, output.phone];
+            req.session.userID = output.user_uuid;
             res.render(nextPage, {
               title: 'yo',
               email: req.session.user[0],

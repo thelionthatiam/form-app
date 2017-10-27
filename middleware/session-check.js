@@ -1,9 +1,8 @@
-const helper = require('../functions/helpers');
 
 // session check: query for table row, check session information against table, craete object to store user information
 function sessionCheck(req, res, next) {
   if (req.session && req.session.user){
-    console.log(req.session.user)
+    // console.log(req.session.user)
     var text = 'SELECT * FROM users WHERE email = $1 AND password = $2 and phone = $3';
     var values = req.session.user;
 

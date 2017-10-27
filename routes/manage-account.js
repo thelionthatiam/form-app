@@ -42,7 +42,7 @@ router.post('/change-email', function (req, res, next) {
   var nextPage = 'manage-account';
   var inputs = {
     newEmail: req.body.email,
-    oldEmail: req.user.email
+    email: req.user.email
   };
   req.querySvc.updateEmail(inputs, function(err, result) {
     if (err) {
