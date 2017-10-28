@@ -37,10 +37,10 @@ describe('INESRT query function', function() {
     password:{qwer:1234},
   };
   describe('insertNewUser', function() {
-    xit('creates with valid inputs', function(done){  // can only run once
+    it('creates with valid inputs', function(done){
       var querySvc = new Query(pool);
       querySvc.insertNewUser(inputs, (err, result) => {
-        if (err) {
+        if (err) { // not looking for an error
            done(err);
         } else {
           try {
@@ -49,35 +49,44 @@ describe('INESRT query function', function() {
             expect(result.rows[0].email).to.equal('test@mailinator.com');
             done();
           } catch(e) {
-           done(e)
+            done(e)
           }
         }
-
       })
     })
     it('fails with pre-existing inputs', function(done){
       var querySvc = new Query(pool);
       querySvc.insertNewUser(inputs, (err, result) => {
         if (err) {
-          should.exist(err);
-          err.should.be.an.instanceOf(Error);
-          expect(err).to.match(/duplicate/g)
-          done();
-        } else {
           try {
-
-             done();
+            should.exist(err);  // looking for an error
+            err.should.be.an.instanceOf(Error);
+            expect(err).to.match(/duplicate/g)
+            done();
           } catch(e) {
-           done(e)
+            done(e)
+          }
+        } else {
+          try { // not looking for a result
+            done();
+          } catch(e) {
+            done(e)
           }
         };
       })
     })
-    xit('fails with checkInputsEmail', function(done){
+    it('fails with checkInputsEmail', function(done){
       var querySvc = new Query(pool);
       querySvc.insertNewUser(checkInputsEmail, (err, result) => {
         if (err) {
-           done(err)
+          try {
+            should.exist(err); // looking for an error
+            err.should.be.an.instanceOf(Error);
+            expect(err).to.match(/check/g)
+            done();
+          } catch(e) {
+            done(e)
+          }
         } else {
            try {
              done();
@@ -715,67 +724,59 @@ describe('INESRT query function', function() {
 //   })
 // })
 //
-// var validDelete = {
-//   email:'newtest@mailinator.com',
-// }
-//
-// var noUserDelete = {
-//   email:'deleteme@a.aa',
-// }
-//
-// var invalidFormat = {
-//   email:1234,
-// }
-//
-// describe('removeUserViaEmail', function() {
-//   it('deletes with validDelete', function(done) {
-//     var querySvc = new Query(pool);
-//     querySvc.removeUserViaEmail(validDelete, (err, result) => {
-//       if (err) {
-//         done(err)
-//       } else {
-//         try {
-//           done();
-//         } catch(e) {
-//           done(e)
-//         }
-//       }
-//       should.not.exist(err);
-//       done();
-//     })
-//   })
-//   it('fails when there is nothing to delete', function(done) {
-//     var querySvc = new Query(pool);
-//     querySvc.removeUserViaEmail(noUserDelete, (err, result) => {
-//       if (err) {
-//         done(err)
-//       } else {
-//         try {
-//           done();
-//         } catch(e) {
-//           done(e)
-//         }
-//       }
-//       should.not.exist(err);
-//       should.not.exist(result.rows[0]);
-//       done();
-//     })
-//   })
-//   it('fails when there is an invalid format', function(done) {
-//     var querySvc = new Query(pool);
-//     querySvc.removeUserViaEmail(invalidFormat, (err, result) => {
-//       if (err) {
-//         done(err)
-//       } else {
-//         try {
-//           done();
-//         } catch(e) {
-//           done(e)
-//         }
-//       }
-//       should.not.exist(err);
-//       should.not.exist(result.rows[0]);
-//       done();
-//     })
-//   })
+var validDelete = {
+  email:'test@mailinator.com', // need to change backto newtest
+}
+
+var noUserDelete = {
+  email:'deleteme@a.aa',
+}
+
+var invalidFormat = {
+  email:1234,
+}
+
+describe('removeUserViaEmail', function() {
+  it('deletes with validDelete', function(done) {
+    var querySvc = new Query(pool);
+    querySvc.removeUserViaEmail(validDelete, (err, result) => {
+      should.not.exist(err);
+      done();
+    })
+  })
+  // it('fails when there is nothing to delete', function(done) {
+  //   var querySvc = new Query(pool);
+  //   querySvc.removeUserViaEmail(noUserDelete, (err, result) => {
+  //     if (err) {
+  //       done(err)
+  //     } else {
+  //       try {
+  //         done();
+  //       } catch(e) {
+  //         done(e)
+  //       }
+  //     }
+  //     should.not.exist(err);
+  //     should.not.exist(result.rows[0]);
+  //     done();
+  //   })
+  // })
+  // it('fails when there is an invalid format', function(done) {
+  //   var querySvc = new Query(pool);
+  //   querySvc.removeUserViaEmail(invalidFormat, (err, result) => {
+  //     if (err) {
+  //       done(err)
+  //     } else {
+  //       try {
+  //         done();
+  //       } catch(e) {
+  //         done(e)
+  //       }
+  //     }
+  //     should.not.exist(err);
+  //     should.not.exist(result.rows[0]);
+  //     done();
+  //   })
+  // })
  })
+})
