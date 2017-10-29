@@ -33,7 +33,7 @@ function dbErrTranslator (error) {
     return "There was an error. Try again.";
   }
 }
-
+//
 function hash(string, cb) {
   bcrypt.hash(string, 10, function(err, hash) {
     if (err) {

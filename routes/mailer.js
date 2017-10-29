@@ -50,6 +50,7 @@ router.post('/mailer', function(req, res, next) {
               req.querySvc.updateNonce(inputs, function(err, result) {
                 var outputs = result.rows[0]
                 req.session.token = inputs.nonce
+                res.locals = inputs.nonce
                 if (err) {
                   helper.dbError(res, thisPage, err);
                 } else {

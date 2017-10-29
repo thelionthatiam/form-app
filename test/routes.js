@@ -5,9 +5,7 @@ const app = require('../app');
 const request = require('supertest');
 const session = require('supertest-session');
 const bodyParser = require('body-parser');
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+const util = require('util');
 
 var testSession = null;
 
@@ -205,16 +203,19 @@ describe('This account management route', function() {
     })
   })
 
-  xit('sends mail to the account on file', function(done) {
+  it('sends mail to the account on file', function(done) {
     authenticatedSession.post('/auth/mailer')
     .expect(200)
     .end((err, res) => {
       if(err) throw err;
+      // console.log(util.inspect(res, {colors:true, depth: null}))
       var document = res.res.text;
       expect(document).to.match(/check your email and follow the link/);
       done();
     })
   })
+
+
 
   describe('This authorizing route', function () {
 
@@ -224,6 +225,7 @@ describe('This account management route', function() {
       .expect(200)
       .end((err, res) => {
         if(err) throw err;
+        console.log(res.cookies)
         var document = res.res.text;
         reAuthenticatedSession = authenticatedSession;
         expect(document).to.match(/check your email and follow the link/);
