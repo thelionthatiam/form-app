@@ -46,7 +46,7 @@ router.post('/change-email', function (req, res, next) {
   };
   req.querySvc.updateEmail(inputs, function(err, result) {
     if (err) {
-      helper.dbError(res, thisPage, err);
+      helper.dbError(res, thisPage, err); // u
     } else {
       req.session.user[0] = req.body.email;
       req.user.email = req.body.email;
@@ -72,7 +72,7 @@ router.post('/change-phone', function (req, res, next) {
   };
   req.querySvc.updatePhone(inputs, function(err, result) {
     if (err) {
-      helper.dbError(res, thisPage, err);
+      helper.dbError(res, thisPage, err); // u
     } else {
       req.session.user[2] = req.body.phone;
       req.user.phone = req.body.phone;

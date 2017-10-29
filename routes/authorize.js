@@ -25,17 +25,16 @@ router.post('/login', function(req, res, next) {
       helper.dbError(res, thisPage, err);
     } else {
       if (result.rows.length === 0) {
-        console.log(result)
-        helper.genError(res, thisPage, "Email not found");
+        helper.genError(res, thisPage, "Email not found"); // u
       } else {
         var output = result.rows[0]
         var realPass = output.password;
         helper.hashCheck(req.body.password, realPass, function(err, result) {
           if (err) {
             // expand error translator to include bcrypt?
-            helper.genError(res, thisPage, "Password encryption error");
+            helper.genError(res, thisPage, "Password encryption error"); // u
           } else if (result === false ) {
-            helper.genError(res, thisPage, "Password incorrect.");
+            helper.genError(res, thisPage, "Password incorrect."); // u
           } else {
             req.session.user = [output.email, output.password, output.phone];
             req.session.userID = output.user_uuid;
@@ -68,23 +67,23 @@ router.post('/delete', function(req, res, next) {
   };
   req.querySvc.selectRowViaEmail(inputs, function(err, result) {
     if (err) {
-      helper.dbError(res, thisPage, err);
+      helper.dbError(res, thisPage, err);  // u
     } else {
       if (err) {
-        helper.genError(res, thisPage, 'Email not found.');
+        helper.genError(res, thisPage, 'Email not found.'); // u
       } else {
         var output = result.rows[0]
         var realPass = output.password;
         helper.hashCheck(req.body.password, realPass, function(err, result) {
           if (err) {
             // expand error translator to include bcrypt?
-            helper.genError(res, thisPage, "Password encryption error");
+            helper.genError(res, thisPage, "Password encryption error"); // u
           } else if (result === false ) {
             helper.genError(res, thisPage, "Password incorrect.");
           } else {
             req.querySvc.removeUserViaEmail(inputs, function (err, result) {
               if (err) {
-                helper.dbError(res, thisPage, err);
+                helper.dbError(res, thisPage, err); // u
               } else {
                 lib.logout(req, res, thisPage, "Welcome back! Your account was deleted, make a new one if you want to come back in.");
               }

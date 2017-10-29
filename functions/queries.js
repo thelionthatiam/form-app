@@ -11,7 +11,7 @@ Query.prototype.selectRowViaEmail = function (inputs, cb) {
 
   return this.conn.query(query, values, function(err, result) {
     if (err) {
-      cb(err);
+      cb(err); // u
     } else {
       console.log('selectRowViaEmail');
       cb(null, result);
@@ -107,7 +107,7 @@ Query.prototype.updatePhone = function (inputs, cb) {
 
   return this.conn.query(query, values, function(err, result) {
     if (err) {
-      cb(err);
+      cb(err); // u
     } else {
       console.log('updatePhone');
       cb(null, result);
@@ -132,14 +132,14 @@ Query.prototype.updatePassword = function (inputs, cb) {
 };
 
 
-//remove row through email
+//remove row through email ERR NOT COVERED
 Query.prototype.removeUserViaEmail = function (inputs, cb) {
   const query = "DELETE FROM users WHERE email = $1";
   const values = [inputs.email];
 
   return this.conn.query(query, values, function (err, result) {
     if (err) {
-      cb(err);
+      cb(err); // u
     } else {
       cb(null, result);
     }

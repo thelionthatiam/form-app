@@ -3,14 +3,7 @@ const should = require("chai").should();
 const chaiHTTP = require("chai-http");
 const helper = require('../functions/helpers');
 const supertest = require('supertest');
-const sinon = require('sinon')
 const hbs = require('express-handlebars')
-
-describe('conveys database answers to the client', function() {
-  it('should give me a ueful error when the error has email in it', function() {
-    helpers.dbError(res, thisPage, err)
-  })
-})
 
 // might want to get real errors
 var hasEmail = "lakjdsfgnemaildsgfd";

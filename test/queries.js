@@ -1,8 +1,10 @@
 const chai = require('chai');
+const expect = require("chai").expect;
 const should = require("chai").should();
-const { expect } = require("chai");
-const { Query } = require('../../functions/queries');
-const { pool } = require('./establish-db-connection');
+const db = require('../database-config/database-information');
+const { Query } = require('../functions/queries');
+const { Pool } = require('pg');
+const pool = new Pool(db.databaseInformation);
 
 
 describe('INESRT query function', function() {
@@ -41,7 +43,7 @@ describe('INESRT query function', function() {
     it('creates with valid inputs', function(done){
       var querySvc = new Query(pool);
       querySvc.insertNewUser(inputs, (err, result) => {
-        if (err) { // not looking for an error
+        if (err) {
            done(err);
         } else {
           try {
@@ -60,7 +62,7 @@ describe('INESRT query function', function() {
       querySvc.insertNewUser(inputs, (err, result) => {
         if (err) {
           try {
-            should.exist(err);  // looking for an error
+            should.exist(err);
             err.should.be.an.instanceOf(Error);
             expect(err).to.match(/duplicate/g);
             done();
@@ -406,10 +408,16 @@ var noSelector = {
 }
 
 var invalidUpdate = {
+  user_uuid:'', // needs to be assigned from test account
   nonce:null,
-  email:'something',
-  phone:'a',
+  email:'test@mailinator.com',
+  newPhone:'a',
   password:null,
+}
+
+var invalidEmailUpdate = {
+  email:'newtest@mailinator.com',
+  newEmail:'failure',
 }
 
 describe('UPDATE query function', function() {
@@ -422,6 +430,7 @@ describe('UPDATE query function', function() {
         } else {
           console.log(result.rows[0].user_uuid);
           inputs.user_uuid = result.rows[0].user_uuid;
+          invalidUpdate.user_uuid = result.rows[0].user_uuid;
           querySvc.updateNonce(inputs, (err, result) => {
             if (err) {
               done(err)
@@ -458,16 +467,16 @@ describe('UPDATE query function', function() {
       var querySvc = new Query(pool);
       querySvc.updateNonce(invalidUpdate, (err, result) => {
         if (err) {
-          done(err);
-        } else {
           try {
-            should.not.exist(err);
-            should.exist(result.rows);
-            should.not.exist(result.rows[0])
+            should.exist(err);
+            should.not.exist(result)
+            err.should.be.an.instanceOf(Error);
             done();
           } catch(e) {
             done(e);
           }
+        } else {
+          done(new Error('Unexpected Success'));
         }
       })
     })
@@ -480,6 +489,7 @@ describe('UPDATE query function', function() {
           done(err);
         } else {
           inputs.user_uuid = result.rows[0].user_uuid;
+          invalidUpdate.user_uuid = result.rows[0].user_uuid;
           querySvc.updatePassword(inputs, (err, result) => {
             if (err) {
               done(err);
@@ -516,16 +526,16 @@ describe('UPDATE query function', function() {
       var querySvc = new Query(pool);
       querySvc.updatePassword(invalidUpdate, (err, result) => {
         if (err) {
-          done(err);
-        } else {
           try {
-            should.not.exist(err);
-            should.exist(result.rows);
-            should.not.exist(result.rows[0])
+            should.exist(err);
+            should.not.exist(result);
+            err.should.be.an.instanceOf(Error);
             done();
           } catch(e) {
             done(e);
           }
+        } else {
+          done(new Error('Unexpected Success'));
         }
       })
     })
@@ -567,16 +577,16 @@ describe('UPDATE query function', function() {
       var querySvc = new Query(pool);
       querySvc.updateNonce(invalidUpdate, (err, result) => {
         if (err) {
-          done(err);
-        } else {
           try {
-            should.not.exist(err);
-            should.exist(result.rows);
-            should.not.exist(result.rows[0])
+            should.exist(err);
+            should.not.exist(result);
+            err.should.be.an.instanceOf(Error);
             done();
           } catch(e) {
             done(e);
           }
+        } else {
+          done(new Error('Unexpected Success'));
         }
       })
     })
@@ -617,18 +627,18 @@ describe('UPDATE query function', function() {
     })
     it('fails when there is an invalidUpdate', function(done){
       var querySvc = new Query(pool);
-      querySvc.updateEmail(invalidUpdate, (err, result) => {
+      querySvc.updateEmail(invalidEmailUpdate, (err, result) => {
         if (err) {
-          done(err);
-        } else {
           try {
-            should.not.exist(err);
-            should.exist(result.rows);
-            should.not.exist(result.rows[0])
+            should.exist(err);
+            should.not.exist(result);
+            err.should.be.an.instanceOf(Error);
             done();
           } catch(e) {
             done(e);
           }
+        } else {
+          done(new Error('Unexpected Success'));
         }
       })
     })
@@ -636,7 +646,7 @@ describe('UPDATE query function', function() {
 })
 
 var validDelete = {
-  email:'test@mailinator.com', // need to change backto newtest
+  email:'newtest@mailinator.com',
 }
 
 var noUserDelete = {

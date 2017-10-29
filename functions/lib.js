@@ -3,7 +3,7 @@ const nodeMailer = require('nodemailer');
 function logout(req, res, thisPage, param = "Welcome back!") {
   req.session.destroy(function(err) {
     if (err) {
-      genError(res, thisPage, "Could not log out normally.");
+      genError(res, thisPage, "Could not log out normally."); // u
     } else {
       res.render('index', {
         title:"A pleasent form app",

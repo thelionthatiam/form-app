@@ -114,12 +114,12 @@ router.post('/change-password', function (req, res, next) {
   console.log('uuid', req.session.userID)
   helper.hash(inputs.newPassword, function (err, hash) {
     if (err) {
-      console.log(err);
+      helper.genError(res, thisPage) // u
     } else {
       inputs.hashedPassword = hash;
       req.querySvc.updatePassword(inputs, function(err, result) {
         if (err) {
-          helper.dbError(res, thisPage, err);
+          helper.dbError(res, thisPage, err); // u
         } else {
           mailConfig.mailOptions.to = null;
           // logged in version
@@ -134,7 +134,7 @@ router.post('/change-password', function (req, res, next) {
             });
           // forgot password version
           } else {
-            res.render('login', { subtitle: "try your new password!" });
+            res.render('login', { subtitle: "try your new password!" }); // u
           }
         }
       });

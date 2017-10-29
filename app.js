@@ -49,8 +49,8 @@ app.use(function (err, req, res, next) {
     res.status(500);
     res.render('error', { errName: err.message, errMessage: "Something was missing." });
   } else {
-    res.status(500);
-    res.render('error', { errName: err.message, errMessage: null });
+    res.status(500); // u
+    res.render('error', { errName: err.message, errMessage: null }); // u
   }
 })
 

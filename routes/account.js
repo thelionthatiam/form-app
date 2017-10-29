@@ -21,7 +21,7 @@ router.post('/create', function (req, res, next) {
   };
   helper.passHash(inputs.password, function (err, hash) {
     if (err) {
-      helper.genError(res, thisPage, err);
+      helper.genError(res, thisPage, err); // u
     } else {
       inputs.password = hash;
       req.querySvc.insertNewUser(inputs, function (err, result) {
@@ -30,13 +30,13 @@ router.post('/create', function (req, res, next) {
         } else {
           helper.makeHashedString(function(err, hash) {
             if (err) {
-              helper.genError(res, thisPage, "Password encryption error");
+              helper.genError(res, thisPage, "Password encryption error"); // u
             } else {
               inputs.user_uuid = result.rows[0].user_uuid;
               inputs.nonce = hash;
               req.querySvc.insertNewNonce(inputs, function(err, result) {
                 if (err) {
-                  helper.dbError(res, thisPage, err);
+                  helper.dbError(res, thisPage, err);  // u
                 } else {
                   res.render(nextPage, {
                     success: true,
