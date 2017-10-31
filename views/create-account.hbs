@@ -1,0 +1,71 @@
+<div class="flex pageWrapper">
+  <div class="flex column userWrapper">
+   <h3 class="formTitle">user info</h3>
+   {{# if success}}
+     <form action="/auth/to-login" method="get">
+       <p>email</p>
+       <p class="inputMimic">{{ email }}</p>
+
+       <p>phone #</p>
+       <p class="inputMimic">{{ phone }}</p>
+
+       <p>password</p>
+       <p class="inputMimic"> success </p>
+
+       <button class="yes" type="submit"> log in </button>
+     </form>
+     <h4>account created!</h4>
+     <form action="/" method="get">
+       <button class="no" type="submit"> home page </button>
+     </form>
+
+   {{ else }}
+
+   <form action="/account/create" method="post">
+     <p>email</p>
+     <input
+      id="email"
+      name="email"
+      class="userFormItem"
+      type="text"
+      placeholder="email"
+      value='newbie@mailinator.com'/>
+     <p class="formErrorReport" id="emailError"></p>
+
+     <p>phone #</p>
+     <input
+      id="phone"
+      name="phone"
+      class="userFormItem numericOnly"
+      type="text"
+      placeholder="phone"
+      value='1'/>
+     <p class="formErrorReport" id="phoneError"></p>
+
+     <p>password</p>
+     <input
+      id="password"
+      name="password"
+      class="userFormItem"
+      type="password"
+      placeholder=""
+      value="newbieN1$"
+      />
+     <p class="formErrorReport" id="passwordError"></p>
+
+     <p>confirm password</p>
+     <input
+      id="confirmPassword"
+      name="confirmPassword"
+      class="userFormItem"
+      type="password"
+      placeholder=""
+      value="newbieN1$"
+      />
+     <p class="formErrorReport" id="confirmPasswordError"></p>
+       <button id="formSubmitter" class="unavailable submit" type="submit"> create account </button>
+     {{/if}}
+   <p class="formErrorReport">{{ dbError }}</p>
+  </div>
+ </div>
+ <script src="/behavior/formAction.js"></script>
