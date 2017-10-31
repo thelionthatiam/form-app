@@ -75,14 +75,9 @@ router.get('/new-password', function(req, res, next) {
   var thisPage = 'login';
   var nextPage ='new-password';
   var inputs = {
-<<<<<<< HEAD
     user_uuid: req.session.uuid
   };
-=======
-    user_uuid: req.session.userID
-  };
-  console.log('SESSION', req.session)
->>>>>>> f66f103907f946177f914c24eb592d7a91324f8a
+
   req.querySvc.selectNonceAndTimeViaUID(inputs, function(err, result) {
     if (err) {
       helper.dbError(res, thisPage, err);
@@ -149,21 +144,3 @@ router.post('/change-password', function (req, res, next) {
 
 
 module.exports = router;
-<<<<<<< HEAD
-=======
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//end
->>>>>>> f66f103907f946177f914c24eb592d7a91324f8a

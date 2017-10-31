@@ -65,12 +65,12 @@ router.post('/delete', function(req, res, next) {
     email: req.body.email,
     password: req.body.password,
   };
+
   req.querySvc.selectRowViaEmail(inputs, function(err, result) {
     if (err) {
       helper.dbError(res, thisPage, err);  // u
     } else {
       if (result.rows.length === 0) {
-      if (err) {
         helper.genError(res, thisPage, 'Email not found.'); // u
       } else {
         var output = result.rows[0]

@@ -1,9 +1,13 @@
+// declare var require: any;
+// declare var module: any;
+
 const nodeMailer = require('nodemailer');
+const helper = require('./helpers.js')
 
 function logout(req, res, thisPage, param = "Welcome back!") {
   req.session.destroy(function(err) {
     if (err) {
-      genError(res, thisPage, "Could not log out normally.");
+      helper.genError(res, thisPage, "Could not log out normally.");
     } else {
       res.render('index', {
         title:"A pleasent form app",

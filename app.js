@@ -55,12 +55,6 @@ app.use(function (err, req, res, next) {
   }
 })
 
-app.listen(3000, function () {
-    res.status(500); // u
-    res.render('error', { errName: err.message, errMessage: null }); // u
-  }
-})
-
 app.listen(8000, function () {
   console.log('app initialized');
 })
