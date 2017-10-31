@@ -70,6 +70,7 @@ router.post('/delete', function(req, res, next) {
       helper.dbError(res, thisPage, err);  // u
     } else {
       if (result.rows.length === 0) {
+      if (err) {
         helper.genError(res, thisPage, 'Email not found.'); // u
       } else {
         var output = result.rows[0]
@@ -86,6 +87,7 @@ router.post('/delete', function(req, res, next) {
                 helper.dbError(res, thisPage, err); // u
               } else {
                 lib.logout(req, res, thisPage, "Welcome back! Your account was deleted, make a new one if you want to come back in");
+                lib.logout(req, res, thisPage, "Welcome back! Your account was deleted, make a new one if you want to come back in.");
               }
             });
           }

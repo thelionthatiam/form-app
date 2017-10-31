@@ -1,0 +1,36 @@
+FORM-APP:
+A simple log in, do stuff, log out app.
+
+Current features include:
+  1. Signing up and logging in
+  2. Sessions and session check security
+  3. User information retrieval
+  4. Logging out and ending session
+  5. Altering existing non-password account information
+  6. Delete account after re-authentication
+  7. Password hashing
+  8. send email automatically to the one on file
+  9. email secure password
+  10. enable https (turned off for now)
+  11. forgot password system
+
+Refactoring with callbacks:
+  - "helper" functions
+    -- >bcrypt needs to be in callback form
+    -- separate true helpers from other, use lib
+  - > queries
+  - > account
+  - authorize
+  - index
+  - mailer
+  - manage-account
+  - shop
+  - database pool initiation outside (happens every time)
+
+debug mode pool/client issue
+  - when email does not exist, sends err message first query works as expected
+  - when email exists, fails saying that client (or querySvc) is undefined
+
+notes
+  - could make outputs into some consistent variable
+    -- on query result = result.row[0]

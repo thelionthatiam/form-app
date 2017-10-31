@@ -437,6 +437,55 @@ describe('This account management route', function() {
       done();
     })
   })
+
+
+
+  describe('This authorizing route', function () {
+
+    var reAuthenticatedSession;
+    beforeEach(function(done) {
+      authenticatedSession.post('/auth/mailer')
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        console.log(res.cookies)
+        var document = res.res.text;
+        reAuthenticatedSession = authenticatedSession;
+        expect(document).to.match(/check your email and follow the link/);
+        done();
+      })
+    })
+
+
+    it('confirms token', function(done) {
+      reAuthenticatedSession.get('/auth/new-password')
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        var document = res.res.text;
+        // console.log('NEW PASSWORD PAGE', document);
+        expect(document).to.match(/password reset/);
+        done();
+      })
+    })
+
+    it('allows user to change password', function(done){
+      reAuthenticatedSession.post('/auth/change-password')
+      .type('form')
+      .send({
+        'password': 'tttTT11$$',
+      })
+      .set('Accept', 'application/json')
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        var document = res.res.text;
+        // console.log(document);
+        expect(document).to.match(/password updated/);
+        done();
+      })
+    })
+  })
 })
 
 
@@ -501,6 +550,7 @@ describe('This authorizing route', function() {
     .send({
       'email': 'test@mailinator.com',
       'password': 'nnnNN11$$'
+      'password': 'tttTT11$$'
     })
     .set('Accept', 'application/json')
     .expect(200)

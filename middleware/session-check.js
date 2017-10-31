@@ -7,12 +7,11 @@ function sessionCheck(req, res, next) {
         var inputs = req.session.user;
         req.querySvc.selectSessionUser(inputs, function (err, result) {
             if (err) {
-                helper.dbError(res, thisPage, err); // u
+                helper.dbError(res, thisPage, err);
             }
             else if (result.rowCount === 0) {
-                helper.genError(res, thisPage, "something went wrong with the session, try to log in again"); // u
-            }
-            else {
+                helper.genError(res, thisPage, "something went wrong with the session, try to log in again");
+            } else {
                 req.user = {
                     email: result.rows[0].email,
                     phone: result.rows[0].phone,
@@ -29,4 +28,4 @@ function sessionCheck(req, res, next) {
 }
 module.exports = {
     check: sessionCheck
-};
+}

@@ -1,12 +1,14 @@
 {
   "name": "form-app",
+
   "version": "1.0.0",
   "description": "form environment",
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
     "test": "nyc mocha ./test/*",
-    "agent-test": "make test"
+    "agent-test": "make test",
+    "coverage": ""
   },
   "author": "thelionthatiam",
   "license": "ISC",
@@ -21,7 +23,8 @@
     "pg": "^7.3.0",
     "request": "^2.83.0",
     "strict-mode": "^1.1.2",
-    "typescript": "^2.5.3"
+    "typescript": "^2.5.3",
+    "strict-mode": "^1.1.2"
   },
   "devDependencies": {
     "chai": "^4.1.2",
