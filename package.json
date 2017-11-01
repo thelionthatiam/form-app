@@ -8,7 +8,7 @@
     "start": "node app.js",
     "test": "nyc mocha ./test/*",
     "agent-test": "make test",
-    "coverage": ""
+    "tsc":"tsc"
   },
   "author": "thelionthatiam",
   "license": "ISC",

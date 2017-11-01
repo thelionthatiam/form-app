@@ -1,15 +1,18 @@
+declare let require: any;
+declare let module: any;
+
 const bcrypt = require('bcrypt');
 const query = require('./queries');
 
-//
+
 // expand to include bcrypt?
-function dbErrTranslator (error) {
-  var emailChecker = /(email)/g;
-  var phoneChecker = /(phone)/g;
-  var keyChecker = /(key)/g;
-  var checkChecker = /(check)/g;
-  var passChecker = /(password)/g;
-  var lengthChecker = /(value too long)/g;
+function dbErrTranslator (error: string) { // its actually an object
+  let emailChecker = /(email)/g
+    , phoneChecker = /(phone)/g
+    , keyChecker = /(key)/g
+    , checkChecker = /(check)/g
+    , passChecker = /(password)/g
+    , lengthChecker = /(value too long)/g;
 
   if (emailChecker.test(error)) {
     if (keyChecker.test(error)) {
@@ -29,12 +32,12 @@ function dbErrTranslator (error) {
   } else if (lengthChecker.test(error)) {
     return "You typed in something over 100 characters. Keep things a shorter and try again.";
   } else {
-    console.log(error);
+    console.log("ERROR", error);
     return "There was an error. Try again.";
   }
 }
 
-function hash(string, cb) {
+function hash(string:string, cb) {
   bcrypt.hash(string, 10, function(err, hash) {
     if (err) {
       cb(err);
@@ -44,8 +47,8 @@ function hash(string, cb) {
   });
 }
 
-function passChecker(string) {
-  var passCheck = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/;
+function passChecker(string:string) {
+  let passCheck = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/;
   if (passCheck.test(string) === true) {
     return true;
   } else {
@@ -54,7 +57,7 @@ function passChecker(string) {
 }
 
 function passHash(string, cb) {
-  var err = "";
+  let err = "";
   if (passChecker(string)){
     return hash(string, cb);
   } else {
@@ -76,19 +79,19 @@ function hashCheck (string, hash, cb) {
 
 function makeHashedString(cb) {
   console.log('makeHashedString');
-  var string = "";
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=`,.<>/?;:'{}[]|";
-  for (var i = 0; i <= 40; i++) {
+  let string = "";
+  let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=`,.<>/?;:'{}[]|";
+  for (let i = 0; i <= 40; i++) {
     string += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   hash(string, cb);
 }
 
-function dbError(res, thisPage, err) {
+function dbError(res, thisPage:string, err:string) {
   res.render(thisPage, { dbError: dbErrTranslator(err)});
 }
 
-function genError(res, thisPage, param) {
+function genError(res, thisPage:string, param) {
   res.render(thisPage, { dbError: param } );
 }
 
