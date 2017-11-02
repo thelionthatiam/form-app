@@ -1,14 +1,11 @@
 {
   "name": "form-app",
-
   "version": "1.0.0",
-  "description": "form environment",
-  "main": "index.js",
+  "description": "a basic user app",
+  "main": "./sdist/app.js",
   "scripts": {
-    "start": "node app.js",
-    "test": "nyc mocha ./test/*",
-    "agent-test": "make test",
-    "tsc":"tsc"
+    "start": "node ./sdist/app.js",
+    "test": "nyc mocha ./test/*"
   },
   "author": "thelionthatiam",
   "license": "ISC",
@@ -22,11 +19,18 @@
     "nodemailer": "^4.1.0",
     "pg": "^7.3.0",
     "request": "^2.83.0",
-    "strict-mode": "^1.1.2",
-    "typescript": "^2.5.3",
     "strict-mode": "^1.1.2"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.16.7",
+    "@types/express": "^4.0.39",
+    "@types/express-session": "^1.15.5",
+    "@types/jquery": "^3.2.16",
+    "@types/lodash": "^4.14.80",
+    "@types/mocha": "^2.2.44",
+    "@types/node": "^8.0.47",
+    "@types/nodemailer": "^3.1.5",
+    "@types/pg": "^7.1.5",
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",
     "istanbul": "^0.4.5",
@@ -34,6 +38,10 @@
     "nyc": "^11.2.1",
     "superagent": "^3.8.0",
     "supertest": "^3.0.0",
-    "supertest-session": "^3.1.0"
+    "supertest-session": "^3.1.0",
+    "ts-loader": "^3.1.1",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.1",
+    "webpack": "^3.8.1"
   }
 }

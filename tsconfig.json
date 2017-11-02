@@ -1,19 +1,31 @@
 {
+  "compileOnSave": true,
   "compilerOptions": {
+    "module": "commonjs",
     "allowJs": true,
-    "outDir": "tsDist",
+    "outDir": "sdist",
     "module": "es6",
-    "target": "es6",
-    "sourceMap":true
+    "target": "es5",
+    "sourceMap":true,
+    "baseUrl":".",
+    "paths": {
+      "*": [
+        "node_modules/*",
+        "src/types/*"
+      ]
+    }
   },
   "exclude": [
     "node_modules",
     "tsDist",
     "dist",
-    "webpack.config.js"
+    "webpack.config.js",
+    "test",
+    "coverage"
   ],
-
   "include": [
-    "src/**/*.ts"
-  ]
+    "src/**/*",
+    "views",
+    "public"
+  ],
 }
