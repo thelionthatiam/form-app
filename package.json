@@ -4,7 +4,7 @@
   "description": "a basic user app",
   "main": "./sdist/app.js",
   "scripts": {
-    "fresh-start": "psql -a -f ./records/database-build.sql && npm install && node ./sdist/app.js",
+    "fresh-start": "psql postgres -a -f ./records/database-build.sql && npm install && node ./sdist/app.js",
     "start": "node ./sdist/app.js",
     "test": "nyc mocha ./test/*"
   },
