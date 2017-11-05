@@ -1,8 +1,8 @@
 const databaseInformation = {
-	user: 'juliantheberge',
+	user: 'user',
 	host: 'localhost',
 	database: 'formapp',
-	password: 'Mapex133',
+	password: 'password',
 	max: 20,
 	idleTimeoutMillis: 30000,
 	connectionTimeoutMillis: 2000,
