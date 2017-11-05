@@ -34,7 +34,7 @@ app.use(function (req, res, next) {
 });
 app.use(function (err, req, res, next) {
     console.log('err name: ', err.name);
-    // console.log(err);
+    console.log(err);
     if (err.name === 'PayloadTooLargeError') {
         res.status(413);
         res.render('error', { errName: err.message, errMessage: "You entered something over 50kb. Please make your inputs are smaller and try again." });

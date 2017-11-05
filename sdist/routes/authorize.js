@@ -1,5 +1,6 @@
 var query = require('../functions/queries');
 var lib = require('../functions/lib');
+var helper = require('../functions/helpers');
 var express = require('express');
 var router = express.Router();
 // import * as lib from '../functions/lib';
@@ -52,7 +53,7 @@ router.post('/login', function (req, res, next) {
 });
 router.post('/log-out', function (req, res, next) {
     console.log('/log-out');
-    var thisPage = 'error';
+    var thisPage = 'login';
     var nextPage = 'index';
     lib.logout(req, res, thisPage);
 });
@@ -66,31 +67,29 @@ router.post('/delete', function (req, res, next) {
     };
     req.querySvc.selectRowViaEmail(inputs, function (err, result) {
         if (err) {
-            helper.dbError(res, thisPage, err); // u
+            res.render(thisPage, { dbError: err, accountDelete: true });
         }
         else {
             if (result.rows.length === 0) {
-                helper.genError(res, thisPage, 'Email not found.'); // u
+                res.render(thisPage, { dbError: 'Email not found.', accountDelete: true });
             }
             else {
                 var output = result.rows[0];
                 var realPass = output.password;
                 helper.hashCheck(req.body.password, realPass, function (err, result) {
                     if (err) {
-                        // expand error translator to include bcrypt?
-                        helper.genError(res, thisPage, "Password encryption error"); // u
+                        res.render('error', { errName: err, errMessage: "Password encryption error" });
                     }
                     else if (result === false) {
-                        helper.genError(res, thisPage, "Password incorrect.");
+                        res.render(thisPage, { dbError: err, accountDelete: true });
                     }
                     else {
                         req.querySvc.removeUserViaEmail(inputs, function (err, result) {
                             if (err) {
-                                helper.dbError(res, thisPage, err); // u
+                                helper.dbError(res, thisPage, err);
                             }
                             else {
-                                lib.logout(req, res, thisPage, "Welcome back! Your account was deleted, make a new one if you want to come back in");
-                                lib.logout(req, res, thisPage, "Welcome back! Your account was deleted, make a new one if you want to come back in.");
+                                res.render(nextPage, { title: "Welcome back!", subtitle: "Your account was deleted, make a new one if you want to come back in" });
                             }
                         });
                     }

@@ -40,7 +40,7 @@ app.use(function(req, res, next) {
 
 app.use(function (err, req, res, next) {
   console.log('err name: ', err.name);
-  // console.log(err);
+  console.log(err);
 
   if (err.name === 'PayloadTooLargeError' ) {
     res.status(413);

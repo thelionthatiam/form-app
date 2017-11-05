@@ -10,11 +10,9 @@ const router = express.Router();
 // import * as helper from '../functions/helpers';
 // import * as express from 'express';
 // let router: any  = express.Router();
-
-
-
 router.post('/mailer', function(req, res, next) {
   console.log('/mailer');
+  console.log(mailConfig.mailOptions)
   let inputs;
   // if logged in, email typed in or neither
   if (typeof req.session.user !==  'undefined') {

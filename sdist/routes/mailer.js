@@ -12,6 +12,7 @@ var router = express.Router();
 // let router: any  = express.Router();
 router.post('/mailer', function (req, res, next) {
     console.log('/mailer');
+    console.log(mailConfig.mailOptions);
     var inputs;
     // if logged in, email typed in or neither
     if (typeof req.session.user !== 'undefined') {

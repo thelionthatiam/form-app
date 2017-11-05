@@ -4,6 +4,7 @@ var helper = require('../functions/helpers');
 // session check: query for table row, check session information against table, craete object to store user information
 function sessionCheck(req, res, next) {
     var thisPage = 'login';
+    console.log(req.session);
     if (req.session && req.session.user) {
         var inputs = req.session.user;
         req.querySvc.selectSessionUser(inputs, function (err, result) {

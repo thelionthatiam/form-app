@@ -1,4 +1,5 @@
 var nodeMailer = require('nodemailer');
+// import * as nodemailer from 'nodemailer';
 var transporter = nodeMailer.createTransport({
     service: 'gmail',
     auth: {
@@ -12,8 +13,12 @@ var mailOptions = {
     subject: 'Password reset from form app',
     text: "http://localhost:3000/auth/new-password"
 };
-module.exports = {
+// export {
+//   transporter,
+//   mailOptions
+// }
+module.export = {
     transporter: transporter,
-    mailOptions: mailOptions,
+    mailOptions: mailOptions
 };
 //# sourceMappingURL=mail-config.js.map
