@@ -1,4 +1,0 @@
-// combine these two into a package.json script
-
-./$ npm install
-./$ run npm start

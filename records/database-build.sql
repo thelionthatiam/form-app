@@ -1,7 +1,4 @@
-CREATE DATABASE newdata;
-CREATE USER newuser;
-\connect newdata;
-GRANT ALL PRIVILEGES ON DATABASE newdata TO newuser;
+\connect formapp;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE users (
 	id BIGSERIAL PRIMARY KEY NOT NULL,
