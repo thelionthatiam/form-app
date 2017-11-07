@@ -1,9 +1,7 @@
-var fs = require('fs');
-var express = require('express');
-var router = express.Router();
-// import * as fs from "fs";
-// import * as express from 'express';
-// let router: any  = express.Router();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express = require("express");
+let router = express.Router();
 router.use('/account', require('./account'));
 router.use('/auth', require('./authorize'));
 router.use('/auth', require('./mailer'));
@@ -14,5 +12,5 @@ router.get('/', function (req, res, next) {
     console.log('sessionId:', req.session.user);
     res.render('index', { title: 'A pleasent form app', subtitle: 'Put all your cares aside' });
 });
-module.exports = router;
+exports.default = router;
 //# sourceMappingURL=index.js.map

@@ -1,10 +1,6 @@
-const express = require('express');
-const query = require('../functions/queries');
-const helper = require('../functions/helpers');
-const router = express.Router();
-// import * as helper from '../functions/helpers';
-// import * as express from 'express';
-// let router: any  = express.Router();
+import * as helper from '../functions/helpers';
+import * as express from 'express';
+let router: any  = express.Router();
 
 // to account information
 router.get('/to-manage-account', function( req, res, next) {
@@ -90,4 +86,4 @@ router.post('/change-phone', function (req, res, next) {
 });
 
 
-module.exports = router;
+export default router;

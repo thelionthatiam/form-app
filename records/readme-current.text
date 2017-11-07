@@ -26,19 +26,18 @@ Custom install:
     1. You are already hosting a something on localhost:8000 or 5432
     2. You do not want to run a temporary database from the postgres role
     3. You do not want to run a database without password protection
-    4.
 
 
 meeting notes --
+create logic for each step of db build script
 server host needs config file -- can go into the config file and change
 supply a default set of values, and they supply override
 config for both server and db json, and have default and override, could all be one file
   -- could use yaml, add comments (could be cool)
-programmer will be fine with formadmin user
-dont start at the end
-keep npm install
 set up aws
 es6 -- something still wrong with ts configs
+
+
 communication --
 form for communication
 context is most important

@@ -1,29 +1,23 @@
-const express = require('express');
-const query = require('../functions/queries');
-const helper = require('../functions/helpers');
-const lib = require('../functions/lib');
-const mailConfig = require('../config/mail-config')
-const router = express.Router();
-// import { mailOptions } from '../config/mail-config';
-// import { transporter } from '../config/mail-config';
-// import * as lib from '../functions/lib';
-// import * as helper from '../functions/helpers';
-// import * as express from 'express';
-// let router: any  = express.Router();
+import { mailOptions, transporter } from '../config/mail-config';
+import * as lib from '../functions/lib';
+import * as helper from '../functions/helpers';
+import * as express from 'express';
+let router: any  = express.Router();
+
 router.post('/mailer', function(req, res, next) {
   console.log('/mailer');
-  console.log(mailConfig.mailOptions)
+  console.log(mailOptions)
   let inputs;
   // if logged in, email typed in or neither
   if (typeof req.session.user !==  'undefined') {
-    mailConfig.mailOptions.to = req.session.user[0];
+    mailOptions.to = req.session.user[0];
     inputs = {
       email:req.session.user[0],
     };
     res.locals.inputs = inputs;
     next();
   } else if (typeof req.body.email === 'string') {
-    mailConfig.mailOptions.to = req.body.email;
+    mailOptions.to = req.body.email;
     inputs = {
       email:req.body.email,
     };
@@ -61,7 +55,7 @@ router.post('/mailer', function(req, res, next) {
                   helper.dbError(res, thisPage, err);
                 } else {
                   console.log('MAIL SESSION', req.session)
-                  lib.sendMail(mailConfig.mailOptions, mailConfig.transporter, function (error, info) {
+                  lib.sendMail(mailOptions, transporter, function (error, info) {
                     res.render(nextPage, {
                       message: "go check your email and follow the link",
                     });
@@ -128,7 +122,7 @@ router.post('/change-password', function (req, res, next) {
         if (err) {
           helper.dbError(res, thisPage, err); // u
         } else {
-          mailConfig.mailOptions.to = null;
+          mailOptions.to = null;
           // logged in version
           if (req.session && req.session.user) {
             req.session.user[1] = hash;
@@ -150,4 +144,4 @@ router.post('/change-password', function (req, res, next) {
 });
 
 
-module.exports = router;
+export default router;

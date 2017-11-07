@@ -1,18 +1,13 @@
-// import * as helper from '../functions/helpers';
+import * as helper from '../functions/helpers';
 
-const query = require('../functions/queries');
-const helper = require('../functions/helpers');
-
-
-// session check: query for table row, check session information against table, craete object to store user information
-function sessionCheck(req, res, next) {
+function check(req, res, next) {
   var thisPage = 'login';
   console.log(req.session)
   if (req.session && req.session.user){
     var inputs = req.session.user
     req.querySvc.selectSessionUser(inputs, (err, result) => {
       if (err) {
-        helper.dbError(res, thisPage, err); // u
+        helper.dbError(res, thisPage, err); // u90
       } else if (result.rowCount === 0) {
         helper.genError(res, thisPage, "something went wrong with the session, try to log in again"); // u
       } else {
@@ -30,6 +25,4 @@ function sessionCheck(req, res, next) {
   }
 }
 
-module.exports = {
-  check: sessionCheck
-};
+export { check };

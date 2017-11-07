@@ -1,5 +1,5 @@
-const { Pool } = require('pg');
-const { Query } = require('../functions/queries');
+import { Pool } from 'pg';
+import { Query } from '../functions/queries';
 
 function init(databaseInformation) {
   const pool = new Pool(databaseInformation);
@@ -24,6 +24,4 @@ function init(databaseInformation) {
   };
 }
 
-module.exports = {init};
-
-//
+export { init };

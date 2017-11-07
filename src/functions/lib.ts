@@ -1,8 +1,7 @@
-// import * as nodeMailer from 'nodemailer';
-// import * as helper from './helpers';
-const nodeMailer = require('nodemailer');
-const helper = require('./helpers');
-const mailConfig = require('../config/mail-config')
+import * as nodeMailer from 'nodemailer';
+import * as helper from './helpers';
+import { transporter, mailOptions } from "../config/mail-config.js";
+
 
 function logout(req, res, thisPage, param = "Welcome back!") {
   req.session.destroy(function(err) {
@@ -19,7 +18,7 @@ function logout(req, res, thisPage, param = "Welcome back!") {
 
 function sendMail(mailOptions, transporter, cb) {
   // console.log('start', mailOptions, transporter);
-  mailConfig.transporter.sendMail(mailConfig.mailOptions, function(error, info){
+  transporter.sendMail(mailOptions, function(error, info){
     if (error) {
       cb(error);
     } else {
@@ -36,7 +35,6 @@ function sessionValid(token, outputs, cb) {
   var oldTime = oldDate.getTime();
   var currentDate = new Date();
   var currentTime = currentDate.getTime();
-  // console.log(token, nonce, oldTime, currentTime);
 
   if (token === nonce && currentTime < oldTime + 120000) {
     cb(true);
@@ -44,15 +42,9 @@ function sessionValid(token, outputs, cb) {
     cb(false);
   }
 }
-//
-// export {
-//   logout,
-//   sendMail,
-//   sessionValid
-// };
 
-module.exports = {
-  logout:logout,
-  sendMail:sendMail,
-  sessionValid:sessionValid
-}
+export {
+  logout,
+  sendMail,
+  sessionValid
+};

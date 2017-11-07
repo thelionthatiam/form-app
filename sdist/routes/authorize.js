@@ -1,12 +1,9 @@
-var query = require('../functions/queries');
-var lib = require('../functions/lib');
-var helper = require('../functions/helpers');
-var express = require('express');
-var router = express.Router();
-// import * as lib from '../functions/lib';
-// import * as helper from '../functions/helpers';
-// import * as express from 'express';
-// let router: any  = express.Router();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const lib = require("../functions/lib");
+const helper = require("../functions/helpers");
+const express = require("express");
+let router = express.Router();
 router.get('/to-login', function (req, res, next) {
     console.log('/to-login');
     res.render('login', null);
@@ -98,5 +95,5 @@ router.post('/delete', function (req, res, next) {
         }
     });
 });
-module.exports = router;
+exports.default = router;
 //# sourceMappingURL=authorize.js.map

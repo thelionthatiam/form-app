@@ -1,15 +1,15 @@
-const fs = require('fs');
 // const https = require('https');
 // const http = require('http');
-// const express = require('express')
-const express = require('express');
-const bodyParser = require('body-parser');
-const hbs = require('express-handlebars');
-const path = require('path');
-const db = require('./config/database/database-information');
-const dbMiddleware = require('./middleware/database');
-const session = require('express-session');
-const sessionCheck = require('./middleware/session-check')
+// import * as fs from "file-system"; // only using with https, no types right now
+import * as express from "express";
+import * as bodyParser from "body-parser";
+
+import * as hbs from "express-handlebars";
+import * as path from "path";
+import * as dbConfig from "./config/db-info.json";
+import * as dbMiddleware from "./middleware/database";
+import * as session from "express-session";
+import * as sessionCheck from "./middleware/session-check";
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false,limit:'50kb'}));
@@ -18,11 +18,12 @@ app.set('views', path.join(__dirname, "../views"));
 app.set('view engine', "hbs");
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('trust proxy', 1);
-app.use(dbMiddleware.init(db.databaseInformation));
+
+app.use(dbMiddleware.init(dbConfig));
 
 //session using memory storage for now. Will not be the case in production. see readme session stores
 app.use(session({
-  cookieName:'session',
+  name:'session',
   secret: 'keyboard cat',
   resave: false,
   saveUninitialized: true,

@@ -1,10 +1,7 @@
-// import * as nodeMailer from 'nodemailer';
-// import * as helper from './helpers';
-var nodeMailer = require('nodemailer');
-var helper = require('./helpers');
-var mailConfig = require('../config/mail-config');
-function logout(req, res, thisPage, param) {
-    if (param === void 0) { param = "Welcome back!"; }
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const helper = require("./helpers");
+function logout(req, res, thisPage, param = "Welcome back!") {
     req.session.destroy(function (err) {
         if (err) {
             helper.genError(res, thisPage, "Could not log out normally.");
@@ -17,9 +14,10 @@ function logout(req, res, thisPage, param) {
         }
     });
 }
+exports.logout = logout;
 function sendMail(mailOptions, transporter, cb) {
     // console.log('start', mailOptions, transporter);
-    mailConfig.transporter.sendMail(mailConfig.mailOptions, function (error, info) {
+    transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
             cb(error);
         }
@@ -29,6 +27,7 @@ function sendMail(mailOptions, transporter, cb) {
         }
     });
 }
+exports.sendMail = sendMail;
 function sessionValid(token, outputs, cb) {
     console.log('sessionValid');
     var nonce = outputs.nonce;
@@ -36,7 +35,6 @@ function sessionValid(token, outputs, cb) {
     var oldTime = oldDate.getTime();
     var currentDate = new Date();
     var currentTime = currentDate.getTime();
-    // console.log(token, nonce, oldTime, currentTime);
     if (token === nonce && currentTime < oldTime + 120000) {
         cb(true);
     }
@@ -44,15 +42,5 @@ function sessionValid(token, outputs, cb) {
         cb(false);
     }
 }
-//
-// export {
-//   logout,
-//   sendMail,
-//   sessionValid
-// };
-module.exports = {
-    logout: logout,
-    sendMail: sendMail,
-    sessionValid: sessionValid
-};
+exports.sessionValid = sessionValid;
 //# sourceMappingURL=lib.js.map

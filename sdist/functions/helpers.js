@@ -1,7 +1,9 @@
-var bcrypt = require('bcrypt');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const bcrypt = require('bcrypt');
 // expand to include bcrypt?
 function dbErrTranslator(error) {
-    var emailChecker = /(email)/g, phoneChecker = /(phone)/g, keyChecker = /(key)/g, checkChecker = /(check)/g, passChecker = /(password)/g, lengthChecker = /(value too long)/g;
+    let emailChecker = /(email)/g, phoneChecker = /(phone)/g, keyChecker = /(key)/g, checkChecker = /(check)/g, passChecker = /(password)/g, lengthChecker = /(value too long)/g;
     if (emailChecker.test(error)) {
         if (keyChecker.test(error)) {
             return "The email you put in has already been used. Try again.";
@@ -29,6 +31,7 @@ function dbErrTranslator(error) {
         return "There was an error. Try again.";
     }
 }
+exports.dbErrTranslator = dbErrTranslator;
 function hash(string, cb) {
     bcrypt.hash(string, 10, function (err, hash) {
         if (err) {
@@ -39,8 +42,9 @@ function hash(string, cb) {
         }
     });
 }
+exports.hash = hash;
 function passChecker(string) {
-    var passCheck = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/;
+    let passCheck = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/;
     if (passCheck.test(string) === true) {
         return true;
     }
@@ -48,8 +52,9 @@ function passChecker(string) {
         return false;
     }
 }
+exports.passChecker = passChecker;
 function passHash(string, cb) {
-    var err = "";
+    let err = "";
     if (passChecker(string)) {
         return hash(string, cb);
     }
@@ -58,6 +63,7 @@ function passHash(string, cb) {
         cb(err);
     }
 }
+exports.passHash = passHash;
 function hashCheck(string, hash, cb) {
     bcrypt.compare(string, hash, function (err, result) {
         if (err) {
@@ -68,39 +74,23 @@ function hashCheck(string, hash, cb) {
         }
     });
 }
+exports.hashCheck = hashCheck;
 function makeHashedString(cb) {
     console.log('makeHashedString');
-    var string = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=`,.<>/?;:'{}[]|";
-    for (var i = 0; i <= 40; i++) {
+    let string = "";
+    let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=`,.<>/?;:'{}[]|";
+    for (let i = 0; i <= 40; i++) {
         string += possible.charAt(Math.floor(Math.random() * possible.length));
     }
     hash(string, cb);
 }
+exports.makeHashedString = makeHashedString;
 function dbError(res, thisPage, err) {
     res.render(thisPage, { dbError: dbErrTranslator(err) });
 }
+exports.dbError = dbError;
 function genError(res, thisPage, param) {
     res.render(thisPage, { dbError: param });
 }
-// export {
-//   dbErrTranslator,
-//   hash,
-//   passChecker,
-//   passHash,
-//   makeHashedString,
-//   hashCheck,
-//   dbError,
-//   genError
-// };
-module.exports = {
-    dbErrTranslator: dbErrTranslator,
-    hash: hash,
-    passChecker: passChecker,
-    passHash: passHash,
-    makeHashedString: makeHashedString,
-    hashCheck: hashCheck,
-    dbError: dbError,
-    genError: genError
-};
+exports.genError = genError;
 //# sourceMappingURL=helpers.js.map

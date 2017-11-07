@@ -6,7 +6,8 @@
   "scripts": {
     "build": "node ./build.js",
     "start": "node ./sdist/app.js",
-    "test": "nyc mocha ./test/*"
+    "test": "nyc mocha ./test/*",
+    "nuke": "psql -a -f ./records/nuke.sql"
   },
   "author": "thelionthatiam",
   "license": "ISC",
@@ -16,7 +17,7 @@
     "express": "^4.15.4",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.5",
-    "fs": "0.0.1-security",
+    "file-system": "^2.2.2",
     "nodemailer": "^4.1.0",
     "pg": "^7.3.0",
     "request": "^2.83.0",
@@ -25,6 +26,7 @@
   "devDependencies": {
     "@types/body-parser": "^1.16.7",
     "@types/express": "^4.0.39",
+    "@types/express-handlebars": "0.0.29",
     "@types/express-session": "^1.15.5",
     "@types/jquery": "^3.2.16",
     "@types/lodash": "^4.14.80",

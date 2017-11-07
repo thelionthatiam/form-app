@@ -1,26 +1,27 @@
-var fs = require('fs');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 // const https = require('https');
 // const http = require('http');
-// const express = require('express')
-var express = require('express');
-var bodyParser = require('body-parser');
-var hbs = require('express-handlebars');
-var path = require('path');
-var db = require('./config/database/database-information');
-var dbMiddleware = require('./middleware/database');
-var session = require('express-session');
-var sessionCheck = require('./middleware/session-check');
-var app = express();
+// import * as fs from "file-system"; // only using with https, no types right now
+const express = require("express");
+const bodyParser = require("body-parser");
+const hbs = require("express-handlebars");
+const path = require("path");
+const dbConfig = require("./config/db-info.json");
+const dbMiddleware = require("./middleware/database");
+const session = require("express-session");
+const sessionCheck = require("./middleware/session-check");
+const app = express();
 app.use(bodyParser.urlencoded({ extended: false, limit: '50kb' }));
 app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: "layout" }));
 app.set('views', path.join(__dirname, "../views"));
 app.set('view engine', "hbs");
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('trust proxy', 1);
-app.use(dbMiddleware.init(db.databaseInformation));
+app.use(dbMiddleware.init(dbConfig));
 //session using memory storage for now. Will not be the case in production. see readme session stores
 app.use(session({
-    cookieName: 'session',
+    name: 'session',
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,

@@ -90,23 +90,13 @@ function genError(res, thisPage:string, param) {
   res.render(thisPage, { dbError: param } );
 }
 
-// export {
-//   dbErrTranslator,
-//   hash,
-//   passChecker,
-//   passHash,
-//   makeHashedString,
-//   hashCheck,
-//   dbError,
-//   genError
-// };
-module.exports = {
-  dbErrTranslator:dbErrTranslator,
-  hash:hash,
-  passChecker:passChecker,
-  passHash:passHash,
-  makeHashedString:makeHashedString,
-  hashCheck:hashCheck,
-  dbError:dbError,
-  genError:genError
-}
+export {
+  dbErrTranslator,
+  hash,
+  passChecker,
+  passHash,
+  makeHashedString,
+  hashCheck,
+  dbError,
+  genError
+};

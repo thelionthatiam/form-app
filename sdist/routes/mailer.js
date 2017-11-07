@@ -1,22 +1,17 @@
-var express = require('express');
-var query = require('../functions/queries');
-var helper = require('../functions/helpers');
-var lib = require('../functions/lib');
-var mailConfig = require('../config/mail-config');
-var router = express.Router();
-// import { mailOptions } from '../config/mail-config';
-// import { transporter } from '../config/mail-config';
-// import * as lib from '../functions/lib';
-// import * as helper from '../functions/helpers';
-// import * as express from 'express';
-// let router: any  = express.Router();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const mail_config_1 = require("../config/mail-config");
+const lib = require("../functions/lib");
+const helper = require("../functions/helpers");
+const express = require("express");
+let router = express.Router();
 router.post('/mailer', function (req, res, next) {
     console.log('/mailer');
-    console.log(mailConfig.mailOptions);
-    var inputs;
+    console.log(mail_config_1.mailOptions);
+    let inputs;
     // if logged in, email typed in or neither
     if (typeof req.session.user !== 'undefined') {
-        mailConfig.mailOptions.to = req.session.user[0];
+        mail_config_1.mailOptions.to = req.session.user[0];
         inputs = {
             email: req.session.user[0],
         };
@@ -24,7 +19,7 @@ router.post('/mailer', function (req, res, next) {
         next();
     }
     else if (typeof req.body.email === 'string') {
-        mailConfig.mailOptions.to = req.body.email;
+        mail_config_1.mailOptions.to = req.body.email;
         inputs = {
             email: req.body.email,
         };
@@ -35,10 +30,10 @@ router.post('/mailer', function (req, res, next) {
         res.render('email-password', { mailNotSent: true });
     }
 }, function (req, res, next) {
-    var thisPage = 'login';
-    var nextPage = 'email-password';
+    let thisPage = 'login';
+    let nextPage = 'email-password';
     console.log('inputs', res.locals.inputs);
-    var inputs = res.locals.inputs;
+    let inputs = res.locals.inputs;
     req.querySvc.selectRowViaEmail(inputs, function (err, result) {
         if (err) {
             helper.dbError(res, thisPage, err);
@@ -67,7 +62,7 @@ router.post('/mailer', function (req, res, next) {
                             }
                             else {
                                 console.log('MAIL SESSION', req.session);
-                                lib.sendMail(mailConfig.mailOptions, mailConfig.transporter, function (error, info) {
+                                lib.sendMail(mail_config_1.mailOptions, mail_config_1.transporter, function (error, info) {
                                     res.render(nextPage, {
                                         message: "go check your email and follow the link",
                                     });
@@ -82,9 +77,9 @@ router.post('/mailer', function (req, res, next) {
 });
 router.get('/new-password', function (req, res, next) {
     console.log('/new-password');
-    var thisPage = 'login';
-    var nextPage = 'new-password';
-    var inputs = {
+    let thisPage = 'login';
+    let nextPage = 'new-password';
+    let inputs = {
         user_uuid: req.session.uuid
     };
     req.querySvc.selectNonceAndTimeViaUID(inputs, function (err, result) {
@@ -115,9 +110,9 @@ router.get('/new-password', function (req, res, next) {
 // change password: hash new pass, update database, update session, check the session
 router.post('/change-password', function (req, res, next) {
     console.log('/change-password');
-    var thisPage = 'login';
-    var nextPage = 'manage-account';
-    var inputs = {
+    let thisPage = 'login';
+    let nextPage = 'manage-account';
+    let inputs = {
         newPassword: req.body.password,
         user_uuid: req.session.userID,
         hashedPassword: ''
@@ -135,7 +130,7 @@ router.post('/change-password', function (req, res, next) {
                     helper.dbError(res, thisPage, err); // u
                 }
                 else {
-                    mailConfig.mailOptions.to = null;
+                    mail_config_1.mailOptions.to = null;
                     // logged in version
                     if (req.session && req.session.user) {
                         req.session.user[1] = hash;
@@ -156,5 +151,5 @@ router.post('/change-password', function (req, res, next) {
         }
     });
 });
-module.exports = router;
+exports.default = router;
 //# sourceMappingURL=mailer.js.map

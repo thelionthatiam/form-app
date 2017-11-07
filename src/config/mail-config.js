@@ -1,5 +1,4 @@
-const nodeMailer = require('nodemailer');
-// import * as nodemailer from 'nodemailer';
+import * as nodemailer from 'nodemailer';
 
 var transporter = nodeMailer.createTransport({
   service: 'gmail',
@@ -15,12 +14,7 @@ var mailOptions = {
   subject: 'Password reset from form app',
   text: "http://localhost:3000/auth/new-password"
 };
-// export {
-//   transporter,
-//   mailOptions
-// }
-
-module.export = {
-  transporter:transporter,
-  mailOptions:mailOptions
+export {
+  transporter,
+  mailOptions
 }

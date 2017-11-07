@@ -1,10 +1,8 @@
-var express = require('express');
-var query = require('../functions/queries');
-var helper = require('../functions/helpers');
-var router = express.Router();
-// import * as helper from '../functions/helpers';
-// import * as express from 'express';
-// let router: any  = express.Router();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const helper = require("../functions/helpers");
+const express = require("express");
+let router = express.Router();
 // to account information
 router.get('/to-manage-account', function (req, res, next) {
     res.render('manage-account', {
@@ -81,5 +79,5 @@ router.post('/change-phone', function (req, res, next) {
         }
     });
 });
-module.exports = router;
+exports.default = router;
 //# sourceMappingURL=manage-account.js.map

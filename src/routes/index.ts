@@ -1,10 +1,6 @@
-const fs = require('fs');
-const express = require('express');
-const router = express.Router();
-
-// import * as fs from "fs";
-// import * as express from 'express';
-// let router: any  = express.Router();
+import * as fs from "fs";
+import * as express from 'express';
+let router: any  = express.Router();
 
 router.use('/account', require('./account'))
 router.use('/auth', require('./authorize'))
@@ -18,4 +14,4 @@ router.get('/', function (req, res, next) {
   res.render('index', { title: 'A pleasent form app', subtitle:'Put all your cares aside' });
 })
 
-module.exports = router;
+export default router;

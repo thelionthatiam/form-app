@@ -1,5 +1,5 @@
-var nodeMailer = require('nodemailer');
-// import * as nodemailer from 'nodemailer';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var transporter = nodeMailer.createTransport({
     service: 'gmail',
     auth: {
@@ -7,18 +7,12 @@ var transporter = nodeMailer.createTransport({
         pass: 'Mapex133'
     }
 });
+exports.transporter = transporter;
 var mailOptions = {
     from: 'juliantheberge@gmail.com',
     to: null,
     subject: 'Password reset from form app',
     text: "http://localhost:3000/auth/new-password"
 };
-// export {
-//   transporter,
-//   mailOptions
-// }
-module.export = {
-    transporter: transporter,
-    mailOptions: mailOptions
-};
+exports.mailOptions = mailOptions;
 //# sourceMappingURL=mail-config.js.map

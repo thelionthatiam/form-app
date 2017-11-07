@@ -1,11 +1,6 @@
-// import * as express from 'express';
-// import * as helper from '../functions/helpers';
-// let router: any  = express.Router();
-
-const express = require('express');
-const query = require('../functions/queries');
-const helper = require('../functions/helpers');
-const router = express.Router();
+import * as express from 'express';
+import * as helper from '../functions/helpers';
+let router: any  = express.Router();
 
 //to sign up page
 router.get('/to-create', function(req, res, next) {
@@ -70,5 +65,4 @@ router.post('/delete', function (req, res, next) {
   });
 });
 
-module.exports = router;
-//
+export default router;

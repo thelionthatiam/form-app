@@ -1,10 +1,8 @@
-// import * as express from 'express';
-// import * as helper from '../functions/helpers';
-// let router: any  = express.Router();
-var express = require('express');
-var query = require('../functions/queries');
-var helper = require('../functions/helpers');
-var router = express.Router();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express = require("express");
+const helper = require("../functions/helpers");
+let router = express.Router();
 //to sign up page
 router.get('/to-create', function (req, res, next) {
     console.log('/to-create');
@@ -67,6 +65,5 @@ router.post('/delete', function (req, res, next) {
         accountDelete: true,
     });
 });
-module.exports = router;
-//
+exports.default = router;
 //# sourceMappingURL=account.js.map

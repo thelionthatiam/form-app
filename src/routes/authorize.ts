@@ -1,13 +1,7 @@
-const query = require('../functions/queries');
-const lib = require('../functions/lib');
-const helper = require('../functions/helpers')
-const express = require('express');
-const router = express.Router();
-
-// import * as lib from '../functions/lib';
-// import * as helper from '../functions/helpers';
-// import * as express from 'express';
-// let router: any  = express.Router();
+import * as lib from '../functions/lib';
+import * as helper from '../functions/helpers';
+import * as express from 'express';
+let router: any  = express.Router();
 
 
 router.get('/to-login', function(req, res, next) {
@@ -100,4 +94,4 @@ router.post('/delete', function(req, res, next) {
   });
 });
 
-module.exports = router;
+export default router;

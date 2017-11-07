@@ -157,5 +157,4 @@ Query.prototype.removeUserViaEmail = function (inputs, cb) {
   });
 };
 //
-// export {Query};
-module.exports = {Query:Query}
+export {Query};
