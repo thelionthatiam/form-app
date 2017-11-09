@@ -3,10 +3,9 @@
 // import * as fs from "file-system"; // only using with https, no types right now
 import * as express from "express";
 import * as bodyParser from "body-parser";
-
 import * as hbs from "express-handlebars";
 import * as path from "path";
-import * as dbConfig from "./config/db-info.json";
+import * as dbConfig from "./config/combiner";
 import * as dbMiddleware from "./middleware/database";
 import * as session from "express-session";
 import * as sessionCheck from "./middleware/session-check";
@@ -39,7 +38,7 @@ app.use(function(req, res, next) {
   res.render('error', { errName: null, errMessage: "We couldn't find this page." });
 });
 
-app.use(function (err, req, res, next) {
+app.use(function (err:any, req:any, res:any, next:Function) {
   console.log('err name: ', err.name);
   console.log(err);
 
