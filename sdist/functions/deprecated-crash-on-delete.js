@@ -29,15 +29,17 @@ function isObj(prop) {
 }
 function deepMerge(obj1, obj2) {
     if (isCyclic(obj1)) {
+        console.log('cyclic', isCyclic(obj1));
         return "cyclic 1";
     }
     else if (isCyclic(obj2)) {
+        console.log('cyclic', isCyclic(obj2));
         return "cyclic 2";
     }
     for (var prop in obj2) {
         if (typeof obj1[prop] !== 'undefined') {
             if (isObj(obj2[prop])) {
-                obj1[prop] = deepMerge(obj1[prop], obj2[prop]);
+                obj1[prop] = mergeConfig(obj1[prop], obj2[prop]);
             }
             else {
                 obj1[prop] = obj2[prop];
@@ -49,5 +51,4 @@ function deepMerge(obj1, obj2) {
     }
     return obj1;
 }
-exports.deepMerge = deepMerge;
 //# sourceMappingURL=deepMerge.js.map

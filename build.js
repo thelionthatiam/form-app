@@ -1,6 +1,5 @@
 // yargs parse cl arguements
 const { exec } = require('child_process');
-const { spawn } = require('child_process');
 
 
 exec('psql postgres -a -f ./records/database-user.sql', (error, stdout, stderr) => {

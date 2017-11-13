@@ -11,6 +11,7 @@ import * as session from "express-session";
 import * as sessionCheck from "./middleware/session-check";
 const app = express();
 
+
 app.use(bodyParser.urlencoded({ extended: false,limit:'50kb'}));
 app.engine('hbs', hbs({extname: 'hbs', defaultLayout:"layout"}));
 app.set('views', path.join(__dirname, "../views"));

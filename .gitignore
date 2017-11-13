@@ -65,7 +65,8 @@ typings/
 .DS_store
 
 #database files
-.database-information
+.db-custom
+
 
 
 # Hide local backups
