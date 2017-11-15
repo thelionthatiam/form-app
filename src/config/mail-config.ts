@@ -1,4 +1,4 @@
-import * as nodemailer from 'nodemailer';
+import * as nodeMailer from 'nodemailer';
 
 var transporter = nodeMailer.createTransport({
   service: 'gmail',
@@ -8,7 +8,7 @@ var transporter = nodeMailer.createTransport({
   }
 });
 
-var mailOptions = {
+var mailOptions:any = {
   from: 'juliantheberge@gmail.com',
   to: null,
   subject: 'Password reset from form app',

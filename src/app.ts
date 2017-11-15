@@ -31,7 +31,6 @@ app.use(session({
 }));
 
 app.all('/in-session*', sessionCheck.check)
-
 app.use('/', require('./routes/index'))
 
 app.use(function(req, res, next) {
@@ -68,4 +67,4 @@ app.listen(8000, function () {
 //   app).listen(3000, function () {
 //    console.log('App running');
 //  });
-// module.exports = app
+export { app };

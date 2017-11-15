@@ -12,6 +12,7 @@ const dbMiddleware = require("./middleware/database");
 const session = require("express-session");
 const sessionCheck = require("./middleware/session-check");
 const app = express();
+exports.app = app;
 app.use(bodyParser.urlencoded({ extended: false, limit: '50kb' }));
 app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: "layout" }));
 app.set('views', path.join(__dirname, "../views"));
@@ -52,14 +53,4 @@ app.use(function (err, req, res, next) {
 app.listen(8000, function () {
     console.log('app initialized');
 });
-// // easy switch to https
-// http.createServer({
-//    key: fs.readFileSync('key.pem'),
-//    cert: fs.readFileSync('cert.pem'),
-//    passphrase: 'Mapex133'
-//  },
-//   app).listen(3000, function () {
-//    console.log('App running');
-//  });
-// module.exports = app
 //# sourceMappingURL=app.js.map

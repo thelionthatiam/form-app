@@ -7,12 +7,10 @@ function combine() {
     try {
         let dbCustom = require('./db-custom.json');
         dbInfo = deepMerge_js_1.deepMerge(dbDefault, dbCustom);
-        console.log("current database settings: ", deepMerge_js_1.deepMerge(dbDefault, dbCustom));
         return dbInfo;
     }
     catch (e) {
         if (e.code === 'MODULE_NOT_FOUND') {
-            console.log('using default database settings');
             dbInfo = dbDefault;
             return dbInfo;
         }

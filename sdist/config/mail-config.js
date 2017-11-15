@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const nodeMailer = require("nodemailer");
 var transporter = nodeMailer.createTransport({
     service: 'gmail',
     auth: {

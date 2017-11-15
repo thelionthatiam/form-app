@@ -86,4 +86,4 @@ router.post('/change-phone', function (req, res, next) {
 });
 
 
-export default router;
+module.exports = router;

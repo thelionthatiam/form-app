@@ -6,4 +6,4 @@ router.get('/shop', function(req, res, next) {
   res.render('shop', { success:true });
 });
 
-export default router;
+module.exports = router;

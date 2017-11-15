@@ -79,5 +79,5 @@ router.post('/change-phone', function (req, res, next) {
         }
     });
 });
-exports.default = router;
+module.exports = router;
 //# sourceMappingURL=manage-account.js.map

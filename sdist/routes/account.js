@@ -65,5 +65,5 @@ router.post('/delete', function (req, res, next) {
         accountDelete: true,
     });
 });
-exports.default = router;
+module.exports = router;
 //# sourceMappingURL=account.js.map
