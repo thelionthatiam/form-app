@@ -19,7 +19,7 @@ app.set('views', path.join(__dirname, "../views"));
 app.set('view engine', "hbs");
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('trust proxy', 1);
-app.use(dbMiddleware.init(dbConfig));
+app.use(dbMiddleware.init(dbConfig.dbConfig));
 //session using memory storage for now. Will not be the case in production. see readme session stores
 app.use(session({
     name: 'session',

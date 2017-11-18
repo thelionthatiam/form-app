@@ -1,7 +1,7 @@
 {
   "user":"formadmin",
-  "host":"localhost",
-  "database":"formapp",
+  "host":"formapp.cw0a6zh65did.us-west-2.rds.amazonaws.com",
+  "dbname":"formapptest",
   "max":20,
   "idleTimeoutMillis":"30000",
   "connectionTimeoutMillis":"2000",

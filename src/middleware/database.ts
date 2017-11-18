@@ -1,14 +1,14 @@
 import { Pool } from 'pg';
 import { Query } from '../functions/queries';
 
-function init(databaseInformation) {
+function init(databaseInformation:any) {
   const pool = new Pool(databaseInformation);
 
-  return function (req, res, next) {
+  return function (req:any, res:any, next:Function) {
     pool.connect((err, client, release) => {
 
       req.conn = client;
-      req.querySvc = new Query(req.conn);
+      req.querySvc= new Query(req.conn);
       next();
       if (err) {
         return console.error('Error acquiring client', err.stack);

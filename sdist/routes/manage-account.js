@@ -3,6 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const helper = require("../functions/helpers");
 const express = require("express");
 let router = express.Router();
+// back to account actions
+router.get('/back-account-actions', function (req, res, next) {
+    res.render('account-actions', {
+        title: 'yo',
+        email: req.session.user[0],
+    });
+});
 // to account information
 router.get('/to-manage-account', function (req, res, next) {
     res.render('manage-account', {

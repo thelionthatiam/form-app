@@ -39,7 +39,7 @@
         class="userFormItem"
         type="text"
         placeholder="email"
-        value="newbiem@mailinator.com"/>
+        />
        <p class="formErrorReport" id="emailError"></p>
 
        <p>password</p>
@@ -48,7 +48,6 @@
         name="password"
         class="userFormItem"
         type="password"
-        value="newbieN1$"
         />
        <p class="formErrorReport" id="passwordError"></p>
 
@@ -58,6 +57,11 @@
        <button class="no" type="submit"> forgot password </button>
      </form>
      <p class="formErrorReport">{{ dbError }}</p>
+     <form class="flex center" action="/" method="get">
+       <button class="flex center back" type="submit">
+         <img class="icon" src="https://image.flaticon.com/icons/svg/53/53567.svg" />
+       </button>
+     </form>
      {{/if }}
   </div>
  </div>

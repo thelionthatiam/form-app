@@ -2,8 +2,18 @@ import * as helper from '../functions/helpers';
 import * as express from 'express';
 let router: any  = express.Router();
 
+// back to account actions
+
+router.get('/back-account-actions', function(req:any, res:any, next:Function) {
+  res.render('account-actions', {
+    title: 'yo',
+    email: req.session.user[0],
+  });
+})
+
+
 // to account information
-router.get('/to-manage-account', function( req, res, next) {
+router.get('/to-manage-account', function(req:any, res:any, next:Function) {
     res.render('manage-account', {
       subtitle: "click change if you need to fix something",
       email: req.user.email,
@@ -12,7 +22,7 @@ router.get('/to-manage-account', function( req, res, next) {
 });
 
 // render change email page
-router.get('/to-change-email', function(req,res,next) {
+router.get('/to-change-email', function(req:any, res:any, next:Function) {
   res.render('manage-account',{
     title: "Change your information",
     subtitle: "type in a new email",
@@ -23,7 +33,7 @@ router.get('/to-change-email', function(req,res,next) {
 });
 
 //render change phone page
-router.get('/to-change-phone', function(req,res,next) {
+router.get('/to-change-phone', function(req:any, res:any, next:Function) {
   res.render('manage-account',{
     title: "Change your information",
     subtitle: "type in a new phone number",
@@ -36,7 +46,7 @@ router.get('/to-change-phone', function(req,res,next) {
 
 
 // change email
-router.post('/change-email', function (req, res, next) {
+router.post('/change-email', function(req:any, res:any, next:Function) {
   var thisPage = 'manage-account';
   var nextPage = 'manage-account';
   var inputs = {

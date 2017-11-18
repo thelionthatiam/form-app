@@ -29,7 +29,7 @@
       class="userFormItem"
       type="text"
       placeholder="email"
-      value='newbie@mailinator.com'/>
+      />
      <p class="formErrorReport" id="emailError"></p>
 
      <p>phone #</p>
@@ -39,7 +39,7 @@
       class="userFormItem numericOnly"
       type="text"
       placeholder="phone"
-      value='1'/>
+      />
      <p class="formErrorReport" id="phoneError"></p>
 
      <p>password</p>
@@ -49,7 +49,6 @@
       class="userFormItem"
       type="password"
       placeholder=""
-      value="newbieN1$"
       />
      <p class="formErrorReport" id="passwordError"></p>
 
@@ -60,12 +59,17 @@
       class="userFormItem"
       type="password"
       placeholder=""
-      value="newbieN1$"
       />
      <p class="formErrorReport" id="confirmPasswordError"></p>
        <button id="formSubmitter" class="unavailable submit" type="submit"> create account </button>
+     </form>
      {{/if}}
    <p class="formErrorReport">{{ dbError }}</p>
+   <form class="flex center" action="/" method="get">
+     <button class="flex center back" type="submit">
+       <img class="icon" src="https://image.flaticon.com/icons/svg/53/53567.svg" />
+     </button>
+   </form>
   </div>
  </div>
  <script src="/behavior/formAction.js"></script>

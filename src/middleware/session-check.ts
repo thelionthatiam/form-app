@@ -1,11 +1,11 @@
 import * as helper from '../functions/helpers';
 
-function check(req, res, next) {
+function check(req:any, res:any, next:Function) {
   var thisPage = 'login';
   console.log(req.session)
   if (req.session && req.session.user){
     var inputs = req.session.user
-    req.querySvc.selectSessionUser(inputs, (err, result) => {
+    req.querySvc.selectSessionUser(inputs, (err:any, result:any) => {
       if (err) {
         helper.dbError(res, thisPage, err); // u90
       } else if (result.rowCount === 0) {

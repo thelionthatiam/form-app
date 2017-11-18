@@ -1,6 +1,6 @@
 body {
- border:10%;
- margin:10%;
+ border:0;
+ margin:0;
 }
 
 div {
@@ -19,10 +19,23 @@ h1,h2,h3,h4,h5,h6,p,li,a,button,input {
  flex-direction:column;
 }
 
+.center {
+  align-items: center;
+  justify-content: center;
+}
+
+.space-around {
+  justify-content: space-around;
+}
+
 .pageWrapper {
  justify-content:center;
  width:100vw;
  height:100vh;
+}
+
+.full-page {
+  margin:10%;
 }
 
 .userWrapper {
@@ -83,6 +96,23 @@ button.unavailable {
 
 button.unavailable:active {
  transform:translate(0px);
+}
+
+.icon {
+  width:3.5vw;
+  height:3.5vw;
+  min-height:30px;
+  min-width:30px;
+  max-height:40px;
+  max-width:40px;
+}
+
+.back {
+  border:0px solid grey;
+  margin:0px;
+  border-radius:5px;
+  box-shadow:none;
+  align-self:flex-end;
 }
 
 .submit {

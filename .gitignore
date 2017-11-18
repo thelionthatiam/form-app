@@ -67,7 +67,6 @@ typings/
 #database files
 .db-custom
 
+#images
 
-
-# Hide local backups
-Backup/
+visual/
