@@ -10,7 +10,7 @@ import * as dbMiddleware from "./middleware/database";
 import * as session from "express-session";
 import * as sessionCheck from "./middleware/session-check";
 const app = express();
-
+console.log(dbConfig.dbConfig)
 
 app.use(bodyParser.urlencoded({ extended: false,limit:'50kb'}));
 app.engine('hbs', hbs({extname: 'hbs', defaultLayout:"layout"}));
