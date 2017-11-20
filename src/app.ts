@@ -54,9 +54,7 @@ app.use(function (err:any, req:any, res:any, next:Function) {
   }
 })
 
-app.listen(8000, function () {
-  console.log('app initialized');
-})
+app.listen(8000, '172.31.31.153')
 
 // // easy switch to https
 // http.createServer({
@@ -67,4 +65,3 @@ app.listen(8000, function () {
 //   app).listen(3000, function () {
 //    console.log('App running');
 //  });
-export { app };

@@ -12,7 +12,6 @@ const dbMiddleware = require("./middleware/database");
 const session = require("express-session");
 const sessionCheck = require("./middleware/session-check");
 const app = express();
-exports.app = app;
 console.log(dbConfig.dbConfig);
 app.use(bodyParser.urlencoded({ extended: false, limit: '50kb' }));
 app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: "layout" }));
@@ -51,7 +50,14 @@ app.use(function (err, req, res, next) {
         res.render('error', { errName: err.message, errMessage: null });
     }
 });
-app.listen(8000, function () {
-    console.log('app initialized');
-});
+app.listen(8000, '172.31.31.153');
+// // easy switch to https
+// http.createServer({
+//    key: fs.readFileSync('key.pem'),
+//    cert: fs.readFileSync('cert.pem'),
+//    passphrase: 'Mapex133'
+//  },
+//   app).listen(3000, function () {
+//    console.log('App running');
+//  });
 //# sourceMappingURL=app.js.map
