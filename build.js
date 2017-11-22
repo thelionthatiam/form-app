@@ -11,37 +11,41 @@ var argv = require('yargs')
   .demandOption(['custom'])
   .argv
 
-
-if (argv.custom === 'y') {
-  console.log("current database settings:\n", dbConfig);
+function connectClient() {
   let user = dbConfig.dbConfig.user
   let host = dbConfig.dbConfig.host
-  let database = dbConfig.dbConfig.database
-  let port = dbConfig.dbConfig.port
-  let password = dbConfig.dbConfig.password
+  let dbname = dbConfig.dbConfig.dbname
+  let connectCommand = "psql" +
+      " -U " + user +
+      " -h " + host +
+      " -d " + dbname
+  return connectCommand;
+}
 
-  let command = "psql" +
-      " --user=" + user
-      " --host=" + host
-      " --database=" + database
-      " --port=" + port
-      " --password"
+const connector = connectClient();
+const userCreator = ' -a -f ./records/database-user.sql'
+const tableCreator = ' -a -f ./records/database-build.sql'
 
-  exec('npm install', (error, stdout, stderr) => { // install modules and run application using custom db config
-    if (error) {
-      console.error(`exec error: ${error}`);
-      return;
-    } else {
-      console.log(`stdout:${stdout}`);
-      console.log(`app started`);
-      exec('npm run start', (error, stdout, stderr) => {
-        if (error) {
+if (argv.custom === 'y') {
+
+  // console.log("current database settings:\n", dbConfig);
+    exec(connector + userCreator, (error, stdout, stderr) => {
+      if (error) {
           console.error(`exec error: ${error}`);
           return;
-        }
-      })
-    }
-  })
+        } else {
+          console.log(`stdout:${stdout}`);
+          exec(connector + tableCreator, (error, stdout, stderr) => {
+            console.log('in teh screept')
+            if (error) {
+                console.error(`exec error: ${error}`);
+                return;
+              } else {
+                console.log(`stdout:${stdout}`);
+              }
+        })
+      }
+    })
 
 } else if (argv.custom === 'n') {
   try {
