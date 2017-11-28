@@ -4,202 +4,305 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const { exec } = require('child_process');
 const prompt = require('prompt');
 const fs = require('fs');
-function applyDefaults(obj) {
-    for (let k in obj) {
-        if (k === 'dbname' && obj[k] === '') {
-            console.log(obj[k], "in dbname");
-            obj.dbname = 'formapp';
-        }
-        else if (k === 'username' && obj[k] === '') {
-            console.log(obj[k], "in username");
-            obj.username = 'formadmin';
-        }
-        else if (k === 'password' && obj[k] === '') {
-            console.log(obj[k], "in formpassword");
-            obj.password = 'formpassword';
-        }
-    }
-    return obj;
-}
-function psqlCommand(array) {
-    const command = " --command=";
-    let finarr = [];
-    for (let i = 0; i < array.length; i++) {
-        finarr.push(command);
-        array[i] = '"' + array[i] + '"';
-        finarr.push(array[i]);
-    }
-    return finarr.join('');
-}
-let credentialOptions = {
+const build_assets_1 = require("./build-assets");
+const argv = require('yargs')
+    .describe('r', 'use remote database true or false')
+    .boolean('r')
+    .help('h')
+    .argv;
+let adminOnly = {
     properties: {
-        dbname: {
-            description: "remote database name",
-            message: "use a string",
-            type: "string"
-        },
-        username: {
-            description: "remote database username",
-            message: "use a string",
-            type: "string"
-        },
-        password: {
-            description: "remote database password",
-            message: "use a string",
-            type: "string"
-        },
-        host: {
-            description: "remote database host",
-            message: "use a string",
+        newDB: {
+            description: "Seems to be no database info. Use previous admin login to create fresh database or remove admin login to start all over? (newDB/freshStart)",
+            message: "use responses newDB or freshStart",
             type: "string"
         }
     }
 };
-let restart = {
+let dbOnly = {
     properties: {
-        redo: {
-            description: "Use new credentials",
-            message: "use true or false",
-            type: "boolean"
+        newTables: {
+            description: "Make new tables or delete database (newTables, deleteDatabse)",
+            message: "use newTables or deleteDatabase",
+            type: "string"
         }
     }
 };
-function makeJSONfromObj(obj) {
-    let data = JSON.stringify(obj);
-    fs.writeFileSync('./config/credentials.json', data);
-}
-function remoteConnectCommand(user, host, dbname, password) {
-    let connectCommand = "PGPASSWORD=" + password +
-        " psql" +
-        " -U " + user +
-        " -h " + host +
-        " -d " + dbname;
-    return connectCommand;
-}
-function credentialSet() {
-    try {
-        let dbOptions = require('../config/credentials.json');
-        let signInNewDB = remoteConnectCommand(dbOptions.username, dbOptions.host, dbOptions.dbname, dbOptions.password);
-        if (typeof dbOptions.host === 'undefined') {
-            console.log('Please delete your /config/credentials.json and start again.');
-            return;
+function remoteBuilder() {
+    if (build_assets_1.fileChecker('../config/admin-config.json')) {
+        let adminRemote = require('../config/admin-config.json');
+        let adminConnect = build_assets_1.remoteConnectCommand(adminRemote.username, adminRemote.host, adminRemote.database, adminRemote.password);
+        if (build_assets_1.fileChecker('../config/connect-config.json')) {
+            let databaseRemote = require('../config/connect-config.json');
+            let databaseConnect = build_assets_1.remoteConnectCommand(databaseRemote.username, databaseRemote.host, databaseRemote.database, databaseRemote.password);
+            prompt.start();
+            prompt.get(dbOnly, function (err, result) {
+                if (result.newTables) {
+                    exec(databaseConnect + build_assets_1.tableDrop, (error, stdout, stderr) => {
+                        if (error) {
+                            console.error(`exec error: ${error}`);
+                            return;
+                        }
+                        else {
+                            build_assets_1.tableBuild(adminRemote);
+                        }
+                    });
+                }
+                else {
+                    let dbDrop = build_assets_1.psqlCommand(["DROP DATABASE " + databaseRemote.database, "DROP USER " + databaseRemote.username]);
+                    exec(adminConnect + dbDrop, (error, stdout, stderr) => {
+                        if (error) {
+                            console.error(`exec error: ${error}`);
+                            return;
+                        }
+                        else {
+                            fs.unlink('./config/connect-config.json', function () { });
+                            let newDBoptions = {
+                                properties: {
+                                    database: {
+                                        description: "choose a name for the database you would like to create(enter for default: formapp)",
+                                        message: "Use a string",
+                                        type: 'string'
+                                    },
+                                    username: {
+                                        description: "choose a username to own the database(enter for default: formadmin)",
+                                        message: "Use a string",
+                                        type: 'string'
+                                    }
+                                }
+                            };
+                            build_assets_1.dbAndTable(newDBoptions, adminRemote, adminConnect);
+                        }
+                    });
+                }
+            });
         }
-        let doUsersExist = "SELECT * FROM users";
-        let doNonceExist = "SELECT * FROM nonce";
-        let tablesExist = psqlCommand([doUsersExist, doNonceExist]);
-        exec(signInNewDB + tablesExist, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`exec error: ${error}`);
-                return;
-            }
-            else {
-                console.log(`stdout:${stdout}`);
-                console.log('everything is working, what do you want?');
-                prompt.start();
-                prompt.get(restart, function (err, result) {
-                    console.log("You said ", result.redo);
-                    if (result.redo === true) {
-                        fs.unlink('./config/credentials.json', function () {
-                            console.log("Run this file again to set up new database. Don't forget to scrub your old db.");
-                        });
-                    }
-                });
-            }
-        });
+        else {
+            prompt.start();
+            prompt.get(adminOnly, function (err, result) {
+                if (result.newDB === "newDB") {
+                    build_assets_1.adminDBorNewDB(adminRemote, adminConnect);
+                }
+                else if (result.newDB === "freshStart") {
+                    fs.unlink('./config/admin-config.json', function () { });
+                }
+                else {
+                    console.log('there was an error try again.');
+                }
+            });
+        }
     }
-    catch (e) {
+    else {
+        let adminRemote = {
+            properties: {
+                database: {
+                    description: "remote database name",
+                    message: "use a string",
+                    type: "string"
+                },
+                username: {
+                    description: "remote database username",
+                    message: "use a string",
+                    type: "string"
+                },
+                password: {
+                    description: "remote database password",
+                    message: "use a string",
+                    type: "string"
+                },
+                host: {
+                    description: "remote database host",
+                    message: "use a string",
+                    type: "string"
+                }
+            }
+        };
         prompt.start();
-        prompt.get(credentialOptions, function (err, result) {
-            console.log("You said ", result.dbname);
-            console.log("You said ", result.host);
-            console.log("You said ", result.username);
-            console.log("You said ", result.password);
-            let dbOptions = {
-                dbname: result.dbname,
+        prompt.get(adminRemote, function (err, result) {
+            console.log("You said ", result.database, "\nYou said ", result.host, "\nYou said ", result.username, "\nYou said ", result.password);
+            let adminRemote = {
+                database: result.database,
                 username: result.username,
                 password: result.password,
                 host: result.host
             };
-            let signIn = remoteConnectCommand(dbOptions.username, dbOptions.host, dbOptions.dbname, dbOptions.password);
+            let adminConnect = build_assets_1.remoteConnectCommand(adminRemote.username, adminRemote.host, adminRemote.database, adminRemote.password);
+            build_assets_1.makeJSONfromObj('./config/admin-config.json', adminRemote);
             let sameSettings = {
                 properties: {
                     choice: {
-                        description: "use same dbname and user or create new (same/create)",
+                        description: "use same database and user or create new (same/create)",
                         message: "Use a string (same/cerate)",
                         required: true,
                         type: 'string'
                     }
                 }
             };
-            prompt.start();
-            prompt.get(sameSettings, function (err, result) {
-                if (result.choice === "same") {
-                    exec(signIn + ' -a -f ./build/database-build.sql', (error, stdout, stderr) => {
+            build_assets_1.adminDBorNewDB(adminRemote, adminConnect);
+        });
+    }
+}
+function localBuilder() {
+    let adminLocal = 'psql postgres', adminConnect = 'psql postgres';
+    if (build_assets_1.fileChecker('../config/connect-config')) {
+        let databaseLocal = require('../config/connect-config');
+        let connectLocal = 'psql -d ' + databaseLocal.database;
+        // what do to with existing db
+        prompt.get(dbOnly, function (err, result) {
+            if (result.newTables) {
+                exec(connectLocal + build_assets_1.tableDrop, (error, stdout, stderr) => {
+                    if (error) {
+                        console.error(`exec error: ${error}`);
+                        return;
+                    }
+                    else {
+                        build_assets_1.tableBuild(adminLocal);
+                    }
+                });
+            }
+            else {
+                let dbDrop = build_assets_1.psqlCommand(["DROP DATABASE " + databaseLocal.database, "DROP USER " + databaseLocal.username]);
+                exec(adminLocal + dbDrop, (error, stdout, stderr) => {
+                    if (error) {
+                        console.error(`exec error: ${error}`);
+                        return;
+                    }
+                    else {
+                        fs.unlink('./config/connect-config.json', function () { });
+                        let newDBoptions = {
+                            properties: {
+                                database: {
+                                    description: "choose a name for the database you would like to create(enter for default: formapp)",
+                                    message: "Use a string",
+                                    type: 'string'
+                                },
+                                username: {
+                                    description: "choose a username to own the database(enter for default: formadmin)",
+                                    message: "Use a string",
+                                    type: 'string'
+                                }
+                            }
+                        };
+                        build_assets_1.dbAndTable(newDBoptions, adminLocal, adminConnect);
+                    }
+                });
+            }
+        });
+    }
+    else {
+        let adminConnect = 'psql postgres';
+        let sameSettings = {
+            properties: {
+                choice: {
+                    description: "use existing database or create new (existing/create)",
+                    message: "Use a string (existing/cerate)",
+                    required: true,
+                    type: 'string'
+                }
+            }
+        };
+        prompt.start();
+        prompt.get(sameSettings, function (err, result) {
+            if (result.choice === "existing") {
+                // use existing database and create tables
+                let existingDB = {
+                    properties: {
+                        database: {
+                            description: "identify database that already exists",
+                            message: "use a string",
+                            required: true,
+                            type: "string"
+                        },
+                        username: {
+                            description: "what is the user that owns the database (can be skipped)",
+                            message: "use a string",
+                            type: "string"
+                        },
+                        password: {
+                            description: "what is the password for the database (can be skipped)",
+                            message: "use a string",
+                            type: "string"
+                        }
+                    }
+                };
+                prompt.start();
+                prompt.get(existingDB, function (err, result) {
+                    let databaseLocal = {
+                        database: result.database,
+                        username: result.username,
+                        password: result.password
+                    };
+                    let connectLocal = 'psql -d ' + result.database + " ";
+                    exec(connectLocal + build_assets_1.buildTables, (error, stdout, stderr) => {
                         if (error) {
                             console.error(`exec error: ${error}`);
                             return;
                         }
                         else {
                             console.log(`stout:${stdout}`);
-                            makeJSONfromObj(dbOptions);
+                            build_assets_1.makeJSONfromObj('./config/connect-config.json', databaseLocal);
                         }
                     });
-                }
-                else {
-                    let userDefined = {
-                        properties: {
-                            user: {
-                                description: "choose a name for the database you would like to create(enter for default: formapp)",
-                                message: "Use a string",
-                                required: true,
-                                type: 'string'
-                            },
-                            dbname: {
-                                description: "choose a username to own the database(enter for default: formadmin)",
-                                message: "Use a string",
-                                required: true,
-                                type: 'string'
-                            }
+                });
+            }
+            else if (result.choice === "create") {
+                let newDBoptions = {
+                    properties: {
+                        database: {
+                            description: "choose a name for the database you would like to create(enter for default: formapp)",
+                            message: "use a string",
+                            type: "string"
+                        },
+                        username: {
+                            description: "choose a username to own the database(enter for default: formadmin)",
+                            message: "use a string",
+                            type: "string"
+                        },
+                        password: {
+                            description: "supply the password associated with the database(enter for default: formpassword)",
+                            message: "use a string",
+                            type: "string"
                         }
+                    }
+                };
+                prompt.start();
+                prompt.get(newDBoptions, function (err, result) {
+                    let databaseLocal = {
+                        database: result.database,
+                        username: result.username,
+                        password: result.password
                     };
-                    prompt.start();
-                    prompt.get(userDefined, function (err, result) {
-                        console.log("You said ", result.dbname);
-                        console.log("You said ", result.username);
-                        dbOptions.newdbname = result.dbname, // adding new property
-                            dbOptions.newusername = result.username, // adding new property
-                            dbOptions = applyDefaults(dbOptions);
-                        //sign in for newly created database
-                        let signInNewDB = remoteConnectCommand(dbOptions.newusername, dbOptions.host, dbOptions.newdbname, dbOptions.password);
-                        let createdb = "CREATE DATABASE " + dbOptions.newdbname + ";";
-                        let createuser = "CREATE USER " + dbOptions.newusername + ";";
-                        let grantPriv = "GRANT ALL PRIVILEGES ON DATABASE " + dbOptions.newdbname + " TO " + dbOptions.newusername + ";";
-                        let superUser = "ALTER USER " + dbOptions.newusername + " WITH SUPERUSER;";
-                        let makeUserAndDB = psqlCommand([createdb, createuser, grantPriv, superUser]);
-                        exec(signIn + makeUserAndDB, (error, stdout, stderr) => {
-                            if (error) {
-                                console.error(`exec error: ${error}`);
-                                return;
-                            }
-                            else {
-                                console.log(`stdout:${stdout}`);
-                                exec(signInNewDB + ' -a -f ./build/database-build.sql', (error, stdout, stderr) => {
-                                    if (error) {
-                                        console.error(`exec error: ${error}`);
-                                        return;
-                                    }
-                                    else {
-                                        console.log(`stout:${stdout}`);
-                                        makeJSONfromObj(dbOptions);
-                                    }
-                                });
-                            }
-                        });
+                    databaseLocal = build_assets_1.applyDefaults(databaseLocal);
+                    let connectLocal = 'psql -d ' + databaseLocal.database;
+                    exec(adminConnect + build_assets_1.createUserAndDB(databaseLocal.username, databaseLocal.database), (error, stdout, stderr) => {
+                        if (error) {
+                            console.error(`exec error: ${error}`);
+                            return;
+                        }
+                        else {
+                            console.log(`stdout:${stdout}`);
+                            exec(connectLocal + build_assets_1.buildTables, (error, stdout, stderr) => {
+                                if (error) {
+                                    console.error(`exec error: ${error}`);
+                                    return;
+                                }
+                                else {
+                                    console.log(`stout:${stdout}`);
+                                    build_assets_1.makeJSONfromObj('./config/connect-config.json', databaseLocal);
+                                }
+                            });
+                        }
                     });
-                }
-            });
+                });
+            }
         });
     }
 }
-credentialSet();
+if (argv.r === true) {
+    remoteBuilder();
+}
+else {
+    console.log('Default, with no arguements is local db build. Use -r true for remote database.');
+    localBuilder();
+}
 //# sourceMappingURL=build-remote.js.map

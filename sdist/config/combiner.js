@@ -2,20 +2,20 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const deepMerge_js_1 = require("../functions/deepMerge.js");
 const dbConfigDefault = require("./db-default.json");
-const dbOptions = require("credentials.json");
-let dbDefault = deepMerge_js_1.deepMerge(dbConfigDefault, dbOptions);
+const connectCredentials = require("connect-config.json");
+let dbConnect = deepMerge_js_1.deepMerge(dbConfigDefault, connectCredentials);
 function combine() {
     let dbInfo = {};
     try {
         let dbCustom = require('./db-custom.json');
         console.log('using custom');
-        dbInfo = deepMerge_js_1.deepMerge(dbDefault, dbCustom);
+        dbInfo = deepMerge_js_1.deepMerge(dbConnect, dbCustom);
         return dbInfo;
     }
     catch (e) {
         if (e.code === 'MODULE_NOT_FOUND') {
             console.log('using default');
-            dbInfo = dbDefault;
+            dbInfo = dbConnect;
             return dbInfo;
         }
         else {
