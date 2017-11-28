@@ -72,14 +72,14 @@ router.post('/change-email', function(req:any, res:any, next:Function) {
 
 
 // change phone
-router.post('/change-phone', function (req, res, next) {
+router.post('/change-phone', function (req:any, res:any, next:Funtion) {
   var thisPage = 'manage-account';
   var nextPage = 'manage-account';
   var inputs = {
     newPhone: req.body.phone,
     email: req.user.email
   };
-  req.querySvc.updatePhone(inputs, function(err, result) {
+  req.querySvc.updatePhone(inputs, function(err:any, result:any) {
     if (err) {
       helper.dbError(res, thisPage, err); // u
     } else {

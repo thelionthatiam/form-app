@@ -1,0 +1,42 @@
+BUILD
+
+local
+
+-- simple build
+  - run build-local.js
+  - follow prompts
+
+-- check if working
+  - run build-local.js
+  - should return "Run this file again to set up new database. Don't forget to scrub your old db."
+  - otherwise delete ./config/credentials.json and start again
+
+-- create new
+  - scrub database
+  - follow prompt
+  - follow directions for simple build
+
+remote database
+
+-- build with existing db and user
+  - run build-remote.js
+  - follow prompts
+
+-- build with new db and user
+  - run build-remote.js
+  - follow prompts
+
+-- check if working
+  - run build-remote.js
+  - should return "Run this file again to set up new database. Don't forget to scrub your old db."
+  - otherwise delete ./config/credentials.json and start again
+
+-- create new
+  - scrub database
+  - follow prompt
+  - follow directions for remote builds
+
+
+start application
+-- npm install
+-- npm run start

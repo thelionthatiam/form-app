@@ -1,5 +1,0 @@
-CREATE DATABASE formapp;
-CREATE USER formadmin;
-
-GRANT ALL PRIVILEGES ON DATABASE formapp TO formadmin;
-ALTER USER formadmin WITH SUPERUSER;
