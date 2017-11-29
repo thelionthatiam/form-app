@@ -2,6 +2,7 @@ const { exec } = require('child_process');
 const fs = require('fs');
 const prompt = require('prompt')
 const buildTables = ' -a -f ./build/database-build.sql'
+prompt.start()
 
 function applyDefaults(obj:any) {
   for(let k in obj) {
@@ -69,7 +70,6 @@ let tableDrop = psqlCommand(["DROP TABLE nonce", "DROP TABLE users"]);
 
 function dbAndTable(promptOpts:any, adminRemote: any, adminConnect: any) { // must be useable for local build too
 
-  prompt.start();
   prompt.get(promptOpts, function(err:any, result:any) {
     console.log('db', result.database)
     console.log('user', result.username)
@@ -79,7 +79,7 @@ function dbAndTable(promptOpts:any, adminRemote: any, adminConnect: any) { // mu
       host: adminRemote.host,
       password:adminRemote.password
     }
-    // databaseRemote = applyDefaults(databaseRemote);
+    databaseRemote = applyDefaults(databaseRemote);
     let databaseConnect = remoteConnectCommand(databaseRemote.username, databaseRemote.host, databaseRemote.database, databaseRemote.password);
     let makeUserAndDB = createUserAndDB(databaseRemote.username, databaseRemote.database)
 
@@ -129,7 +129,6 @@ function adminDBorNewDB(adminRemote:any,adminConnect:any) {
     }
   }
 
-  prompt.start();
   prompt.get(sameSettings, function(err:any, result:any) {
     if (result.choice === "same") {
       tableBuild(adminRemote);

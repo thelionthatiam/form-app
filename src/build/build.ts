@@ -11,6 +11,8 @@ const argv = require('yargs')
   .help('h')
   .argv;
 
+prompt.start()
+
 let adminOnly = {
   properties: {
       newDB: {
@@ -40,7 +42,6 @@ function remoteBuilder() {
     if (fileChecker('../config/connect-config.json')) {
       let databaseRemote = require('../config/connect-config.json');
       let databaseConnect = remoteConnectCommand(databaseRemote.username, databaseRemote.host, databaseRemote.database, databaseRemote.password);
-      prompt.start()
       prompt.get(dbOnly, function( err: any, result: any) {
         if (result.newTables) {
           exec(databaseConnect + tableDrop, (error:any, stdout:any, stderr:any)=> {
@@ -79,7 +80,6 @@ function remoteBuilder() {
         }
       })
     } else {
-      prompt.start()
       prompt.get(adminOnly, function( err: any, result: any) {
         if (result.newDB === "newDB") {
           adminDBorNewDB(adminRemote, adminConnect)
@@ -116,7 +116,6 @@ function remoteBuilder() {
       }
     }
 
-    prompt.start()
     prompt.get(adminRemote, function( err: any, result: any) {
       console.log("You said ", result.database, "\nYou said ", result.host, "\nYou said ", result.username, "\nYou said ", result.password);
 
@@ -204,7 +203,6 @@ function localBuilder () {
         }
       }
     }
-    prompt.start();
     prompt.get(sameSettings, function(err:any, result:any) {
       if (result.choice === "existing") {
         // use existing database and create tables
@@ -229,8 +227,6 @@ function localBuilder () {
           }
         }
 
-
-        prompt.start()
         prompt.get(existingDB, function(err:any, result:any) {
           let databaseLocal = {
             database:result.database,
@@ -268,7 +264,6 @@ function localBuilder () {
             }
           }
         }
-        prompt.start()
         prompt.get(newDBoptions, function( err: any, result: any) {
           let databaseLocal = {
             database:result.database,
@@ -304,6 +299,6 @@ function localBuilder () {
 if (argv.r === true) {
   remoteBuilder();
 } else {
-  console.log('Default, with no arguements is local db build. Use -r true for remote database.')
+  console.log('Default, with no arguments is local db build. Start over with "-r true" for remote database.')
   localBuilder();
 }

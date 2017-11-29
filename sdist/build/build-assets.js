@@ -5,6 +5,7 @@ const fs = require('fs');
 const prompt = require('prompt');
 const buildTables = ' -a -f ./build/database-build.sql';
 exports.buildTables = buildTables;
+prompt.start();
 function applyDefaults(obj) {
     for (let k in obj) {
         if (k === 'database' && obj[k] === '') {
@@ -72,7 +73,6 @@ exports.tablesExist = tablesExist;
 let tableDrop = psqlCommand(["DROP TABLE nonce", "DROP TABLE users"]);
 exports.tableDrop = tableDrop;
 function dbAndTable(promptOpts, adminRemote, adminConnect) {
-    prompt.start();
     prompt.get(promptOpts, function (err, result) {
         console.log('db', result.database);
         console.log('user', result.username);
@@ -82,7 +82,7 @@ function dbAndTable(promptOpts, adminRemote, adminConnect) {
             host: adminRemote.host,
             password: adminRemote.password
         };
-        // databaseRemote = applyDefaults(databaseRemote);
+        databaseRemote = applyDefaults(databaseRemote);
         let databaseConnect = remoteConnectCommand(databaseRemote.username, databaseRemote.host, databaseRemote.database, databaseRemote.password);
         let makeUserAndDB = createUserAndDB(databaseRemote.username, databaseRemote.database);
         exec(adminConnect + makeUserAndDB, (error, stdout, stderr) => {
@@ -133,7 +133,6 @@ function adminDBorNewDB(adminRemote, adminConnect) {
             }
         }
     };
-    prompt.start();
     prompt.get(sameSettings, function (err, result) {
         if (result.choice === "same") {
             tableBuild(adminRemote);

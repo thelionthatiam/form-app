@@ -1,7 +1,8 @@
-BUILD
-
+DATABASE BUILD
+requires postgresql (created on v9.6.4)
 
 local
+(asssumes standard postgres database is present)
 
 -- build with defaults
   - run './sdist/build/build.js'
@@ -36,6 +37,13 @@ remote database
   - follow prompts
 
 
-start application
+APPLICATION DEPENDENCIES
+requires npm (created on v5.5.1), node (created on v8.4.0)
+
 -- npm install
+  - installs dependencies
+
+START APPLICATION  
 -- npm run start
+  - starts app on local server port 8000, which can be changed in app.ts
+  - can be started on remote server if IP is specified in app.ts

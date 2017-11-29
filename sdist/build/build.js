@@ -10,6 +10,7 @@ const argv = require('yargs')
     .boolean('r')
     .help('h')
     .argv;
+prompt.start();
 let adminOnly = {
     properties: {
         newDB: {
@@ -35,7 +36,6 @@ function remoteBuilder() {
         if (build_assets_1.fileChecker('../config/connect-config.json')) {
             let databaseRemote = require('../config/connect-config.json');
             let databaseConnect = build_assets_1.remoteConnectCommand(databaseRemote.username, databaseRemote.host, databaseRemote.database, databaseRemote.password);
-            prompt.start();
             prompt.get(dbOnly, function (err, result) {
                 if (result.newTables) {
                     exec(databaseConnect + build_assets_1.tableDrop, (error, stdout, stderr) => {
@@ -78,7 +78,6 @@ function remoteBuilder() {
             });
         }
         else {
-            prompt.start();
             prompt.get(adminOnly, function (err, result) {
                 if (result.newDB === "newDB") {
                     build_assets_1.adminDBorNewDB(adminRemote, adminConnect);
@@ -117,7 +116,6 @@ function remoteBuilder() {
                 }
             }
         };
-        prompt.start();
         prompt.get(adminRemote, function (err, result) {
             console.log("You said ", result.database, "\nYou said ", result.host, "\nYou said ", result.username, "\nYou said ", result.password);
             let adminRemote = {
@@ -201,7 +199,6 @@ function localBuilder() {
                 }
             }
         };
-        prompt.start();
         prompt.get(sameSettings, function (err, result) {
             if (result.choice === "existing") {
                 // use existing database and create tables
@@ -225,7 +222,6 @@ function localBuilder() {
                         }
                     }
                 };
-                prompt.start();
                 prompt.get(existingDB, function (err, result) {
                     let databaseLocal = {
                         database: result.database,
@@ -265,7 +261,6 @@ function localBuilder() {
                         }
                     }
                 };
-                prompt.start();
                 prompt.get(newDBoptions, function (err, result) {
                     let databaseLocal = {
                         database: result.database,
@@ -302,7 +297,7 @@ if (argv.r === true) {
     remoteBuilder();
 }
 else {
-    console.log('Default, with no arguements is local db build. Use -r true for remote database.');
+    console.log('Default, with no arguments is local db build. Start over with "-r true" for remote database.');
     localBuilder();
 }
 //# sourceMappingURL=build.js.map
