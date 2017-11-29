@@ -301,9 +301,9 @@ function localBuilder () {
   }
 }
 
-  if (argv.r === true) {
-    remoteBuilder();
-  } else {
-    console.log('Default, with no arguements is local db build. Use -r true for remote database.')
-    localBuilder();
-  }
+if (argv.r === true) {
+  remoteBuilder();
+} else {
+  console.log('Default, with no arguements is local db build. Use -r true for remote database.')
+  localBuilder();
+}

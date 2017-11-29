@@ -305,4 +305,4 @@ else {
     console.log('Default, with no arguements is local db build. Use -r true for remote database.');
     localBuilder();
 }
-//# sourceMappingURL=build-remote.js.map
+//# sourceMappingURL=build.js.map
