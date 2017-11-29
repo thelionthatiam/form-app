@@ -1,3 +1,5 @@
+created in bash, untested on windows
+
 DATABASE BUILD
 requires postgresql (created on v9.6.4)
 
@@ -43,7 +45,7 @@ requires npm (created on v5.5.1), node (created on v8.4.0)
 -- npm install
   - installs dependencies
 
-START APPLICATION  
+START APPLICATION
 -- npm run start
   - starts app on local server port 8000, which can be changed in app.ts
   - can be started on remote server if IP is specified in app.ts
