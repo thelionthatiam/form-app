@@ -10,7 +10,6 @@ const argv = require('yargs')
   .boolean('r')
   .help('h')
   .argv;
-
 prompt.start()
 
 let adminOnly = {
@@ -26,7 +25,7 @@ let adminOnly = {
 let dbOnly = {
   properties: {
     newTables: {
-      description:"Make new tables or delete database (newTables, deleteDatabse)",
+      description:"Make new tables or delete database (newTables, deleteDatabase)",
       message:"use newTables or deleteDatabase",
       type:"string"
     }

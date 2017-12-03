@@ -1,4 +1,4 @@
-created in bash, untested on windows
+created in bash3, untested on windows
 
 DATABASE BUILD
 requires postgresql (created on v9.6.4)
