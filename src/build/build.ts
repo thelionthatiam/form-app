@@ -4,7 +4,7 @@ const prompt = require('prompt')
 const fs = require('fs');
 import * as dbConfig from '../config/combiner';
 import * as hbs from "express-handlebars";
-import { adminDBorNewDB, tableBuild, dbAndTable, psqlCommand, applyDefaults, makeJSONfromObj, remoteConnectCommand, createUserAndDB, tablesExist, buildTables, fileChecker, tableDrop} from './build-assets';
+import { adminDBorNewDB, tableBuild, dbAndTable, psqlCommand, applyDefaults, makeJSONfromObj, remoteConnectCommand, createUserAndDB, tablesExist, buildTables, fileChecker, tableDrop, localDBandTable } from './build-assets';
 const argv = require('yargs')
   .describe('r', 'use remote database true or false')
   .boolean('r')
@@ -25,8 +25,8 @@ let adminOnly = {
 let dbOnly = {
   properties: {
     newTables: {
-      description:"Make new tables or delete database (newTables, deleteDatabase)",
-      message:"use newTables or deleteDatabase",
+      description:"Make new tables or delete database (newTables, delete)",
+      message:"use newTables or delete",
       type:"string"
     }
   }
@@ -42,16 +42,27 @@ function remoteBuilder() {
       let databaseRemote = require('../config/connect-config.json');
       let databaseConnect = remoteConnectCommand(databaseRemote.username, databaseRemote.host, databaseRemote.database, databaseRemote.password);
       prompt.get(dbOnly, function( err: any, result: any) {
-        if (result.newTables) {
+        if (result.newTables === 'newTables') {
           exec(databaseConnect + tableDrop, (error:any, stdout:any, stderr:any)=> {
             if (error) {
               console.error(`exec error: ${error}`);
-              return
+              return;
             } else {
-              tableBuild(adminRemote)
+              let databaseRemote = adminRemote;
+              let databaseConnect = remoteConnectCommand(databaseRemote.username,databaseRemote.host, databaseRemote.database, databaseRemote.password);
+
+              exec (databaseRemote + buildTables, (error:any, stdout:any, stderr:any)=> {
+                if (error) {
+                  console.error(`exec error: ${error}`);
+                  return
+                } else {
+                  console.log(`stout:${stdout}`);
+                  // makeJSONfromObj('./config/connnect-config', databaseRemote);
+                }
+              })
             }
           })
-        } else {
+        } else if (result.newTables === 'delete'){
           let dbDrop = psqlCommand(["DROP DATABASE " + databaseRemote.database, "DROP USER " + databaseRemote.username]);
           exec(adminConnect + dbDrop, (error:any, stdout:any, stderr:any)=> {
             if (error) {
@@ -83,7 +94,7 @@ function remoteBuilder() {
         if (result.newDB === "newDB") {
           adminDBorNewDB(adminRemote, adminConnect)
         } else if (result.newDB === "freshStart") {
-          fs.unlink('./config/admin-config.json', function(){})
+          fs.unlink('./sdist/config/admin-config.json', function(){})
         } else {
           console.log('there was an error try again.')
         }
@@ -126,7 +137,7 @@ function remoteBuilder() {
       }
 
       let adminConnect = remoteConnectCommand(adminRemote.username, adminRemote.host, adminRemote.database, adminRemote.password);
-      makeJSONfromObj('./config/admin-config.json', adminRemote);
+      makeJSONfromObj('./sdist/config/admin-config.json', adminRemote);
 
       let sameSettings = {
         properties: {
@@ -148,46 +159,38 @@ function localBuilder () {
   let adminLocal = 'psql postgres'
     , adminConnect = 'psql postgres';
 
-  if (fileChecker('../config/connect-config')) {
-    let databaseLocal = require('../config/connect-config')
+  if (fileChecker('../config/connect-config.json')) {
+    let databaseLocal = require('../config/connect-config.json')
     let connectLocal = 'psql -d ' + databaseLocal.database;
     // what do to with existing db
     prompt.get(dbOnly, function( err: any, result: any) {
-      if (result.newTables) {
+      console.log(result);
+      if (result.newTables === 'newTables') {
         exec(connectLocal + tableDrop, (error:any, stdout:any, stderr:any)=> {
           if (error) {
             console.error(`exec error: ${error}`);
-            return
+            if (/does not exist/g.test(error)) {
+              tableBuild(adminLocal);
+            }
+            return;
           } else {
-            tableBuild(adminLocal)
+            tableBuild(adminLocal);
           }
         })
-      } else {
+      } else if (result.newTables === 'delete'){
         let dbDrop = psqlCommand(["DROP DATABASE " + databaseLocal.database, "DROP USER " + databaseLocal.username]);
+        console.log(dbDrop);
         exec(adminLocal + dbDrop, (error:any, stdout:any, stderr:any)=> {
           if (error) {
             console.error(`exec error: ${error}`);
             return
           } else {
-            fs.unlink('./config/connect-config.json', function(){})
-            let newDBoptions = {
-              properties: {
-                database: {
-                  description:"choose a name for the database you would like to create(enter for default: formapp)",
-                  message:"Use a string",
-                  type:'string'
-                },
-                username: {
-                  description:"choose a username to own the database(enter for default: formadmin)",
-                  message:"Use a string",
-                  type:'string'
-                }
-
-              }
-            }
-            dbAndTable(newDBoptions, adminLocal, adminConnect);
+            fs.unlink('./sdist/config/connect-config.json', function(){return;})
           }
         })
+      } else {
+        console.log('there was an error try again');
+        return;
       }
     })
   } else {
@@ -284,7 +287,7 @@ function localBuilder () {
                   return
                 } else {
                   console.log(`stout:${stdout}`);
-                  makeJSONfromObj('./config/connect-config.json', databaseLocal)
+                  makeJSONfromObj('./sdist/config/connect-config.json', databaseLocal)
                 }
               })
             }

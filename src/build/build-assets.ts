@@ -1,7 +1,7 @@
 const { exec } = require('child_process');
 const fs = require('fs');
 const prompt = require('prompt')
-const buildTables = ' -a -f ./build/database-build.sql'
+const buildTables = ' -a -f ./sdist/build/database-build.sql'
 prompt.start()
 
 function applyDefaults(obj:any) {
@@ -104,15 +104,16 @@ function dbAndTable(promptOpts:any, adminRemote: any, adminConnect: any) { // mu
 }
 
 function tableBuild(adminRemote:any) {
-  let databaseRemote = adminRemote;
-  let databaseConnect = remoteConnectCommand(databaseRemote.username, databaseRemote.host, databaseRemote.database, databaseRemote.password);
-  exec (databaseConnect + buildTables, (error:any, stdout:any, stderr:any)=> {
+  // let databaseRemote = adminRemote;
+  // let databaseConnect = remoteConnectCommand(databaseRemote.username, databaseRemote.host, databaseRemote.database, databaseRemote.password);
+
+  exec (adminRemote + buildTables, (error:any, stdout:any, stderr:any)=> {
     if (error) {
       console.error(`exec error: ${error}`);
       return
     } else {
       console.log(`stout:${stdout}`);
-      makeJSONfromObj('./config/connnect-config', databaseRemote);
+      // makeJSONfromObj('./config/connnect-config', databaseRemote);
     }
   })
 }
@@ -131,7 +132,18 @@ function adminDBorNewDB(adminRemote:any,adminConnect:any) {
 
   prompt.get(sameSettings, function(err:any, result:any) {
     if (result.choice === "same") {
-      tableBuild(adminRemote);
+      let databaseRemote = adminRemote;
+      let databaseConnect = remoteConnectCommand(databaseRemote.username,databaseRemote.host, databaseRemote.database, databaseRemote.password);
+      console.log(databaseConnect)
+      exec (databaseConnect + buildTables, (error:any, stdout:any, stderr:any)=> {
+        if (error) {
+          console.error(`exec error: ${error}`);
+          return
+        } else {
+          console.log(`stout:${stdout}`);
+          // makeJSONfromObj('./config/connnect-config', databaseRemote);
+        }
+      })
     } else if (result.choice === "create") {
       let newDBoptions = {
         properties: {
@@ -156,4 +168,53 @@ function adminDBorNewDB(adminRemote:any,adminConnect:any) {
   })
 }
 
-export { adminDBorNewDB, tableBuild, dbAndTable, applyDefaults, psqlCommand, fileChecker, remoteConnectCommand, makeJSONfromObj, createUserAndDB, tablesExist, buildTables, tableDrop};
+function localDBandTable(adminConnect:any) {
+  let newDBoptions = {
+    properties: {
+      database: {
+        description:"choose a name for the database you would like to create(enter for default: formapp)",
+        message:"use a string",
+        type:"string"
+      },
+      username: {
+        description:"choose a username to own the database(enter for default: formadmin)",
+        message:"use a string",
+        type:"string"
+      },
+      password: {
+        description:"supply the password associated with the database(enter for default: formpassword)",
+        message:"use a string",
+        type:"string"
+      }
+    }
+  }
+  prompt.get(newDBoptions, function( err: any, result: any) {
+    let databaseLocal = {
+      database:result.database,
+      username:result.username,
+      password:result.password
+    }
+    databaseLocal = applyDefaults(databaseLocal);
+    let connectLocal = 'psql -d ' + databaseLocal.database;
+
+    exec(adminConnect + createUserAndDB(databaseLocal.username, databaseLocal.database), (error:any, stdout:any, stderr:any) => {
+      if (error) {
+          console.error(`exec error: ${error}`);
+          return;
+      } else {
+        console.log(`stdout:${stdout}`);
+        exec (connectLocal + buildTables, (error:any, stdout:any, stderr:any)=> {
+          if (error) {
+            console.error(`exec error: ${error}`);
+            return
+          } else {
+            console.log(`stout:${stdout}`);
+            makeJSONfromObj('./sdist/config/connect-config.json', databaseLocal)
+          }
+        })
+      }
+    })
+  })
+}
+
+export { adminDBorNewDB, tableBuild, localDBandTable, dbAndTable, applyDefaults, psqlCommand, fileChecker, remoteConnectCommand, makeJSONfromObj, createUserAndDB, tablesExist, buildTables, tableDrop};
