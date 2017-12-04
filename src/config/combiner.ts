@@ -1,6 +1,6 @@
 import { deepMerge } from '../functions/deepMerge.js';
 import * as dbConfigDefault from './db-default.json';
-import * as connectCredentials  from 'connect-config.json';
+import * as connectCredentials  from './connect-config.json';
 
 let dbConnect = deepMerge(dbConfigDefault, connectCredentials);
 

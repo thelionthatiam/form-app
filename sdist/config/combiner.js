@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const deepMerge_js_1 = require("../functions/deepMerge.js");
 const dbConfigDefault = require("./db-default.json");
-const connectCredentials = require("connect-config.json");
+const connectCredentials = require("./connect-config.json");
 let dbConnect = deepMerge_js_1.deepMerge(dbConfigDefault, connectCredentials);
 function combine() {
     let dbInfo = {};

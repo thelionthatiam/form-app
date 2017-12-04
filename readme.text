@@ -1,6 +1,22 @@
+DATABASE BUILD v2.0
 created in bash3, untested on windows
+requires postgresql (created on v9.6.4)
 
-DATABASE BUILD
+core updated
+-- no longer has options for creating databases and users, that must be done manually
+-- to make a database that is congruent with build defaults use:
+  {
+    database: 'formapp',
+    user: 'formadmin',
+    password: 'formpassword',
+    host: 'localhost'
+  }
+-- run with ./sdist/simple-build/build.js
+-- if there is a fatal error, config information will not persist
+
+
+DATABASE BUILD v1.0
+created in bash3, untested on windows
 requires postgresql (created on v9.6.4)
 
 local

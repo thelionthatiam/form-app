@@ -1,4 +1,3 @@
-\connect formapp;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE users (
 	id BIGSERIAL PRIMARY KEY NOT NULL,

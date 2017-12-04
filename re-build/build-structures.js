@@ -55,7 +55,7 @@ localBuilder() {
 
 
 // trying to use same structure
-builder () {
+simpleBuilder () {
   if (adminConfig) {
     if (dbConfig) {
       promptAsk

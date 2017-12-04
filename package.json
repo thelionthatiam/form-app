@@ -13,6 +13,7 @@
   "author": "thelionthatiam",
   "license": "ISC",
   "dependencies": {
+    "@types/filesystem": "0.0.28",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
     "express": "^4.15.4",
