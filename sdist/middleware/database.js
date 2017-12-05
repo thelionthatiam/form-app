@@ -22,5 +22,4 @@ function init(databaseInformation) {
     };
 }
 exports.init = init;
-init({ user: 'a', database: 'b', host: 'asdf', password: 'asd', port: 1234 });
 //# sourceMappingURL=database.js.map

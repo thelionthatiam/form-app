@@ -4,23 +4,17 @@ import * as fs from 'fs';
 prompt.start()
 
 
-interface PromptItem {
+interface Item {
   description:string;
   message:string;
   type:string;
-
 }
 
 interface PromptProperty {
-  properties:PromptItem;
+  properties:{
+    [key: string]: Item
+  }
 }
-
-interface Prompt {
-  connectPrompt:PromptProperty;
-  deleteTables:PromptProperty;
-  prevConn:PromptProperty;
-}
-
 
 let tableDrop = psqlCommand(["DROP TABLE nonce", "DROP TABLE users"]);
 
@@ -78,7 +72,7 @@ function connectCommand(user:string, host:string, database:string, password:stri
   return connectCommand;
 }
 
-function prompter(promptObj:Prompt, cb:Function) {
+function prompter(promptObj:PromptProperty, cb:Function) {
   prompt.get(promptObj, function(err:any, result:any) {
     if (err) {
       console.log("something went wrong", err)
