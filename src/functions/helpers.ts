@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 
 // expand to include bcrypt?
-function dbErrTranslator (error: string) { // its actually an object
+function dbErrTranslator(error:string) {
   let emailChecker = /(email)/g
     , phoneChecker = /(phone)/g
     , keyChecker = /(key)/g
@@ -32,8 +32,8 @@ function dbErrTranslator (error: string) { // its actually an object
   }
 }
 
-function hash(string:string, cb) {
-  bcrypt.hash(string, 10, function(err, hash) {
+function hash(string:string, cb:Function) {
+  bcrypt.hash(string, 10, function(err:Error, hash:string) {
     if (err) {
       cb(err);
     } else {
@@ -51,7 +51,7 @@ function passChecker(string:string) {
   }
 }
 
-function passHash(string, cb) {
+function passHash(string:string, cb:Function) {
   let err = "";
   if (passChecker(string)){
     return hash(string, cb);
@@ -62,8 +62,8 @@ function passHash(string, cb) {
 }
 
 
-function hashCheck (string, hash, cb) {
-  bcrypt.compare(string, hash, function(err, result) {
+function hashCheck (string:string, hash:string, cb:Function) {
+  bcrypt.compare(string, hash, function(err:Error, result:Boolean) {
     if (err) {
       cb(err);
     } else {
@@ -72,7 +72,7 @@ function hashCheck (string, hash, cb) {
   });
 }
 
-function makeHashedString(cb) {
+function makeHashedString(cb:Function) {
   console.log('makeHashedString');
   let string = "";
   let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=`,.<>/?;:'{}[]|";
@@ -86,7 +86,8 @@ function dbError(res, thisPage:string, err:string) {
   res.render(thisPage, { dbError: dbErrTranslator(err)});
 }
 
-function genError(res, thisPage:string, param) {
+
+function genError(res, thisPage:string, param:Error | string) {
   res.render(thisPage, { dbError: param } );
 }
 

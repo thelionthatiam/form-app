@@ -1,25 +1,30 @@
 import * as lib from '../functions/lib';
 import * as helper from '../functions/helpers';
+import { Inputs, PGOutput } from '../../typings/typings';
 import * as express from 'express';
-let router: any  = express.Router();
+const app = express();
 
+interface InputObj {
+  email:string;
+  password:string;
+}
 
-router.get('/to-login', function(req, res, next) {
+app.get('/to-login', function(req, res, next) {
   console.log('/to-login');
   res.render('login', null );
 });
 
-router.post('/login', function(req, res, next) {
+app.post('/login', function(req, res, next) {
   console.log('/login');
 
   var thisPage = 'login';
   var nextPage ='account-actions';
-  var inputs = {
+  var inputs: InputObj = {
     email: req.body.email,
     password: req.body.password,
   };
 
-  req.querySvc.selectRowViaEmail(inputs, function(err, result) {
+  req.querySvc.selectRowViaEmail(inputs, function(err: string, result: PGOutput) {
     if (err) {
       helper.dbError(res, thisPage, err);
     } else {
@@ -28,7 +33,7 @@ router.post('/login', function(req, res, next) {
       } else {
         var output = result.rows[0]
         var realPass = output.password;
-        helper.hashCheck(req.body.password, realPass, function(err, result) {
+        helper.hashCheck(req.body.password, realPass, function(err:Error, result:boolean) {
           if (err) {
             // expand error translator to include bcrypt?
             helper.genError(res, thisPage, "Password encryption error"); // u
@@ -48,14 +53,14 @@ router.post('/login', function(req, res, next) {
   });
 });
 
-router.post('/log-out', function(req, res, next) {
+app.post('/log-out', function(req, res, next) {
   console.log('/log-out');
   var thisPage = 'login';
   var nextPage = 'index';
   lib.logout(req, res, thisPage);
 });
 
-router.post('/delete', function(req, res, next) {
+app.post('/delete', function(req, res, next) {
   console.log('/delete');
 
   var thisPage = 'login';
@@ -65,7 +70,7 @@ router.post('/delete', function(req, res, next) {
     password: req.body.password,
   };
 
-  req.querySvc.selectRowViaEmail(inputs, function(err, result) {
+  req.querySvc.selectRowViaEmail(inputs, function(err: string, result: PGOutput) {
     if (err) {
       res.render(thisPage, { dbError: err, accountDelete:true } );
     } else {
@@ -74,13 +79,13 @@ router.post('/delete', function(req, res, next) {
       } else {
         var output = result.rows[0]
         var realPass = output.password;
-        helper.hashCheck(req.body.password, realPass, function(err, result) {
+        helper.hashCheck(req.body.password, realPass, function(err:Error, result:boolean) {
           if (err) {
             res.render('error', { errName: err, errMessage: "Password encryption error" } );
           } else if (result === false ) {
             res.render(thisPage, { dbError: err, accountDelete:true } );
           } else {
-            req.querySvc.removeUserViaEmail(inputs, function (err, result) {
+            req.querySvc.removeUserViaEmail(inputs, function (err: string, result: PGOutput) {
               if (err) {
                 helper.dbError(res, thisPage, err);
               } else {
@@ -94,4 +99,4 @@ router.post('/delete', function(req, res, next) {
   });
 });
 
-module.exports = router;
+module.exports = app;

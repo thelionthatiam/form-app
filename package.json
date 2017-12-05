@@ -13,6 +13,7 @@
   "author": "thelionthatiam",
   "license": "ISC",
   "dependencies": {
+    "@types/bcrypt": "^1.0.0",
     "@types/filesystem": "0.0.28",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
@@ -50,5 +51,16 @@
     "tslint": "^5.8.0",
     "typescript": "^2.6.1",
     "webpack": "^3.8.1"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thelionthatiam/form-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/thelionthatiam/form-app/issues"
+  },
+  "homepage": "https://github.com/thelionthatiam/form-app#readme"
 }

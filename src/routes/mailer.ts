@@ -1,10 +1,11 @@
 import { mailOptions, transporter } from '../config/mail-config';
 import * as lib from '../functions/lib';
 import * as helper from '../functions/helpers';
+import { Inputs, PGOutput } from '../../typings/typings';
 import * as express from 'express';
-let router: any  = express.Router();
+const app = express();
 
-router.post('/mailer', function(req, res, next) {
+app.post('/mailer', function(req, res, next) {
   console.log('/mailer');
   console.log(mailOptions)
   let inputs;
@@ -31,7 +32,7 @@ router.post('/mailer', function(req, res, next) {
     let nextPage ='email-password';
     console.log('inputs', res.locals.inputs);
     let inputs = res.locals.inputs;
-    req.querySvc.selectRowViaEmail(inputs, function(err, result) {
+    req.querySvc.selectRowViaEmail(inputs, function(err: string, result: PGOutput) {
       if (err) {
         helper.dbError(res, thisPage, err);
       } else {
@@ -39,7 +40,7 @@ router.post('/mailer', function(req, res, next) {
           helper.genError(res, thisPage, "Email not found");
         } else {
           var outputs = result.rows[0];
-          helper.makeHashedString(function(err, hash) {
+          helper.makeHashedString(function(err:string, hash:string) {
             if (err) {
               helper.genError(res, thisPage, "Password encryption error");
             } else {
@@ -47,7 +48,7 @@ router.post('/mailer', function(req, res, next) {
               inputs.user_uuid = outputs.user_uuid;
               req.session.uuid = outputs.user_uuid;
               inputs.nonce = hash;
-              req.querySvc.updateNonce(inputs, function(err, result) {
+              req.querySvc.updateNonce(inputs, function(err: string, result: PGOutput) {
                 var outputs = result.rows[0]
                 req.session.token = inputs.nonce
                 res.locals = inputs.nonce
@@ -55,7 +56,7 @@ router.post('/mailer', function(req, res, next) {
                   helper.dbError(res, thisPage, err);
                 } else {
                   console.log('MAIL SESSION', req.session)
-                  lib.sendMail(mailOptions, transporter, function (error, info) {
+                  lib.sendMail(mailOptions, transporter, function (error:string, info:string) {
                     res.render(nextPage, {
                       message: "go check your email and follow the link",
                     });
@@ -70,7 +71,7 @@ router.post('/mailer', function(req, res, next) {
   }
 );
 
-router.get('/new-password', function(req, res, next) {
+app.get('/new-password', function(req, res, next) {
   console.log('/new-password');
   let thisPage = 'login';
   let nextPage ='new-password';
@@ -78,7 +79,7 @@ router.get('/new-password', function(req, res, next) {
     user_uuid: req.session.uuid
   };
 
-  req.querySvc.selectNonceAndTimeViaUID(inputs, function(err, result) {
+  req.querySvc.selectNonceAndTimeViaUID(inputs, function(err: string, result: PGOutput) {
     if (err) {
       helper.dbError(res, thisPage, err);
     } else {
@@ -89,7 +90,7 @@ router.get('/new-password', function(req, res, next) {
         console.log('req session token', req.session.token)
         var outputs = result.rows[0];
         var token = req.session.token;
-        lib.sessionValid(token, outputs, function(bool) {
+        lib.sessionValid(token, outputs, function(bool:boolean) {
           if (bool) {
             res.render(nextPage, null);
           } else {
@@ -102,7 +103,7 @@ router.get('/new-password', function(req, res, next) {
 });
 
 // change password: hash new pass, update database, update session, check the session
-router.post('/change-password', function (req, res, next) {
+app.post('/change-password', function (req, res, next) {
   console.log('/change-password');
   let thisPage = 'login';
   let nextPage ='manage-account';
@@ -113,12 +114,12 @@ router.post('/change-password', function (req, res, next) {
   };
   console.log('password', req.body.password)
   console.log('uuid', req.session.userID)
-  helper.hash(inputs.newPassword, function (err, hash) {
+  helper.hash(inputs.newPassword, function (err:Error, hash:string) {
     if (err) {
       helper.genError(res, thisPage, err) // u
     } else {
       inputs.hashedPassword = hash;
-      req.querySvc.updatePassword(inputs, function(err, result) {
+      req.querySvc.updatePassword(inputs, function(err: string, result: PGOutput) {
         if (err) {
           helper.dbError(res, thisPage, err); // u
         } else {
@@ -144,4 +145,4 @@ router.post('/change-password', function (req, res, next) {
 });
 
 
-module.exports = router;
+module.exports = app;

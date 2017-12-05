@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
-let router = express.Router();
+const app = express();
 //render shop
-router.get('/shop', function (req, res, next) {
+app.get('/shop', function (req, res, next) {
     res.render('shop', { success: true });
 });
-module.exports = router;
+module.exports = app;
 //# sourceMappingURL=shop.js.map

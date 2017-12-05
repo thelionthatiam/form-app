@@ -1,9 +1,9 @@
 import * as express from 'express';
-let router: any  = express.Router();
+const app = express();
 
 //render shop
-router.get('/shop', function(req, res, next) {
+app.get('/shop', function(req, res, next) {
   res.render('shop', { success:true });
 });
 
-module.exports = router;
+module.exports = app;

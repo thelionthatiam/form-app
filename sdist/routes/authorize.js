@@ -3,12 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const lib = require("../functions/lib");
 const helper = require("../functions/helpers");
 const express = require("express");
-let router = express.Router();
-router.get('/to-login', function (req, res, next) {
+const app = express();
+app.get('/to-login', function (req, res, next) {
     console.log('/to-login');
     res.render('login', null);
 });
-router.post('/login', function (req, res, next) {
+app.post('/login', function (req, res, next) {
     console.log('/login');
     var thisPage = 'login';
     var nextPage = 'account-actions';
@@ -48,13 +48,13 @@ router.post('/login', function (req, res, next) {
         }
     });
 });
-router.post('/log-out', function (req, res, next) {
+app.post('/log-out', function (req, res, next) {
     console.log('/log-out');
     var thisPage = 'login';
     var nextPage = 'index';
     lib.logout(req, res, thisPage);
 });
-router.post('/delete', function (req, res, next) {
+app.post('/delete', function (req, res, next) {
     console.log('/delete');
     var thisPage = 'login';
     var nextPage = 'index';
@@ -95,5 +95,5 @@ router.post('/delete', function (req, res, next) {
         }
     });
 });
-module.exports = router;
+module.exports = app;
 //# sourceMappingURL=authorize.js.map

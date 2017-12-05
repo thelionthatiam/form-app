@@ -1,6 +1,6 @@
 import * as helper from '../functions/helpers';
 
-function check(req:any, res:any, next:Function) {
+function check(req, res, next) {
   var thisPage = 'login';
   console.log(req.session)
   if (req.session && req.session.user){

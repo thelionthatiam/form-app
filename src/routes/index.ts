@@ -1,17 +1,17 @@
 import * as fs from "fs";
 import * as express from 'express';
-let router = express.Router();
+const app = express();
 
-router.use('/account', require('./account'))
-router.use('/auth', require('./authorize'))
-router.use('/auth', require('./mailer'));
-router.use('/in-session', require('./manage-account'));
-router.use('/in-session', require('./shop'));
+app.use('/account', require('./account'))
+app.use('/auth', require('./authorize'))
+app.use('/auth', require('./mailer'));
+app.use('/in-session', require('./manage-account'));
+app.use('/in-session', require('./shop'));
 
 // render home page
-router.get('/', function (req:any, res:any, next:Function) {
+app.get('/', function (req, res, next) {
   console.log('sessionId:', req.session.user);
   res.render('index', { title: 'A pleasent form app', subtitle:'Put all your cares aside' });
 })
 
-module.exports = router;
+module.exports = app;

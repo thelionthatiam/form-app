@@ -1,13 +1,25 @@
-function Query(conn: any) {
+function Query(conn:Function) {
   this.conn = conn;
 }
 
+interface Inputs {
+  email:string;
+  user:string;
+  phone:string;
+  nonce:string;
+  user_uuid:string;
+  newPhone:string;
+  newEmail:string;
+  hashedPassword:string;
+  password:string;
+}
+
 // is open to many query/values doesn
-Query.prototype.selectRowViaEmail = function (inputs, cb) {
+Query.prototype.selectRowViaEmail = function (inputs:Inputs, cb:Function) {
   const query = "SELECT * FROM users WHERE email = $1";
   const values = [inputs.email];
 
-  return this.conn.query(query, values, function(err, result) {
+  return this.conn.query(query, values, function(err:Error, result:string) {
     if (err) {
       cb(err); // u
     } else {
@@ -19,11 +31,11 @@ Query.prototype.selectRowViaEmail = function (inputs, cb) {
 
 
 // select a nonce row from UUID
-Query.prototype.selectNonceAndTimeViaUID = function (inputs, cb) {
+Query.prototype.selectNonceAndTimeViaUID = function (inputs:Inputs, cb:Function) {
   const query = 'SELECT nonce, theTime FROM nonce WHERE user_uuid = $1';
   const values = [inputs.user_uuid];
 
-  return this.conn.query(query, values, function(err, result) {
+  return this.conn.query(query, values, function(err:Error, result:string) {
     if (err) {
       cb(err);
     } else {
@@ -33,11 +45,11 @@ Query.prototype.selectNonceAndTimeViaUID = function (inputs, cb) {
   });
 };
 
-Query.prototype.selectSessionUser = function (inputs, cb) {
+Query.prototype.selectSessionUser = function (inputs:Inputs, cb:Function) {
   const query = 'SELECT * FROM users WHERE email = $1 AND password = $2 and phone = $3';
   const values = inputs;
 
-  return this.conn.query(query, values, function(err, result) {
+  return this.conn.query(query, values, function(err:Error, result:string) {
     if (err) {
       cb(err);
     } else {
@@ -47,11 +59,11 @@ Query.prototype.selectSessionUser = function (inputs, cb) {
 }
 
 //insert into users from inputs
-Query.prototype.insertNewUser = function (inputs, cb) {
+Query.prototype.insertNewUser = function (inputs:Inputs, cb:Function) {
   const query = 'INSERT INTO users(email, phone, password) VALUES($1, $2, $3) RETURNING *';
   const values = [inputs.email, inputs.phone, inputs.password];
 
-  return this.conn.query(query, values, function(err, result) {
+  return this.conn.query(query, values, function(err:Error, result:string) {
     if (err) {
       cb(err);
     } else {
@@ -64,11 +76,11 @@ Query.prototype.insertNewUser = function (inputs, cb) {
 
 // insert into nonce from user_uuid
 // nonce failed
-Query.prototype.insertNewNonce = function (inputs, cb) {
+Query.prototype.insertNewNonce = function (inputs:Inputs, cb:Function) {
   const query = 'INSERT INTO nonce(user_uuid, nonce) VALUES ($1, $2) RETURNING *';
   const values = [inputs.user_uuid, inputs.nonce];
 
-  return this.conn.query(query, values, function(err, result) {
+  return this.conn.query(query, values, function(err:Error, result:string) {
     if (err) {
       cb(err);
     } else {
@@ -80,11 +92,11 @@ Query.prototype.insertNewNonce = function (inputs, cb) {
 
 
 // update nonce via user uuid
-Query.prototype.updateNonce = function (inputs, cb) {
+Query.prototype.updateNonce = function (inputs:Inputs, cb:Function) {
 const query = "UPDATE nonce SET nonce = $1, theTime = default WHERE user_uuid = $2";
 const values = [inputs.nonce, inputs.user_uuid];
 
-  return this.conn.query(query, values, function(err, result) {
+  return this.conn.query(query, values, function(err:Error, result:string) {
     if (err) {
       cb(err);
     } else {
@@ -96,11 +108,11 @@ const values = [inputs.nonce, inputs.user_uuid];
 
 
 // update email
-Query.prototype.updateEmail = function (inputs, cb) {
+Query.prototype.updateEmail = function (inputs:Inputs, cb:Function) {
   const query = "UPDATE users SET email = $1 WHERE email = $2";
   const values = [inputs.newEmail, inputs.email];
 
-  return this.conn.query(query, values, function(err, result) {
+  return this.conn.query(query, values, function(err:Error, result:string) {
     if (err) {
       cb(err);
     } else {
@@ -112,11 +124,11 @@ Query.prototype.updateEmail = function (inputs, cb) {
 
 
 // update phone
-Query.prototype.updatePhone = function (inputs, cb) {
+Query.prototype.updatePhone = function (inputs:Inputs, cb:Function) {
   const query = "UPDATE users SET phone = $1 WHERE email = $2";
   const values = [inputs.newPhone, inputs.email];
 
-  return this.conn.query(query, values, function(err, result) {
+  return this.conn.query(query, values, function(err:Error, result:string) {
     if (err) {
       cb(err);
     } else {
@@ -128,11 +140,11 @@ Query.prototype.updatePhone = function (inputs, cb) {
 
 
 // update password
-Query.prototype.updatePassword = function (inputs, cb) {
+Query.prototype.updatePassword = function (inputs:Inputs, cb:Function) {
   const query = "UPDATE users SET password = $1 WHERE user_uuid = $2";
   const values = [inputs.hashedPassword, inputs.user_uuid];
 
-  return this.conn.query(query, values, function(err, result) {
+  return this.conn.query(query, values, function(err:Error, result:string) {
     if (err) {
       cb(err);
     } else {
@@ -144,11 +156,11 @@ Query.prototype.updatePassword = function (inputs, cb) {
 
 
 //remove row through email ERR NOT COVERED
-Query.prototype.removeUserViaEmail = function (inputs, cb) {
+Query.prototype.removeUserViaEmail = function (inputs:Inputs, cb:Function) {
   const query = "DELETE FROM users WHERE email = $1";
   const values = [inputs.email];
 
-  return this.conn.query(query, values, function (err, result) {
+  return this.conn.query(query, values, function (err:Error, result:string) {
     if (err) {
       cb(err); // u
     } else {
@@ -157,4 +169,5 @@ Query.prototype.removeUserViaEmail = function (inputs, cb) {
   });
 };
 //
+
 export {Query};

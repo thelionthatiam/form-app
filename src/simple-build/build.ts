@@ -3,8 +3,15 @@ import * as func from "./build-functions";
 import { tablesExist, tableDrop, psqlCommand } from "./build-functions";
 import { buildTables, noTable } from './build-strings';
 
+interface Result {
+  user:string;
+  database:string;
+  host:string;
+  password:string;
+}
 
-function build(dbConnect, result) {
+
+function build(dbConnect:string, result:Result) {
   // check if tables exist
   console.log(dbConnect);
   func.childProcess(dbConnect + tablesExist, function(error: any, stdout: any, stderr: any) {
@@ -52,7 +59,7 @@ function build(dbConnect, result) {
   })
 }
 
-if (func.fileChecker('.sadfnect-config.json')) {
+if (func.fileChecker('../config/connect-config.json')) {
   // build with connect string made by passing other prompt obj through
   func.prompter(obj.prevConn, function(err:any, result:any) {
     if (err) {

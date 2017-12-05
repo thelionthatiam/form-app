@@ -1,10 +1,11 @@
 import * as helper from '../functions/helpers';
 import * as express from 'express';
-let router: any  = express.Router();
+import { Inputs, PGOutput } from '../../typings/typings';
+const app = express();
 
 // back to account actions
 
-router.get('/back-account-actions', function(req:any, res:any, next:Function) {
+app.get('/back-account-actions', function(req, res, next) {
   res.render('account-actions', {
     title: 'yo',
     email: req.session.user[0],
@@ -13,7 +14,7 @@ router.get('/back-account-actions', function(req:any, res:any, next:Function) {
 
 
 // to account information
-router.get('/to-manage-account', function(req:any, res:any, next:Function) {
+app.get('/to-manage-account', function(req, res, next) {
     res.render('manage-account', {
       subtitle: "click change if you need to fix something",
       email: req.user.email,
@@ -22,7 +23,7 @@ router.get('/to-manage-account', function(req:any, res:any, next:Function) {
 });
 
 // render change email page
-router.get('/to-change-email', function(req:any, res:any, next:Function) {
+app.get('/to-change-email', function(req, res, next) {
   res.render('manage-account',{
     title: "Change your information",
     subtitle: "type in a new email",
@@ -33,7 +34,7 @@ router.get('/to-change-email', function(req:any, res:any, next:Function) {
 });
 
 //render change phone page
-router.get('/to-change-phone', function(req:any, res:any, next:Function) {
+app.get('/to-change-phone', function(req, res, next) {
   res.render('manage-account',{
     title: "Change your information",
     subtitle: "type in a new phone number",
@@ -46,14 +47,14 @@ router.get('/to-change-phone', function(req:any, res:any, next:Function) {
 
 
 // change email
-router.post('/change-email', function(req:any, res:any, next:Function) {
+app.post('/change-email', function(req, res, next) {
   var thisPage = 'manage-account';
   var nextPage = 'manage-account';
   var inputs = {
     newEmail: req.body.email,
     email: req.user.email
   };
-  req.querySvc.updateEmail(inputs, function(err, result) {
+  req.querySvc.updateEmail(inputs, function(err: string, result: PGOutput) {
     if (err) {
       helper.dbError(res, thisPage, err); // u
     } else {
@@ -72,14 +73,14 @@ router.post('/change-email', function(req:any, res:any, next:Function) {
 
 
 // change phone
-router.post('/change-phone', function (req:any, res:any, next:Funtion) {
+app.post('/change-phone', function (req, res, next) {
   var thisPage = 'manage-account';
   var nextPage = 'manage-account';
   var inputs = {
     newPhone: req.body.phone,
     email: req.user.email
   };
-  req.querySvc.updatePhone(inputs, function(err:any, result:any) {
+  req.querySvc.updatePhone(inputs, function(err: string, result: PGOutput) {
     if (err) {
       helper.dbError(res, thisPage, err); // u
     } else {
@@ -96,4 +97,4 @@ router.post('/change-phone', function (req:any, res:any, next:Funtion) {
 });
 
 
-module.exports = router;
+module.exports = app;

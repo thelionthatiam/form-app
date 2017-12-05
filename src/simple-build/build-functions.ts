@@ -3,6 +3,25 @@ import * as prompt from 'prompt';
 import * as fs from 'fs';
 prompt.start()
 
+
+interface PromptItem {
+  description:string;
+  message:string;
+  type:string;
+
+}
+
+interface PromptProperty {
+  properties:PromptItem;
+}
+
+interface Prompt {
+  connectPrompt:PromptProperty;
+  deleteTables:PromptProperty;
+  prevConn:PromptProperty;
+}
+
+
 let tableDrop = psqlCommand(["DROP TABLE nonce", "DROP TABLE users"]);
 
 function applyDefaults(obj:any) {
@@ -24,7 +43,7 @@ function applyDefaults(obj:any) {
   return obj;
 }
 
-function psqlCommand(array:any) {
+function psqlCommand(array:[string]) {
   const command = " --command=";
   let finarr = [];
   for (let i = 0; i < array.length; i++) {
@@ -59,9 +78,8 @@ function connectCommand(user:string, host:string, database:string, password:stri
   return connectCommand;
 }
 
-function prompter(promptObj, cb) {
+function prompter(promptObj:Prompt, cb:Function) {
   prompt.get(promptObj, function(err:any, result:any) {
-
     if (err) {
       console.log("something went wrong", err)
       cb(err);
@@ -73,7 +91,7 @@ function prompter(promptObj, cb) {
 }
 
 
-function childProcess(string, cb) {
+function childProcess(string:string, cb:Function) {
   console.log('step one');
   exec(string, function(error:any, stdout:any, stderr:any) {
     console.log('step two');

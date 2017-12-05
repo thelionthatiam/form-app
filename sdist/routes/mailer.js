@@ -4,8 +4,8 @@ const mail_config_1 = require("../config/mail-config");
 const lib = require("../functions/lib");
 const helper = require("../functions/helpers");
 const express = require("express");
-let router = express.Router();
-router.post('/mailer', function (req, res, next) {
+const app = express();
+app.post('/mailer', function (req, res, next) {
     console.log('/mailer');
     console.log(mail_config_1.mailOptions);
     let inputs;
@@ -75,7 +75,7 @@ router.post('/mailer', function (req, res, next) {
         }
     });
 });
-router.get('/new-password', function (req, res, next) {
+app.get('/new-password', function (req, res, next) {
     console.log('/new-password');
     let thisPage = 'login';
     let nextPage = 'new-password';
@@ -108,7 +108,7 @@ router.get('/new-password', function (req, res, next) {
     });
 });
 // change password: hash new pass, update database, update session, check the session
-router.post('/change-password', function (req, res, next) {
+app.post('/change-password', function (req, res, next) {
     console.log('/change-password');
     let thisPage = 'login';
     let nextPage = 'manage-account';
@@ -151,5 +151,5 @@ router.post('/change-password', function (req, res, next) {
         }
     });
 });
-module.exports = router;
+module.exports = app;
 //# sourceMappingURL=mailer.js.map

@@ -1,7 +1,7 @@
-function isCyclic (obj:any) {
-  var seenObjects:any = []; // so that the array builds outside the loop
+function isCyclic (obj) {
+  var seenObjects = []; // so that the array builds outside the loop
 
-  function detect (obj:any) {
+  function detect (obj) {
     if (obj && typeof obj === 'object') {
       if (seenObjects.indexOf(obj) !== -1) {
         return true;
@@ -20,7 +20,7 @@ function isCyclic (obj:any) {
   return detect(obj);
 }
 
-function isObj(prop:any) {
+function isObj(prop) { // testing for a type
 	if (typeof prop === "object") {
 		return true;
 	} else {
@@ -28,7 +28,7 @@ function isObj(prop:any) {
 	}
 }
 
-function deepMerge(obj1:any, obj2:any) {
+function deepMerge(obj1, obj2) {
 	if (isCyclic(obj1)) { // may want better reporting here
 		return "cyclic 1";
 	} else if (isCyclic(obj2)) {

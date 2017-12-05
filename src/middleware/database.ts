@@ -1,14 +1,22 @@
 import { Pool } from 'pg';
 import { Query } from '../functions/queries';
 
-function init(databaseInformation:any) {
+interface connectObj {
+  user:string;
+  database:string;
+  host:string;
+  password:string;
+  port:number;
+}
+
+
+function init(databaseInformation:connectObj) {
   const pool = new Pool(databaseInformation);
 
-  return function (req:any, res:any, next:Function) {
+  return function(req:Request, res:Response, next:Function) { // extend express
     pool.connect((err, client, release) => {
-
       req.conn = client;
-      req.querySvc= new Query(req.conn);
+      req.querySvc = new Query(req.conn);
       next();
       if (err) {
         return console.error('Error acquiring client', err.stack);
@@ -23,5 +31,5 @@ function init(databaseInformation:any) {
     });
   };
 }
-
+init({user:'a', database:'b', host:'asdf',password:'asd',port:1234})
 export { init };

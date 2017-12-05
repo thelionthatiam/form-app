@@ -2,14 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const helper = require("../functions/helpers");
-let router = express.Router();
+const app = express();
 //to sign up page
-router.get('/to-create', function (req, res, next) {
+app.get('/to-create', function (req, res, next) {
     console.log('/to-create');
     res.render('create-account', { success: false });
 });
 //sends user information to database,
-router.post('/create', function (req, res, next) {
+app.post('/create', function (req, res, next) {
     console.log('/create');
     var thisPage = 'create-account';
     var nextPage = 'create-account';
@@ -57,7 +57,7 @@ router.post('/create', function (req, res, next) {
         }
     });
 });
-router.post('/delete', function (req, res, next) {
+app.post('/delete', function (req, res, next) {
     console.log('/delete');
     var thisPage = 'account-actions';
     var nextPage = 'login';
@@ -65,5 +65,5 @@ router.post('/delete', function (req, res, next) {
         accountDelete: true,
     });
 });
-module.exports = router;
+module.exports = app;
 //# sourceMappingURL=account.js.map

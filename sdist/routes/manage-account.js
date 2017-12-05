@@ -2,16 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const helper = require("../functions/helpers");
 const express = require("express");
-let router = express.Router();
+const app = express();
 // back to account actions
-router.get('/back-account-actions', function (req, res, next) {
+app.get('/back-account-actions', function (req, res, next) {
     res.render('account-actions', {
         title: 'yo',
         email: req.session.user[0],
     });
 });
 // to account information
-router.get('/to-manage-account', function (req, res, next) {
+app.get('/to-manage-account', function (req, res, next) {
     res.render('manage-account', {
         subtitle: "click change if you need to fix something",
         email: req.user.email,
@@ -19,7 +19,7 @@ router.get('/to-manage-account', function (req, res, next) {
     });
 });
 // render change email page
-router.get('/to-change-email', function (req, res, next) {
+app.get('/to-change-email', function (req, res, next) {
     res.render('manage-account', {
         title: "Change your information",
         subtitle: "type in a new email",
@@ -29,7 +29,7 @@ router.get('/to-change-email', function (req, res, next) {
     });
 });
 //render change phone page
-router.get('/to-change-phone', function (req, res, next) {
+app.get('/to-change-phone', function (req, res, next) {
     res.render('manage-account', {
         title: "Change your information",
         subtitle: "type in a new phone number",
@@ -39,7 +39,7 @@ router.get('/to-change-phone', function (req, res, next) {
     });
 });
 // change email
-router.post('/change-email', function (req, res, next) {
+app.post('/change-email', function (req, res, next) {
     var thisPage = 'manage-account';
     var nextPage = 'manage-account';
     var inputs = {
@@ -63,7 +63,7 @@ router.post('/change-email', function (req, res, next) {
     });
 });
 // change phone
-router.post('/change-phone', function (req, res, next) {
+app.post('/change-phone', function (req, res, next) {
     var thisPage = 'manage-account';
     var nextPage = 'manage-account';
     var inputs = {
@@ -86,5 +86,5 @@ router.post('/change-phone', function (req, res, next) {
         }
     });
 });
-module.exports = router;
+module.exports = app;
 //# sourceMappingURL=manage-account.js.map

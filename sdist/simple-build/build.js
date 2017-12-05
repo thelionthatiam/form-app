@@ -56,7 +56,7 @@ function build(dbConnect, result) {
         }
     });
 }
-if (func.fileChecker('.sadfnect-config.json')) {
+if (func.fileChecker('../config/connect-config.json')) {
     // build with connect string made by passing other prompt obj through
     func.prompter(obj.prevConn, function (err, result) {
         if (err) {
