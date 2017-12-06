@@ -14,4 +14,8 @@ app.get('/', function (req, res, next) {
   res.render('index', { title: 'A pleasent form app', subtitle:'Put all your cares aside' });
 })
 
+app.get('/alarms', function (req, res, next) {
+  res.render('alarms', {});
+})
+
 module.exports = app;

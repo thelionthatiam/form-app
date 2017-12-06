@@ -2,30 +2,30 @@
   <div class="flex column userWrapper">
     {{#if accountDelete }}
     <h3 class="formTitle">delete account</h3>
-      <form action="/auth/delete" method="post">
-        <p>email</p>
-        <input
-         id="email"
-         name="email"
-         class="userFormItem"
-         type="text"
-         placeholder="email"
-         />
-        <p class="formErrorReport" id="emailError"></p>
+    <form action="/auth/delete" method="post">
+      <p>email</p>
+      <input
+       id="email"
+       name="email"
+       class="userFormItem"
+       type="text"
+       placeholder="email"
+       />
+      <p class="formErrorReport" id="emailError"></p>
 
-        <p>password</p>
-        <input
-         id="password"
-         name="password"
-         class="userFormItem"
-         type="password"
-         />
-        <p class="formErrorReport" id="passwordError"></p>
-       <p>
-         This is your last chance do keep your account. Deletion cannot be undone.
-       </p>
-       <button id="formSubmitter" class="unavailable submit" type="submit"> delete </button>
-     </form>
+      <p>password</p>
+      <input
+       id="password"
+       name="password"
+       class="userFormItem"
+       type="password"
+       />
+      <p class="formErrorReport" id="passwordError"></p>
+     <p>
+       This is your last chance do keep your account. Deletion cannot be undone.
+     </p>
+     <button id="formSubmitter" class="unavailable submit" type="submit"> delete </button>
+   </form>
     {{ else }}
      <h3 class="formTitle"> login </h3>
      <form action="/auth/login" method="post">

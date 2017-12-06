@@ -1,308 +1,109 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-// ES6?
-const { exec } = require('child_process');
-const prompt = require('prompt');
-const fs = require('fs');
-const build_assets_1 = require("./build-assets");
-const argv = require('yargs')
-    .describe('r', 'use remote database true or false')
-    .boolean('r')
-    .help('h')
-    .argv;
-prompt.start();
-let adminOnly = {
-    properties: {
-        newDB: {
-            description: "Seems to be no database info. Use previous admin login to create fresh database or remove admin login to start all over? (newDB/freshStart)",
-            message: "use responses newDB or freshStart",
-            type: "string"
-        }
-    }
-};
-let dbOnly = {
-    properties: {
-        newTables: {
-            description: "Make new tables or delete database (newTables, delete)",
-            message: "use newTables or delete",
-            type: "string"
-        }
-    }
-};
-function remoteBuilder() {
-    if (build_assets_1.fileChecker('../config/admin-config.json')) {
-        let adminRemote = require('../config/admin-config.json');
-        let adminConnect = build_assets_1.remoteConnectCommand(adminRemote.username, adminRemote.host, adminRemote.database, adminRemote.password);
-        if (build_assets_1.fileChecker('../config/connect-config.json')) {
-            let databaseRemote = require('../config/connect-config.json');
-            let databaseConnect = build_assets_1.remoteConnectCommand(databaseRemote.username, databaseRemote.host, databaseRemote.database, databaseRemote.password);
-            prompt.get(dbOnly, function (err, result) {
-                if (result.newTables === 'newTables') {
-                    exec(databaseConnect + build_assets_1.tableDrop, (error, stdout, stderr) => {
-                        if (error) {
-                            console.error(`exec error: ${error}`);
-                            return;
-                        }
-                        else {
-                            let databaseRemote = adminRemote;
-                            let databaseConnect = build_assets_1.remoteConnectCommand(databaseRemote.username, databaseRemote.host, databaseRemote.database, databaseRemote.password);
-                            exec(databaseRemote + build_assets_1.buildTables, (error, stdout, stderr) => {
-                                if (error) {
-                                    console.error(`exec error: ${error}`);
-                                    return;
-                                }
-                                else {
-                                    console.log(`stout:${stdout}`);
-                                    // makeJSONfromObj('./config/connnect-config', databaseRemote);
-                                }
-                            });
-                        }
-                    });
-                }
-                else if (result.newTables === 'delete') {
-                    let dbDrop = build_assets_1.psqlCommand(["DROP DATABASE " + databaseRemote.database, "DROP USER " + databaseRemote.username]);
-                    exec(adminConnect + dbDrop, (error, stdout, stderr) => {
-                        if (error) {
-                            console.error(`exec error: ${error}`);
-                            return;
-                        }
-                        else {
-                            fs.unlink('./config/connect-config.json', function () { });
-                            let newDBoptions = {
-                                properties: {
-                                    database: {
-                                        description: "choose a name for the database you would like to create(enter for default: formapp)",
-                                        message: "Use a string",
-                                        type: 'string'
-                                    },
-                                    username: {
-                                        description: "choose a username to own the database(enter for default: formadmin)",
-                                        message: "Use a string",
-                                        type: 'string'
-                                    }
-                                }
-                            };
-                            build_assets_1.dbAndTable(newDBoptions, adminRemote, adminConnect);
-                        }
-                    });
-                }
-            });
+const obj = require("./build-objects");
+const func = require("./build-functions");
+const build_functions_1 = require("./build-functions");
+const build_strings_1 = require("./build-strings");
+function build(dbConnect, result) {
+    // check if tables exist
+    func.childProcess(dbConnect + build_functions_1.tablesExist, function (error, stdout, stderr) {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            if (build_strings_1.noTable.test(error)) {
+                console.log('No user table, creating tables');
+                func.childProcess(dbConnect + build_strings_1.buildTables, function (error, stdout, stderr) {
+                    if (error) {
+                        console.error(`exec error: ${error}`);
+                    }
+                    else {
+                        console.log(`stdout: ${stdout}`);
+                        console.log(`stderr: ${stderr}`);
+                        console.log('tables added to empty database');
+                        func.makeJSONfromObj('../config/connect-config.json', result, function (err) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            else {
+                                console.log('successfuly made config JSON');
+                                return;
+                            }
+                        });
+                    }
+                });
+            }
         }
         else {
-            prompt.get(adminOnly, function (err, result) {
-                if (result.newDB === "newDB") {
-                    build_assets_1.adminDBorNewDB(adminRemote, adminConnect);
-                }
-                else if (result.newDB === "freshStart") {
-                    fs.unlink('./sdist/config/admin-config.json', function () { });
+            console.log(`stdout: ${stdout}`);
+            console.log(`stderr: ${stderr}`);
+            func.makeJSONfromObj('../config/connect-config.json', result, function (err) {
+                if (err) {
+                    console.log(err);
                 }
                 else {
-                    console.log('there was an error try again.');
+                    console.log('successfuly made config JSON');
+                    func.prompter(obj.deleteTables, function (err, result) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        else {
+                            if (result.deleteTables) {
+                                console.log(result);
+                                func.childProcess(dbConnect + build_functions_1.tableDrop, function (err, result) {
+                                    if (err) {
+                                        console.log(err);
+                                    }
+                                    else {
+                                        console.log(result);
+                                        return;
+                                    }
+                                });
+                            }
+                            else {
+                                console.log('tables not deleted');
+                                return;
+                            }
+                        }
+                    });
                 }
             });
         }
-    }
-    else {
-        let adminRemote = {
-            properties: {
-                database: {
-                    description: "remote database name",
-                    message: "use a string",
-                    type: "string"
-                },
-                username: {
-                    description: "remote database username",
-                    message: "use a string",
-                    type: "string"
-                },
-                password: {
-                    description: "remote database password",
-                    message: "use a string",
-                    type: "string"
-                },
-                host: {
-                    description: "remote database host",
-                    message: "use a string",
-                    type: "string"
-                }
-            }
-        };
-        prompt.get(adminRemote, function (err, result) {
-            console.log("You said ", result.database, "\nYou said ", result.host, "\nYou said ", result.username, "\nYou said ", result.password);
-            let adminRemote = {
-                database: result.database,
-                username: result.username,
-                password: result.password,
-                host: result.host
-            };
-            let adminConnect = build_assets_1.remoteConnectCommand(adminRemote.username, adminRemote.host, adminRemote.database, adminRemote.password);
-            build_assets_1.makeJSONfromObj('./sdist/config/admin-config.json', adminRemote);
-            let sameSettings = {
-                properties: {
-                    choice: {
-                        description: "use same database and user or create new (same/create)",
-                        message: "Use a string (same/cerate)",
-                        required: true,
-                        type: 'string'
-                    }
-                }
-            };
-            build_assets_1.adminDBorNewDB(adminRemote, adminConnect);
-        });
-    }
+    });
 }
-function localBuilder() {
-    let adminLocal = 'psql postgres', adminConnect = 'psql postgres';
-    if (build_assets_1.fileChecker('../config/connect-config.json')) {
-        let databaseLocal = require('../config/connect-config.json');
-        let connectLocal = 'psql -d ' + databaseLocal.database;
-        // what do to with existing db
-        prompt.get(dbOnly, function (err, result) {
-            console.log(result);
-            if (result.newTables === 'newTables') {
-                exec(connectLocal + build_assets_1.tableDrop, (error, stdout, stderr) => {
-                    if (error) {
-                        console.error(`exec error: ${error}`);
-                        if (/does not exist/g.test(error)) {
-                            build_assets_1.tableBuild(adminLocal);
-                        }
-                        return;
-                    }
-                    else {
-                        build_assets_1.tableBuild(adminLocal);
-                    }
-                });
-            }
-            else if (result.newTables === 'delete') {
-                let dbDrop = build_assets_1.psqlCommand(["DROP DATABASE " + databaseLocal.database, "DROP USER " + databaseLocal.username]);
-                console.log(dbDrop);
-                exec(adminLocal + dbDrop, (error, stdout, stderr) => {
-                    if (error) {
-                        console.error(`exec error: ${error}`);
-                        return;
-                    }
-                    else {
-                        fs.unlink('./sdist/config/connect-config.json', function () { return; });
-                    }
-                });
-            }
-            else {
-                console.log('there was an error try again');
-                return;
-            }
-        });
-    }
-    else {
-        let adminConnect = 'psql postgres';
-        let sameSettings = {
-            properties: {
-                choice: {
-                    description: "use existing database or create new (existing/create)",
-                    message: "Use a string (existing/cerate)",
-                    required: true,
-                    type: 'string'
+if (func.fileChecker('../config/connect-config.json')) {
+    // build with connect string made by passing other prompt obj through
+    func.prompter(obj.prevConn, function (err, result) {
+        if (err) {
+            console.log(err);
+        }
+        else if (result.prevConn) {
+            let connConfig = require('../config/connect-config.json');
+            let dbConnect = func.connectCommand(connConfig.user, connConfig.host, connConfig.database, connConfig.password);
+            build(dbConnect, connConfig);
+        }
+        else {
+            func.removeConfig('../config/connect-config.json', function (err) {
+                if (err) {
+                    console.log(err);
                 }
-            }
-        };
-        prompt.get(sameSettings, function (err, result) {
-            if (result.choice === "existing") {
-                // use existing database and create tables
-                let existingDB = {
-                    properties: {
-                        database: {
-                            description: "identify database that already exists",
-                            message: "use a string",
-                            required: true,
-                            type: "string"
-                        },
-                        username: {
-                            description: "what is the user that owns the database (can be skipped)",
-                            message: "use a string",
-                            type: "string"
-                        },
-                        password: {
-                            description: "what is the password for the database (can be skipped)",
-                            message: "use a string",
-                            type: "string"
-                        }
-                    }
-                };
-                prompt.get(existingDB, function (err, result) {
-                    let databaseLocal = {
-                        database: result.database,
-                        username: result.username,
-                        password: result.password
-                    };
-                    let connectLocal = 'psql -d ' + result.database + " ";
-                    exec(connectLocal + build_assets_1.buildTables, (error, stdout, stderr) => {
-                        if (error) {
-                            console.error(`exec error: ${error}`);
-                            return;
-                        }
-                        else {
-                            console.log(`stout:${stdout}`);
-                            build_assets_1.makeJSONfromObj('./config/connect-config.json', databaseLocal);
-                        }
-                    });
-                });
-            }
-            else if (result.choice === "create") {
-                let newDBoptions = {
-                    properties: {
-                        database: {
-                            description: "choose a name for the database you would like to create(enter for default: formapp)",
-                            message: "use a string",
-                            type: "string"
-                        },
-                        username: {
-                            description: "choose a username to own the database(enter for default: formadmin)",
-                            message: "use a string",
-                            type: "string"
-                        },
-                        password: {
-                            description: "supply the password associated with the database(enter for default: formpassword)",
-                            message: "use a string",
-                            type: "string"
-                        }
-                    }
-                };
-                prompt.get(newDBoptions, function (err, result) {
-                    let databaseLocal = {
-                        database: result.database,
-                        username: result.username,
-                        password: result.password
-                    };
-                    databaseLocal = build_assets_1.applyDefaults(databaseLocal);
-                    let connectLocal = 'psql -d ' + databaseLocal.database;
-                    exec(adminConnect + build_assets_1.createUserAndDB(databaseLocal.username, databaseLocal.database), (error, stdout, stderr) => {
-                        if (error) {
-                            console.error(`exec error: ${error}`);
-                            return;
-                        }
-                        else {
-                            console.log(`stdout:${stdout}`);
-                            exec(connectLocal + build_assets_1.buildTables, (error, stdout, stderr) => {
-                                if (error) {
-                                    console.error(`exec error: ${error}`);
-                                    return;
-                                }
-                                else {
-                                    console.log(`stout:${stdout}`);
-                                    build_assets_1.makeJSONfromObj('./sdist/config/connect-config.json', databaseLocal);
-                                }
-                            });
-                        }
-                    });
-                });
-            }
-        });
-    }
-}
-if (argv.r === true) {
-    remoteBuilder();
+                else {
+                    console.log('successfully deleted');
+                }
+            });
+            return;
+        }
+    });
 }
 else {
-    console.log('Default, with no arguments is local db build. Start over with "-r true" for remote database.');
-    localBuilder();
+    // build to connect prompt string // make sign in object
+    func.prompter(obj.connectPrompt, function (err, result) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            result = func.applyDefaults(result);
+            let dbConnect = func.connectCommand(result.user, result.host, result.database, result.password);
+            build(dbConnect, result);
+        }
+    });
 }
 //# sourceMappingURL=build.js.map

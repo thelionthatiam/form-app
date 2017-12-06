@@ -1,0 +1,115 @@
+<div class="full-page">
+  <h1>Alarms</h1>
+  <p>
+    This is where you can view, add, remove and edit your alarms
+  </p>
+
+  <div class= "categoryListWrapper">
+    <div class="column categoryWrapper">
+      <div class="row categoryTitle">
+        <h4>title</h4>
+        <div class="time-wrapper flex space-around ">
+          <p class="self right">
+            6:00
+          </p>
+          <img src="https://png.icons8.com/ios/540/alarm-clock.png" />
+        </div>
+      </div>
+      <div class="box subCategoryWrapper none">
+        <div class="row subCategoryTitle">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Power_icon_%28the_Noun_Project_35084%29.svg/2000px-Power_icon_%28the_Noun_Project_35084%29.svg.png" />
+          <img src="https://maxcdn.icons8.com/Share/icon/p1em/Editing//edit1600.png" />
+          <img src="https://maxcdn.icons8.com/Share/icon/Media_Controls//high_volume1600.png" />
+          <img src="https://www.pngarts.com/files/1/X-Shape-PNG-High-Quality-Image.png" />
+        </div>
+        <div class="row date-created">
+          <p>
+            created on this date
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="column categoryWrapper">
+      <div class="row categoryTitle">
+        <h4>title</h4>
+        <div class="time-wrapper flex space-around">
+          <p class="self right">
+            6:00
+          </p>
+          <img src="https://png.icons8.com/ios/540/alarm-clock.png" />
+        </div>
+      </div>
+      <div class="box subCategoryWrapper none">
+        <div class="row subCategoryTitle">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Power_icon_%28the_Noun_Project_35084%29.svg/2000px-Power_icon_%28the_Noun_Project_35084%29.svg.png" />
+          <img src="https://maxcdn.icons8.com/Share/icon/p1em/Editing//edit1600.png" />
+          <img src="https://maxcdn.icons8.com/Share/icon/Media_Controls//high_volume1600.png" />
+          <img src="https://www.pngarts.com/files/1/X-Shape-PNG-High-Quality-Image.png" />
+        </div>
+        <div class="row date-created">
+          <p>
+            created on this date
+          </p>
+        </div>
+      </div>
+    </div>
+    <div id="random" class="column categoryWrapper">
+      <div class="row categoryTitle">
+        <h4>title</h4>
+        <div class="time-wrapper flex space-around">
+          <p class="self right">
+            6:00
+          </p>
+          <img src="https://png.icons8.com/ios/540/alarm-clock.png" />
+        </div>
+      </div>
+      <div class="box subCategoryWrapper none">
+        <div class="row subCategoryTitle">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Power_icon_%28the_Noun_Project_35084%29.svg/2000px-Power_icon_%28the_Noun_Project_35084%29.svg.png" />
+          <img src="https://maxcdn.icons8.com/Share/icon/p1em/Editing//edit1600.png" />
+          <img src="https://maxcdn.icons8.com/Share/icon/Media_Controls//high_volume1600.png" />
+          <img src="https://www.pngarts.com/files/1/X-Shape-PNG-High-Quality-Image.png" />
+        </div>
+        <div class="row date-created">
+          <p>
+            created on this date
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flex column add-alarm-form none">
+    <h3 class="formTitle">add alarm</h3>
+    <form action="/create" method="post">
+      <p>alarm title</p>
+      <input
+       id="alarmTitle"
+       name="alarmTitle"
+       class="userFormItem"
+       type="text"
+       placeholder="alarmTitle"
+       />
+      <p class="formErrorReport" id="alarmTitleError"></p>
+
+      <p>password</p>
+      <input
+       id="time"
+       name="time"
+       class="userFormItem"
+       type="text"
+       />
+      <p class="formErrorReport" id="timeError"></p>
+     <button id="formSubmitter" class="unavailable submit" type="submit"> add </button>
+   </form>
+  </div>
+
+  <div class="row center add-alarm">
+    <img id="add-close-alarm" src="https://cdn4.iconfinder.com/data/icons/miu/24/circle-add-plus-new-outline-stroke-512.png" />
+  </div>
+  {{ dbError }}
+</div>
+
+
+
+<script src="/behavior/menu-shuffle.js"></script>
+<script src="/behavior/loginAction.js"></script>
