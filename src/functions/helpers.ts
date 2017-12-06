@@ -1,4 +1,5 @@
-const bcrypt = require('bcrypt');
+import * as bcrypt from 'bcrypt';
+import { ModResponse } from '../../typings/typings';
 
 // expand to include bcrypt?
 function dbErrTranslator(error:string) {
@@ -82,12 +83,12 @@ function makeHashedString(cb:Function) {
   hash(string, cb);
 }
 
-function dbError(res, thisPage:string, err:string) {
+function dbError(res:ModResponse, thisPage:string, err:string) {
   res.render(thisPage, { dbError: dbErrTranslator(err)});
 }
 
 
-function genError(res, thisPage:string, param:Error | string) {
+function genError(res:ModResponse, thisPage:string, param:Error | string) {
   res.render(thisPage, { dbError: param } );
 }
 

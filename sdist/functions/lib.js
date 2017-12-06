@@ -16,7 +16,6 @@ function logout(req, res, thisPage, param = "Welcome back!") {
 }
 exports.logout = logout;
 function sendMail(mailOptions, transporter, cb) {
-    // console.log('start', mailOptions, transporter);
     transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
             cb(error);

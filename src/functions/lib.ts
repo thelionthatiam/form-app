@@ -1,10 +1,11 @@
 import * as nodeMailer from 'nodemailer';
 import * as helper from './helpers';
 import { transporter, mailOptions } from "../config/mail-config.js";
+import { ModResponse, ModRequest, Outputs } from '../../typings/typings';
+import { Transporter, SentMessageInfo, SendMailOptions } from '../../node_modules/@types/nodemailer/index';
 
-
-function logout(req, res, thisPage, param = "Welcome back!") {
-  req.session.destroy(function(err) {
+function logout(req:ModRequest, res:ModResponse, thisPage:string, param = "Welcome back!") {
+  req.session.destroy(function(err:Error) {
     if (err) {
       helper.genError(res, thisPage, "Could not log out normally.");
     } else {
@@ -16,9 +17,8 @@ function logout(req, res, thisPage, param = "Welcome back!") {
   });
 }
 
-function sendMail(mailOptions, transporter, cb) {
-  // console.log('start', mailOptions, transporter);
-  transporter.sendMail(mailOptions, function(error, info){
+function sendMail(mailOptions:SendMailOptions, transporter:Transporter, cb:Function) {
+  transporter.sendMail(mailOptions, function(error:Error, info:SentMessageInfo){
     if (error) {
       cb(error);
     } else {
@@ -28,7 +28,7 @@ function sendMail(mailOptions, transporter, cb) {
   });
 }
 
-function sessionValid(token, outputs, cb) {
+function sessionValid(token:string, outputs:Outputs, cb:Function) {
   console.log('sessionValid');
   var nonce = outputs.nonce;
   var oldDate = new Date(outputs.thetime);

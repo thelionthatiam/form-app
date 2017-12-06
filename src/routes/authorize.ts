@@ -1,25 +1,20 @@
 import * as lib from '../functions/lib';
 import * as helper from '../functions/helpers';
-import { Inputs, PGOutput } from '../../typings/typings';
+import { Inputs, PGOutput, ModRequest } from '../../typings/typings';
 import * as express from 'express';
 const app = express();
-
-interface InputObj {
-  email:string;
-  password:string;
-}
 
 app.get('/to-login', function(req, res, next) {
   console.log('/to-login');
   res.render('login', null );
 });
 
-app.post('/login', function(req, res, next) {
+app.post('/login', function(req:ModRequest, res, next) {
   console.log('/login');
 
   var thisPage = 'login';
   var nextPage ='account-actions';
-  var inputs: InputObj = {
+  var inputs: Inputs = {
     email: req.body.email,
     password: req.body.password,
   };
@@ -53,14 +48,14 @@ app.post('/login', function(req, res, next) {
   });
 });
 
-app.post('/log-out', function(req, res, next) {
+app.post('/log-out', function(req:ModRequest, res, next) {
   console.log('/log-out');
   var thisPage = 'login';
   var nextPage = 'index';
   lib.logout(req, res, thisPage);
 });
 
-app.post('/delete', function(req, res, next) {
+app.post('/delete', function(req:ModRequest, res, next) {
   console.log('/delete');
 
   var thisPage = 'login';

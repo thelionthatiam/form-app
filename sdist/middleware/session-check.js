@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const helper = require("../functions/helpers");
 function check(req, res, next) {
     var thisPage = 'login';
-    console.log(req.session);
     if (req.session && req.session.user) {
         var inputs = req.session.user;
         req.querySvc.selectSessionUser(inputs, (err, result) => {

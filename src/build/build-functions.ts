@@ -16,9 +16,19 @@ interface PromptProperty {
   }
 }
 
+interface Result {
+  user:string;
+  database:string;
+  host:string;
+  password:string;
+  deleteTables:String;
+  prevConn:string;
+}
+
+
 let tableDrop = psqlCommand(["DROP TABLE nonce", "DROP TABLE users"]);
 
-function applyDefaults(obj:any) {
+function applyDefaults(obj:Result) {
   for(let k in obj) {
     if (k === 'database' && obj[k] === '') {
       obj.database = 'formapp';
@@ -48,20 +58,6 @@ function psqlCommand(array:[string]) {
   return finarr.join('');
 }
 
-function fileChecker(path:string) {
-  try {
-    let file = require(path);
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
-function makeJSONfromObj(path:string, obj:any) {
-  let data = JSON.stringify(obj);
-  fs.writeFileSync(path, data)
-}
-
 function connectCommand(user:string, host:string, database:string, password:string) {
   let connectCommand =
       "PGPASSWORD=" + password +
@@ -73,7 +69,7 @@ function connectCommand(user:string, host:string, database:string, password:stri
 }
 
 function prompter(promptObj:PromptProperty, cb:Function) {
-  prompt.get(promptObj, function(err:any, result:any) {
+  prompt.get(promptObj, function(err:string, result:Result) {
     if (err) {
       console.log("something went wrong", err)
       cb(err);
@@ -87,7 +83,7 @@ function prompter(promptObj:PromptProperty, cb:Function) {
 
 function childProcess(string:string, cb:Function) {
   console.log('step one');
-  exec(string, function(error:any, stdout:any, stderr:any) {
+  exec(string, function(error, stdout, stderr) {
     console.log('step two');
     if (error) {
       cb(error)
@@ -100,7 +96,32 @@ function childProcess(string:string, cb:Function) {
 }
 
 let tablesExist = psqlCommand(["SELECT * FROM users", "SELECT * FROM nonce"]);
-let removeConfig = fs.unlink('../config/connect-config.json', function(){})
+
+function fileChecker(path:string) {
+  try {
+    let file = require(path);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+let makeJSONfromObj = function(path:string, obj:Result, cb:Function) {
+  let data = JSON.stringify(obj);
+  fs.writeFile(path, data, (err) => {
+    if(err) {
+      cb(err);
+    }
+  })
+}
+let removeConfig = function(path:string, cb:Function) {
+  fs.unlink(path, (err) => {
+    if (err) {
+      cb(err);
+    }
+  });
+}
+
 
 export {
   applyDefaults,

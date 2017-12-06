@@ -6,7 +6,6 @@ const build_functions_1 = require("./build-functions");
 const build_strings_1 = require("./build-strings");
 function build(dbConnect, result) {
     // check if tables exist
-    console.log(dbConnect);
     func.childProcess(dbConnect + build_functions_1.tablesExist, function (error, stdout, stderr) {
         if (error) {
             console.error(`exec error: ${error}`);
@@ -20,37 +19,51 @@ function build(dbConnect, result) {
                         console.log(`stdout: ${stdout}`);
                         console.log(`stderr: ${stderr}`);
                         console.log('tables added to empty database');
-                        func.makeJSONfromObj('../config/connect-config.json', result); // store that information in a JSON
-                        return;
+                        func.makeJSONfromObj('../config/connect-config.json', result, function (err) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            else {
+                                console.log('successfuly made config JSON');
+                                return;
+                            }
+                        });
                     }
                 });
             }
         }
         else {
-            func.makeJSONfromObj('../config/connect-config.json', result); // store that information in a JSON
             console.log(`stdout: ${stdout}`);
             console.log(`stderr: ${stderr}`);
-            func.prompter(obj.deleteTables, function (err, result) {
+            func.makeJSONfromObj('../config/connect-config.json', result, function (err) {
                 if (err) {
                     console.log(err);
                 }
                 else {
-                    if (result.deleteTables) {
-                        console.log(result);
-                        func.childProcess(dbConnect + build_functions_1.tableDrop, function (err, result) {
-                            if (err) {
-                                console.log(err);
+                    console.log('successfuly made config JSON');
+                    func.prompter(obj.deleteTables, function (err, result) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        else {
+                            if (result.deleteTables) {
+                                console.log(result);
+                                func.childProcess(dbConnect + build_functions_1.tableDrop, function (err, result) {
+                                    if (err) {
+                                        console.log(err);
+                                    }
+                                    else {
+                                        console.log(result);
+                                        return;
+                                    }
+                                });
                             }
                             else {
-                                console.log(result);
+                                console.log('tables not deleted');
                                 return;
                             }
-                        });
-                    }
-                    else {
-                        console.log('tables not deleted');
-                        return;
-                    }
+                        }
+                    });
                 }
             });
         }
@@ -68,7 +81,14 @@ if (func.fileChecker('../config/connect-config.json')) {
             build(dbConnect, connConfig);
         }
         else {
-            func.removeConfig;
+            func.removeConfig('../config/connect-config.json', function (err) {
+                if (err) {
+                    console.log(err);
+                }
+                else {
+                    console.log('successfully deleted');
+                }
+            });
             return;
         }
     });

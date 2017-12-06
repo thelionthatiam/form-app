@@ -1,17 +1,7 @@
-function Query(conn:Function) {
-  this.conn = conn;
-}
+import { Inputs } from '../../typings/typings';
 
-interface Inputs {
-  email:string;
-  user:string;
-  phone:string;
-  nonce:string;
-  user_uuid:string;
-  newPhone:string;
-  newEmail:string;
-  hashedPassword:string;
-  password:string;
+function Query(conn:Client) {
+  this.conn = conn;
 }
 
 // is open to many query/values doesn

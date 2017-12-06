@@ -4,7 +4,6 @@ function Query(conn) {
     this.conn = conn;
 }
 exports.Query = Query;
-// is open to many query/values doesn
 Query.prototype.selectRowViaEmail = function (inputs, cb) {
     const query = "SELECT * FROM users WHERE email = $1";
     const values = [inputs.email];

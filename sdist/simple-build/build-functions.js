@@ -39,21 +39,6 @@ function psqlCommand(array) {
     return finarr.join('');
 }
 exports.psqlCommand = psqlCommand;
-function fileChecker(path) {
-    try {
-        let file = require(path);
-        return true;
-    }
-    catch (e) {
-        return false;
-    }
-}
-exports.fileChecker = fileChecker;
-function makeJSONfromObj(path, obj) {
-    let data = JSON.stringify(obj);
-    fs.writeFileSync(path, data);
-}
-exports.makeJSONfromObj = makeJSONfromObj;
 function connectCommand(user, host, database, password) {
     let connectCommand = "PGPASSWORD=" + password +
         " psql" +
@@ -92,6 +77,31 @@ function childProcess(string, cb) {
 exports.childProcess = childProcess;
 let tablesExist = psqlCommand(["SELECT * FROM users", "SELECT * FROM nonce"]);
 exports.tablesExist = tablesExist;
-let removeConfig = fs.unlink('../config/connect-config.json', function () { });
+function fileChecker(path) {
+    try {
+        let file = require(path);
+        return true;
+    }
+    catch (e) {
+        return false;
+    }
+}
+exports.fileChecker = fileChecker;
+let makeJSONfromObj = function (path, obj, cb) {
+    let data = JSON.stringify(obj);
+    fs.writeFile(path, data, (err) => {
+        if (err) {
+            cb(err);
+        }
+    });
+};
+exports.makeJSONfromObj = makeJSONfromObj;
+let removeConfig = function (path, cb) {
+    fs.unlink(path, (err) => {
+        if (err) {
+            cb(err);
+        }
+    });
+};
 exports.removeConfig = removeConfig;
 //# sourceMappingURL=build-functions.js.map

@@ -1,19 +1,12 @@
 import { Pool } from 'pg';
 import { Query } from '../functions/queries';
+import { ConnectionConfig } from '../../node_modules/@types/pg/index'; // pg types
+import { ModRequest } from '../../typings/typings';
 
-interface connectObj {
-  user:string;
-  database:string;
-  host:string;
-  password:string;
-  port:number;
-}
-
-
-function init(databaseInformation:connectObj) {
+function init(databaseInformation:ConnectionConfig) {
   const pool = new Pool(databaseInformation);
 
-  return function(req:Request, res:Response, next:Function) { // extend express
+  return function(req:ModRequest, res:Response, next:Function) { // extend express
     pool.connect((err, client, release) => {
       req.conn = client;
       req.querySvc = new Query(req.conn);

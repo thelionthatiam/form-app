@@ -1,6 +1,6 @@
 import * as express from 'express';
 import * as helper from '../functions/helpers';
-import { Inputs, PGOutput } from '../../typings/typings';
+import { Inputs, PGOutput, ModRequest } from '../../typings/typings';
 const app = express();
 
 //to sign up page
@@ -12,7 +12,7 @@ app.get('/to-create', function(req, res, next:Function) {
 
 
 //sends user information to database,
-app.post('/create', function (req, res, next:Function) {
+app.post('/create', function (req:ModRequest, res, next:Function) {
   console.log('/create');
   var thisPage = 'create-account';
   var nextPage ='create-account';

@@ -1,6 +1,6 @@
 import * as helper from '../functions/helpers';
 import * as express from 'express';
-import { Inputs, PGOutput } from '../../typings/typings';
+import { Inputs, PGOutput, ModRequest } from '../../typings/typings';
 const app = express();
 
 // back to account actions
@@ -14,7 +14,7 @@ app.get('/back-account-actions', function(req, res, next) {
 
 
 // to account information
-app.get('/to-manage-account', function(req, res, next) {
+app.get('/to-manage-account', function(req:ModRequest, res, next) {
     res.render('manage-account', {
       subtitle: "click change if you need to fix something",
       email: req.user.email,
@@ -23,7 +23,7 @@ app.get('/to-manage-account', function(req, res, next) {
 });
 
 // render change email page
-app.get('/to-change-email', function(req, res, next) {
+app.get('/to-change-email', function(req:ModRequest, res, next) {
   res.render('manage-account',{
     title: "Change your information",
     subtitle: "type in a new email",
@@ -34,7 +34,7 @@ app.get('/to-change-email', function(req, res, next) {
 });
 
 //render change phone page
-app.get('/to-change-phone', function(req, res, next) {
+app.get('/to-change-phone', function(req:ModRequest, res, next) {
   res.render('manage-account',{
     title: "Change your information",
     subtitle: "type in a new phone number",
@@ -47,7 +47,7 @@ app.get('/to-change-phone', function(req, res, next) {
 
 
 // change email
-app.post('/change-email', function(req, res, next) {
+app.post('/change-email', function(req:ModRequest, res, next) {
   var thisPage = 'manage-account';
   var nextPage = 'manage-account';
   var inputs = {
@@ -73,7 +73,7 @@ app.post('/change-email', function(req, res, next) {
 
 
 // change phone
-app.post('/change-phone', function (req, res, next) {
+app.post('/change-phone', function (req:ModRequest, res, next) {
   var thisPage = 'manage-account';
   var nextPage = 'manage-account';
   var inputs = {

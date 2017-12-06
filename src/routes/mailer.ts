@@ -1,11 +1,11 @@
 import { mailOptions, transporter } from '../config/mail-config';
 import * as lib from '../functions/lib';
 import * as helper from '../functions/helpers';
-import { Inputs, PGOutput } from '../../typings/typings';
+import { Inputs, PGOutput, ModRequest } from '../../typings/typings';
 import * as express from 'express';
 const app = express();
 
-app.post('/mailer', function(req, res, next) {
+app.post('/mailer', function(req:ModRequest, res, next) {
   console.log('/mailer');
   console.log(mailOptions)
   let inputs;
@@ -27,7 +27,7 @@ app.post('/mailer', function(req, res, next) {
   } else {
     res.render('email-password', { mailNotSent:true });
   }
-}, function (req, res, next) {
+}, function (req:ModRequest, res, next) {
     let thisPage = 'login';
     let nextPage ='email-password';
     console.log('inputs', res.locals.inputs);
@@ -71,7 +71,7 @@ app.post('/mailer', function(req, res, next) {
   }
 );
 
-app.get('/new-password', function(req, res, next) {
+app.get('/new-password', function(req:ModRequest, res, next) {
   console.log('/new-password');
   let thisPage = 'login';
   let nextPage ='new-password';
@@ -103,7 +103,7 @@ app.get('/new-password', function(req, res, next) {
 });
 
 // change password: hash new pass, update database, update session, check the session
-app.post('/change-password', function (req, res, next) {
+app.post('/change-password', function (req:ModRequest, res, next) {
   console.log('/change-password');
   let thisPage = 'login';
   let nextPage ='manage-account';
