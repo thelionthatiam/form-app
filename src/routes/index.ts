@@ -49,12 +49,16 @@ app.get('/alarms', async (req, res, next) => {
   let thisPage = 'index';
   let nextPage = 'alarms';
   let user_uuid = 'ee53a4f7-c760-4cb0-9070-c5b11fca3f51';
+  try {
+    const { rows } = await db.query('SELECT * FROM alarms WHERE user_uuid = $1', [user_uuid])
+    let awake = rows[0].awake,
+        title = rows[0].title,
+        thedate = rows[0].thedate;
+    res.render(nextPage, {awake:awake, title:title, thedate:thedate});
 
-  const { rows } = await db.query('SELECT * FROM alarms WHERE user_uuid = $1', [user_uuid]);
-  let awake = rows[0].awake,
-      title = rows[0].title,
-      thedate = rows[0].thedate;
-  res.render(nextPage, {awake:awake, title:title, thedate:thedate});
+  } catch(err) {
+    next(err);
+  }
 })
 
 

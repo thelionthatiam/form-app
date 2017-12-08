@@ -49,9 +49,14 @@ app.get('/alarms', (req, res, next) => __awaiter(this, void 0, void 0, function*
     let thisPage = 'index';
     let nextPage = 'alarms';
     let user_uuid = 'ee53a4f7-c760-4cb0-9070-c5b11fca3f51';
-    const { rows } = yield async_database_1.db.query('SELECT * FROM alarms WHERE user_uuid = $1', [user_uuid]);
-    let awake = rows[0].awake, title = rows[0].title, thedate = rows[0].thedate;
-    res.render(nextPage, { awake: awake, title: title, thedate: thedate });
+    try {
+        const { rows } = yield async_database_1.db.query('SELECT * FROM alarms WHERE user_uuid = $1', [user_uuid]);
+        let awake = rows[0].awake, title = rows[0].title, thedate = rows[0].thedate;
+        res.render(nextPage, { awake: awake, title: title, thedate: thedate });
+    }
+    catch (err) {
+        next(err);
+    }
 }));
 module.exports = app;
 //# sourceMappingURL=index.js.map
