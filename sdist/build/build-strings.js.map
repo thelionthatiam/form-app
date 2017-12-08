@@ -1,1 +1,1 @@
-{"version":3,"file":"build-strings.js","sourceRoot":"","sources":["../../src/simple-build/build-strings.ts"],"names":[],"mappings":";;AAAA,MAAM,WAAW,GAAG,6BAA6B,CAAC;AAEzC,kCAAW;AADpB,MAAM,OAAO,GAAG,+BAA+B,CAAA;AACzB,0BAAO"}
+{"version":3,"file":"build-strings.js","sourceRoot":"","sources":["../../src/build/build-strings.ts"],"names":[],"mappings":";;AAAA,MAAM,WAAW,GAAG,yCAAyC,CAAC;AAErD,kCAAW;AADpB,MAAM,OAAO,GAAG,+BAA+B,CAAA;AACzB,0BAAO"}

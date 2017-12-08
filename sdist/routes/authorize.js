@@ -18,7 +18,7 @@ app.post('/login', function (req, res, next) {
     };
     req.querySvc.selectRowViaEmail(inputs, function (err, result) {
         if (err) {
-            helper.dbError(res, thisPage, err);
+            helper.dbError(res, thisPage, JSON.stringify(err));
         }
         else {
             if (result.rows.length === 0) {
@@ -83,7 +83,7 @@ app.post('/delete', function (req, res, next) {
                     else {
                         req.querySvc.removeUserViaEmail(inputs, function (err, result) {
                             if (err) {
-                                helper.dbError(res, thisPage, err);
+                                helper.dbError(res, thisPage, JSON.stringify(err));
                             }
                             else {
                                 res.render(nextPage, { title: "Welcome back!", subtitle: "Your account was deleted, make a new one if you want to come back in" });

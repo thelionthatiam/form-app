@@ -4,8 +4,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const hbs = require("express-handlebars");
 const path = require("path");
-const dbConfig = require("./config/combiner");
-const dbMiddleware = require("./middleware/database");
+const combiner_1 = require("./config/combiner");
+const database_1 = require("./middleware/database");
 const session = require("express-session");
 const sessionCheck = require("./middleware/session-check");
 const app = express();
@@ -15,8 +15,8 @@ app.set('views', path.join(__dirname, "../views"));
 app.set('view engine', "hbs");
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('trust proxy', 1);
-app.use(dbMiddleware.init(dbConfig.dbConfig));
-// console.log(dbConfig.dbConfig)
+app.use(database_1.init(combiner_1.dbConfig));
+console.log(combiner_1.dbConfig);
 //session using memory storage for now. Will not be the case in production. see readme session stores
 app.use(session({
     name: 'session',

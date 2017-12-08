@@ -23,6 +23,7 @@
     "file-system": "^2.2.2",
     "nodemailer": "^4.1.0",
     "pg": "^7.3.0",
+    "promise": "^8.0.1",
     "prompt": "^1.0.0",
     "request": "^2.83.0",
     "strict-mode": "^1.1.2",

@@ -9,7 +9,7 @@ app.get('/to-login', function(req, res, next) {
   res.render('login', null );
 });
 
-app.post('/login', function(req:ModRequest, res, next) {
+app.post('/login', function(req, res, next) {
   console.log('/login');
 
   var thisPage = 'login';
@@ -19,9 +19,9 @@ app.post('/login', function(req:ModRequest, res, next) {
     password: req.body.password,
   };
 
-  req.querySvc.selectRowViaEmail(inputs, function(err: string, result: PGOutput) {
+  req.querySvc.selectRowViaEmail(inputs, function(err:Error, result: PGOutput) {
     if (err) {
-      helper.dbError(res, thisPage, err);
+      helper.dbError(res, thisPage, JSON.stringify(err));
     } else {
       if (result.rows.length === 0) {
         helper.genError(res, thisPage, "Email not found"); // u
@@ -48,14 +48,14 @@ app.post('/login', function(req:ModRequest, res, next) {
   });
 });
 
-app.post('/log-out', function(req:ModRequest, res, next) {
+app.post('/log-out', function(req, res, next) {
   console.log('/log-out');
   var thisPage = 'login';
   var nextPage = 'index';
   lib.logout(req, res, thisPage);
 });
 
-app.post('/delete', function(req:ModRequest, res, next) {
+app.post('/delete', function(req, res, next) {
   console.log('/delete');
 
   var thisPage = 'login';
@@ -65,7 +65,7 @@ app.post('/delete', function(req:ModRequest, res, next) {
     password: req.body.password,
   };
 
-  req.querySvc.selectRowViaEmail(inputs, function(err: string, result: PGOutput) {
+  req.querySvc.selectRowViaEmail(inputs, function(err:Error, result: PGOutput) {
     if (err) {
       res.render(thisPage, { dbError: err, accountDelete:true } );
     } else {
@@ -80,9 +80,9 @@ app.post('/delete', function(req:ModRequest, res, next) {
           } else if (result === false ) {
             res.render(thisPage, { dbError: err, accountDelete:true } );
           } else {
-            req.querySvc.removeUserViaEmail(inputs, function (err: string, result: PGOutput) {
+            req.querySvc.removeUserViaEmail(inputs, function (err:Error, result: PGOutput) {
               if (err) {
-                helper.dbError(res, thisPage, err);
+                helper.dbError(res, thisPage, JSON.stringify(err));
               } else {
                 res.render(nextPage, { title: "Welcome back!", subtitle:"Your account was deleted, make a new one if you want to come back in" });
               }

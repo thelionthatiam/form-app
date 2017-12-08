@@ -69,12 +69,11 @@ function connectCommand(user:string, host:string, database:string, password:stri
 }
 
 function prompter(promptObj:PromptProperty, cb:Function) {
-  prompt.get(promptObj, function(err:string, result:Result) {
+  prompt.get(promptObj, function(err:Error, result:Result) {
     if (err) {
       console.log("something went wrong", err)
       cb(err);
     } else {
-      console.log('prompter completed')
       cb(null, result);
     }
   })
@@ -82,16 +81,12 @@ function prompter(promptObj:PromptProperty, cb:Function) {
 
 
 function childProcess(string:string, cb:Function) {
-  console.log('step one');
   exec(string, function(error, stdout, stderr) {
-    console.log('step two');
     if (error) {
       cb(error)
     } else {
-      console.log('step three');
       cb(null, stdout, stderr);
     }
-
   })
 }
 

@@ -55,21 +55,17 @@ function prompter(promptObj, cb) {
             cb(err);
         }
         else {
-            console.log('prompter completed');
             cb(null, result);
         }
     });
 }
 exports.prompter = prompter;
 function childProcess(string, cb) {
-    console.log('step one');
     child_process_1.exec(string, function (error, stdout, stderr) {
-        console.log('step two');
         if (error) {
             cb(error);
         }
         else {
-            console.log('step three');
             cb(null, stdout, stderr);
         }
     });

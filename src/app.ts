@@ -5,11 +5,12 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as hbs from "express-handlebars";
 import * as path from "path";
-import * as dbConfig from "./config/combiner";
-import * as dbMiddleware from "./middleware/database";
+import { dbConfig } from "./config/combiner";
+import { init } from "./middleware/database";
 import * as session from "express-session";
 import * as sessionCheck from "./middleware/session-check";
 const app = express();
+
 
 app.use(bodyParser.urlencoded({ extended: false,limit:'50kb'}));
 app.engine('hbs', hbs({extname: 'hbs', defaultLayout:"layout"}));
@@ -18,8 +19,8 @@ app.set('view engine', "hbs");
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('trust proxy', 1);
 
-app.use(dbMiddleware.init(dbConfig.dbConfig));
-// console.log(dbConfig.dbConfig)
+app.use(init(dbConfig));
+console.log(dbConfig);
 
 //session using memory storage for now. Will not be the case in production. see readme session stores
 app.use(session({
@@ -38,7 +39,7 @@ app.use(function(req, res, next) {
   res.render('error', { errName: null, errMessage: "We couldn't find this page." });
 });
 
-app.use(function (err:any, req:any, res:any, next:Function) {
+app.use(function (err:Error, req:express.Request, res:express.Response, next:express.NextFunction) {
   console.log('err name: ', err.name);
   console.log(err);
 

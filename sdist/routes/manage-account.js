@@ -48,7 +48,7 @@ app.post('/change-email', function (req, res, next) {
     };
     req.querySvc.updateEmail(inputs, function (err, result) {
         if (err) {
-            helper.dbError(res, thisPage, err); // u
+            helper.dbError(res, thisPage, JSON.stringify(err)); // u
         }
         else {
             req.session.user[0] = req.body.email;
@@ -72,7 +72,7 @@ app.post('/change-phone', function (req, res, next) {
     };
     req.querySvc.updatePhone(inputs, function (err, result) {
         if (err) {
-            helper.dbError(res, thisPage, err); // u
+            helper.dbError(res, thisPage, JSON.stringify(err)); // u
         }
         else {
             req.session.user[2] = req.body.phone;

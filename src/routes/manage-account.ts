@@ -14,7 +14,7 @@ app.get('/back-account-actions', function(req, res, next) {
 
 
 // to account information
-app.get('/to-manage-account', function(req:ModRequest, res, next) {
+app.get('/to-manage-account', function(req, res, next) {
     res.render('manage-account', {
       subtitle: "click change if you need to fix something",
       email: req.user.email,
@@ -23,7 +23,7 @@ app.get('/to-manage-account', function(req:ModRequest, res, next) {
 });
 
 // render change email page
-app.get('/to-change-email', function(req:ModRequest, res, next) {
+app.get('/to-change-email', function(req, res, next) {
   res.render('manage-account',{
     title: "Change your information",
     subtitle: "type in a new email",
@@ -34,7 +34,7 @@ app.get('/to-change-email', function(req:ModRequest, res, next) {
 });
 
 //render change phone page
-app.get('/to-change-phone', function(req:ModRequest, res, next) {
+app.get('/to-change-phone', function(req, res, next) {
   res.render('manage-account',{
     title: "Change your information",
     subtitle: "type in a new phone number",
@@ -47,16 +47,16 @@ app.get('/to-change-phone', function(req:ModRequest, res, next) {
 
 
 // change email
-app.post('/change-email', function(req:ModRequest, res, next) {
+app.post('/change-email', function(req, res, next) {
   var thisPage = 'manage-account';
   var nextPage = 'manage-account';
   var inputs = {
     newEmail: req.body.email,
     email: req.user.email
   };
-  req.querySvc.updateEmail(inputs, function(err: string, result: PGOutput) {
+  req.querySvc.updateEmail(inputs, function(err:Error, result: PGOutput) {
     if (err) {
-      helper.dbError(res, thisPage, err); // u
+      helper.dbError(res, thisPage, JSON.stringify(err)); // u
     } else {
       req.session.user[0] = req.body.email;
       req.user.email = req.body.email;
@@ -73,16 +73,16 @@ app.post('/change-email', function(req:ModRequest, res, next) {
 
 
 // change phone
-app.post('/change-phone', function (req:ModRequest, res, next) {
+app.post('/change-phone', function (req, res, next) {
   var thisPage = 'manage-account';
   var nextPage = 'manage-account';
   var inputs = {
     newPhone: req.body.phone,
     email: req.user.email
   };
-  req.querySvc.updatePhone(inputs, function(err: string, result: PGOutput) {
+  req.querySvc.updatePhone(inputs, function(err:Error, result: PGOutput) {
     if (err) {
-      helper.dbError(res, thisPage, err); // u
+      helper.dbError(res, thisPage, JSON.stringify(err)); // u
     } else {
       req.session.user[2] = req.body.phone;
       req.user.phone = req.body.phone;

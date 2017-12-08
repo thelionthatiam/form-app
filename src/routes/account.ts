@@ -4,15 +4,13 @@ import { Inputs, PGOutput, ModRequest } from '../../typings/typings';
 const app = express();
 
 //to sign up page
-app.get('/to-create', function(req, res, next:Function) {
+app.get('/to-create', function(req, res, next) {
   console.log('/to-create');
   res.render('create-account', {success: false});
 });
 
-
-
 //sends user information to database,
-app.post('/create', function (req:ModRequest, res, next:Function) {
+app.post('/create', function (req, res, next) {
   console.log('/create');
   var thisPage = 'create-account';
   var nextPage ='create-account';
@@ -58,7 +56,7 @@ app.post('/create', function (req:ModRequest, res, next:Function) {
 });
 
 
-app.post('/delete', function (req, res, next:Function) {
+app.post('/delete', function (req, res, next) {
   console.log('/delete');
   var thisPage = 'account-actions';
   var nextPage ='login';
