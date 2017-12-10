@@ -83,6 +83,33 @@ function fileChecker(path) {
     }
 }
 exports.fileChecker = fileChecker;
+function filesInDir(dir, cb) {
+    fs.readdir(dir, function (err, files) {
+        if (err) {
+            cb(err);
+        }
+        else {
+            cb(null, files);
+        }
+    });
+}
+exports.filesInDir = filesInDir;
+function stringOfFiles(dir, array, version, rev) {
+    let finalArr = [];
+    if (rev) {
+        for (let i = array.length - 1; i >= version; i--) {
+            finalArr.push("-f " + dir + '/' + array[i]);
+        }
+        return " -a " + finalArr.join(' ');
+    }
+    else {
+        for (let i = 0; i < version; i++) {
+            finalArr.push("-f " + dir + '/' + array[i]);
+        }
+        return " -a " + finalArr.join(' ');
+    }
+}
+exports.stringOfFiles = stringOfFiles;
 let makeJSONfromObj = function (path, obj, cb) {
     let data = JSON.stringify(obj);
     fs.writeFile(path, data, (err) => {

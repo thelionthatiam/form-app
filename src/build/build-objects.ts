@@ -25,10 +25,11 @@ const connectPrompt = {
 
 const deleteTables = {
   properties: {
-    deleteTables: {
-      description:"Would you like to delete these tables?(boolean)",
-      message:"Use true for delete and false to exit",
-      type:"boolean"
+    versionDown: {
+      description:"Which version would you like to go down to? 0 removes all. (number)",
+      message:"Use a number, check the database builds for version numbers.",
+      required:true,
+      type:"number"
     }
   }
 }
@@ -43,8 +44,20 @@ const prevConn = {
   }
 }
 
+const whatVersion = {
+  properties: {
+    version: {
+      description:"What version of the database would you like to install? (number)",
+      message:"Use a number, check the database builds for version numbers.",
+      required:true,
+      type:"number"
+    }
+  }
+}
+
 export {
   connectPrompt,
   deleteTables,
-  prevConn
+  prevConn,
+  whatVersion
 }

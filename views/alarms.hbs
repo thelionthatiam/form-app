@@ -7,10 +7,10 @@
   <div class= "categoryListWrapper">
     <div class="column categoryWrapper">
       <div class="row categoryTitle">
-        <h4>{{ title }}</h4>
+        <h4>Dummy alarm</h4>
         <div class="time-wrapper flex space-around ">
           <p class="self right">
-            {{ awake }}
+            21:00
           </p>
           <img src="https://png.icons8.com/ios/540/alarm-clock.png" />
         </div>
@@ -24,33 +24,35 @@
         </div>
         <div class="row date-created">
           <p>
-            {{ thedate }}
+            whenever!
           </p>
         </div>
       </div>
     </div>
+    {{{alarmTableToHTML alarmContent}}}
   </div>
   <div class="flex column add-alarm-form none">
     <h3 class="formTitle">add alarm</h3>
-    <form action="/create" method="post">
+    <form action="/create-alarm" method="post">
       <p>alarm title</p>
       <input
-       id="alarmTitle"
-       name="alarmTitle"
+       id="title"
+       name="title"
        class="userFormItem"
        type="text"
-       placeholder="alarmTitle"
+       placeholder="work week"
        />
-      <p class="formErrorReport" id="alarmTitleError"></p>
+      <p class="formErrorReport" id="titleError"></p>
 
-      <p>password</p>
+      <p>time</p>
       <input
-       id="time"
-       name="time"
+       id="awake"
+       name="awake"
        class="userFormItem"
        type="text"
+       placeholder="6:00"
        />
-      <p class="formErrorReport" id="timeError"></p>
+      <p class="formErrorReport" id="awakeError"></p>
      <button id="formSubmitter" class="unavailable submit" type="submit"> add </button>
    </form>
   </div>
@@ -64,4 +66,4 @@
 
 
 <script src="/behavior/menu-shuffle.js"></script>
-<script src="/behavior/loginAction.js"></script>
+<script src="/behavior/alarm-action.js"></script>

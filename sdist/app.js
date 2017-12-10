@@ -10,7 +10,10 @@ const session = require("express-session");
 const sessionCheck = require("./middleware/session-check");
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false, limit: '50kb' }));
-app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: "layout" }));
+app.engine('hbs', hbs({
+    extname: 'hbs',
+    defaultLayout: "layout"
+}));
 app.set('views', path.join(__dirname, "../views"));
 app.set('view engine', "hbs");
 app.use(express.static(path.join(__dirname, 'public')));

@@ -15,6 +15,7 @@
   "dependencies": {
     "@types/bcrypt": "^1.0.0",
     "@types/filesystem": "0.0.28",
+    "@types/handlebars": "^4.0.36",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
     "express": "^4.15.4",

@@ -18,17 +18,6 @@ function isCyclic(obj) {
     }
     return detect(obj);
 }
-function cyclicTest(obj1, obj2) {
-    if (isCyclic(obj1)) {
-        console.log(obj1 + ' is cyclic');
-        return true;
-    }
-    else if (isCyclic(obj2)) {
-        console.log(obj2 + ' is cyclic');
-        return true;
-    }
-    return false;
-}
 function isObj(prop) {
     if (Array.isArray(prop)) {
         return false;
@@ -41,8 +30,16 @@ function isObj(prop) {
     }
 }
 function deepMerge(obj1, obj2) {
-    if (cyclicTest(obj1, obj2)) {
-        return;
+    function cyclicTest(obj1, obj2) {
+        if (isCyclic(obj1)) {
+            console.log(obj1 + ' is cyclic');
+            return true;
+        }
+        else if (isCyclic(obj2)) {
+            console.log(obj2 + ' is cyclic');
+            return true;
+        }
+        return false;
     }
     for (let prop in obj2) {
         if (typeof obj1[prop] !== 'undefined') {

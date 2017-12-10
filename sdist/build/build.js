@@ -2,77 +2,93 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const obj = require("./build-objects");
 const func = require("./build-functions");
-const build_functions_1 = require("./build-functions");
 const build_strings_1 = require("./build-strings");
+let thing = " --command='\\dt'";
 function build(dbConnect, result, cb) {
-    // check if tables exist
-    func.childProcess(dbConnect + build_functions_1.tablesExist, function (err, stdout, stderr) {
+    let jsonConfig = result;
+    func.childProcess(dbConnect + thing, function (err, stdout, stderr) {
         if (err) {
-            console.log('tables do not exist');
-            console.error(`exec error: ${err}`);
-            if (build_strings_1.noTable.test(JSON.stringify(err))) {
-                console.log('No user table, creating tables');
-                func.childProcess(dbConnect + build_strings_1.buildTables, function (err, stdout, stderr) {
+            console.log(err);
+        }
+        else {
+            // console.log(`stdout: ${stdout}`);
+            if (build_strings_1.noTable.test(stdout)) {
+                func.prompter(obj.whatVersion, function (err, result) {
                     if (err) {
-                        console.error(`exec error: ${err}`);
-                        cb(err);
+                        console.log(err);
                     }
                     else {
-                        console.log(`stdout: ${stdout}`);
-                        console.log(`stderr: ${stderr}`);
-                        console.log('tables added to empty database');
-                        func.makeJSONfromObj('./sdist/config/connect-config.json', result, function (err) {
+                        func.filesInDir('./database-builds/up', function (err, files) {
                             if (err) {
                                 console.log(err);
-                                cb(err);
                             }
                             else {
-                                console.log('successfuly made config JSON');
-                                cb();
+                                let fileString = func.stringOfFiles('./database-builds/up', files, result.version, false);
+                                console.log(result.version);
+                                console.log(fileString);
+                                func.childProcess(dbConnect + fileString, function (err, stdout, stderr) {
+                                    if (err) {
+                                        console.error(`exec error: ${err}`);
+                                        cb(err);
+                                    }
+                                    else {
+                                        console.log(`stdout: ${stdout}`);
+                                        console.log(`stderr: ${stderr}`);
+                                        console.log('tables added to empty database');
+                                        func.makeJSONfromObj('./sdist/config/connect-config.json', jsonConfig, function (err) {
+                                            if (err) {
+                                                console.log(err);
+                                                cb(err);
+                                            }
+                                            else {
+                                                console.log('successfuly made config JSON');
+                                                cb();
+                                            }
+                                        });
+                                    }
+                                });
                             }
                         });
                     }
                 });
             }
-        }
-        else {
-            console.log('tables exist');
-            console.log(`stdout: ${stdout}`);
-            console.log(`stderr: ${stderr}`);
-            func.makeJSONfromObj('./sdist/config/connect-config.json', result, function (err) {
-                if (err) {
-                    console.log(err);
-                    cb(err);
-                }
-                else {
-                    console.log('successfuly made config JSON');
-                    func.prompter(obj.deleteTables, function (err, result) {
-                        if (err) {
-                            console.log(err);
-                            cb(err);
-                        }
-                        else {
-                            if (result.deleteTables) {
-                                console.log(result);
-                                func.childProcess(dbConnect + build_functions_1.tableDrop, function (err, stdout, stderr) {
+            else {
+                console.log('this is where I should be');
+                // func.makeJSONfromObj('./sdist/config/connect-config.json', jsonConfig, function(err:Error, result:Result) { // store that information in a JSON
+                //   if (err) {
+                //     console.log(err);
+                //     cb(err);
+                // } else {
+                console.log('successfuly made config JSON');
+                func.prompter(obj.deleteTables, function (err, result) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    else {
+                        func.filesInDir('./database-builds/down', function (err, files) {
+                            if (err) {
+                                console.log(err);
+                                cb(err);
+                            }
+                            else {
+                                let fileString = func.stringOfFiles('./database-builds/down', files, result.versionDown, true);
+                                console.log(fileString);
+                                func.childProcess(dbConnect + fileString, function (err, stdout, stderr) {
                                     if (err) {
-                                        console.log(err);
+                                        console.error(`exec error: ${err}`);
                                         cb(err);
                                     }
                                     else {
-                                        console.log(result);
+                                        console.log(`stdout: ${stdout}`);
+                                        console.log(`stderr: ${stderr}`);
                                         cb();
                                     }
                                 });
                             }
-                            else {
-                                console.log('tables not deleted');
-                                cb();
-                            }
-                        }
-                    });
-                }
-            });
+                        });
+                    }
+                });
+            }
         }
     });
 }

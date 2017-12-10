@@ -2,7 +2,7 @@
 function isCyclic<O> (obj:O) {
   let seenObjects:O[] = []; // so that the array builds outside the loop
 
-  function detect<O> (obj:O) {
+  function detect<O>(obj:O) {
     if (obj && typeof obj === 'object') {
       if (seenObjects.indexOf(obj) !== -1) {
         return true;
@@ -20,18 +20,9 @@ function isCyclic<O> (obj:O) {
   return detect(obj);
 }
 
-function cyclicTest<O>(obj1:O, obj2:O) {
-  if (isCyclic(obj1)) {
-    console.log(obj1+' is cyclic');
-  	return true;
-  } else if (isCyclic(obj2)) {
-    console.log(obj2+' is cyclic');
-  	return true;
-  }
-  return false;
-}
 
-function isObj<A>(prop:A):boolean {
+
+function isObj<O>(prop:O):boolean {
 	if (Array.isArray(prop)) {
 		return false;
 	} else if (typeof prop === "object") {
@@ -42,8 +33,16 @@ function isObj<A>(prop:A):boolean {
 }
 
 function deepMerge<O>(obj1:O, obj2:O) {
-  if (cyclicTest(obj1, obj2)) {
-    return;
+
+  function cyclicTest<O>(obj1:O, obj2:O) {
+    if (isCyclic(obj1)) {
+      console.log(obj1+' is cyclic');
+    	return true;
+    } else if (isCyclic(obj2)) {
+      console.log(obj2+' is cyclic');
+    	return true;
+    }
+    return false;
   }
 
 	for (let prop in obj2) {

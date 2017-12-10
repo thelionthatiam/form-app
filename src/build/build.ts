@@ -11,70 +11,85 @@ interface Result {
   deleteTables:String;
   prevConn:string;
 }
-
+let thing = " --command='\\dt'"
 
 function build(dbConnect:string, result:Result , cb:Function) {
-  // check if tables exist
-  func.childProcess(dbConnect + tablesExist, function(err:Error, stdout:string, stderr:string) {
-    if (err) { // if they do not, build them
-      console.log('tables do not exist');
-      console.error(`exec error: ${err}`);
-      if (noTable.test(JSON.stringify(err))) {
-        console.log('No user table, creating tables');
-        func.childProcess(dbConnect + buildTables, function(err:Error, stdout:string, stderr:string) {
-          if (err) {
-            console.error(`exec error: ${err}`);
-            cb(err);
-          } else {
-            console.log(`stdout: ${stdout}`);
-            console.log(`stderr: ${stderr}`);
-            console.log('tables added to empty database');
-            func.makeJSONfromObj('./sdist/config/connect-config.json', result, function(err:string) { // store that information in a JSON
-              if(err) {
-                console.log(err)
-                cb(err);
-              } else {
-                console.log('successfuly made config JSON')
-                cb();
-              }
-            });
-          }
-        })
-      }
-    } else { // if they do, ask to delete or exit // consider boolean prompt
-      console.log('tables exist');
-      console.log(`stdout: ${stdout}`);
-      console.log(`stderr: ${stderr}`);
-      func.makeJSONfromObj('./sdist/config/connect-config.json', result, function(err:string) { // store that information in a JSON
-        if (err) {
-          console.log(err);
-          cb(err);
-        } else {
-          console.log('successfuly made config JSON')
-          func.prompter(obj.deleteTables, function(err:Error, result:Result) {
+  let jsonConfig = result
+  func.childProcess(dbConnect + thing, function(err:Error, stdout:string, stderr:string) {
+      if (err) {
+        console.log(err);
+      } else { // if they do, ask to delete or exit
+              // console.log(`stdout: ${stdout}`);
+        if (noTable.test(stdout)) {
+          func.prompter(obj.whatVersion, function(err:string, result:Result) {
             if (err) {
               console.log(err)
-              cb(err);
             } else {
-              if (result.deleteTables) {
-                console.log(result);
-                func.childProcess(dbConnect +  tableDrop, function(err:Error, stdout:string, stderr:string) {
-                  if (err) {
-                    console.log(err);
-                    cb(err);
-                  } else {
-                    console.log(result);
-                    cb();
-                  }
-                })
-              } else {
-                console.log('tables not deleted');
-                cb();
-              }
+              func.filesInDir('./database-builds/up', function(err:Error, files:[string]){
+                if (err) {
+                  console.log(err)
+                } else {
+                  let fileString = func.stringOfFiles('./database-builds/up', files, result.version, false);
+                  console.log(result.version)
+                  console.log(fileString);
+                  func.childProcess(dbConnect + fileString, function(err:Error, stdout:string, stderr:string) {
+                    if (err) {
+                      console.error(`exec error: ${err}`);
+                      cb(err);
+                    } else {
+                      console.log(`stdout: ${stdout}`);
+                      console.log(`stderr: ${stderr}`);
+                      console.log('tables added to empty database');
+                      func.makeJSONfromObj('./sdist/config/connect-config.json', jsonConfig, function(err:string) { // store that information in a JSON
+                        if(err) {
+                          console.log(err)
+                          cb(err);
+                        } else {
+                          console.log('successfuly made config JSON')
+                          cb();
+                        }
+                      });
+                    }
+                  })
+                }
+              })
+            }
+          })
+        } else {
+          console.log('this is where I should be')
+          // func.makeJSONfromObj('./sdist/config/connect-config.json', jsonConfig, function(err:Error, result:Result) { // store that information in a JSON
+          //   if (err) {
+          //     console.log(err);
+          //     cb(err);
+          // } else {
+          console.log('successfuly made config JSON')
+          func.prompter(obj.deleteTables, function(err:string, result:Result) {
+            if (err) {
+              console.log(err)
+            } else {
+              func.filesInDir('./database-builds/down', function(err:Error, files:[string]){
+                if (err) {
+                  console.log(err)
+                  cb(err);
+                } else {
+                  let fileString = func.stringOfFiles('./database-builds/down', files, result.versionDown, true);
+                  console.log(fileString)
+                  func.childProcess(dbConnect + fileString, function(err:Error, stdout:string, stderr:string) {
+                    if (err) {
+                      console.error(`exec error: ${err}`);
+                      cb(err);
+                    } else {
+                      console.log(`stdout: ${stdout}`);
+                      console.log(`stderr: ${stderr}`);
+                      cb()
+                    }
+                  })
+
+                }
+              })
             }
           })
         }
-      });
     }
   })
 }

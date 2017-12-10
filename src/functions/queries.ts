@@ -37,6 +37,7 @@ class Query {
     });
   };
 
+
   selectNonceAndTimeViaUID = function (inputs:Inputs, cb:Function) {
     const query = 'SELECT nonce, theTime FROM nonce WHERE user_uuid = $1';
     const values = [inputs.user_uuid];

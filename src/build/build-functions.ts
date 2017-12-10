@@ -23,6 +23,7 @@ interface Result {
   password:string;
   deleteTables:String;
   prevConn:string;
+  version:number;
 }
 
 
@@ -101,6 +102,32 @@ function fileChecker(path:string) {
   }
 }
 
+function filesInDir(dir:string, cb:Function) {
+  fs.readdir(dir, function(err:Error, files:any) {
+    if (err) {
+      cb(err)
+    } else {
+      cb(null, files)
+    }
+  })
+}
+
+function stringOfFiles(dir:string, array:[string], version:number, rev:boolean) {
+  let finalArr = [];
+  if (rev) {
+    for (let i = array.length-1; i >= version;i--) {
+      finalArr.push("-f " + dir + '/' + array[i])
+    }
+    return " -a " + finalArr.join(' ')
+  } else {
+    for (let i = 0; i < version;i++) {
+      finalArr.push("-f " + dir + '/' + array[i])
+    }
+    return " -a " + finalArr.join(' ')
+  }
+
+}
+
 let makeJSONfromObj = function(path:string, obj:Result, cb:Function) {
   let data = JSON.stringify(obj);
   fs.writeFile(path, data, (err) => {
@@ -128,5 +155,7 @@ export {
   childProcess,
   tablesExist,
   tableDrop,
-  removeConfig
+  removeConfig,
+  filesInDir,
+  stringOfFiles
 };
