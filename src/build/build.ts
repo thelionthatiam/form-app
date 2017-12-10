@@ -30,7 +30,6 @@ function build(dbConnect:string, result:Result , cb:Function) {
                   console.log(err)
                 } else {
                   let fileString = func.stringOfFiles('./database-builds/up', files, result.version, false);
-                  console.log(result.version)
                   console.log(fileString);
                   func.childProcess(dbConnect + fileString, function(err:Error, stdout:string, stderr:string) {
                     if (err) {
@@ -57,11 +56,6 @@ function build(dbConnect:string, result:Result , cb:Function) {
           })
         } else {
           console.log('this is where I should be')
-          // func.makeJSONfromObj('./sdist/config/connect-config.json', jsonConfig, function(err:Error, result:Result) { // store that information in a JSON
-          //   if (err) {
-          //     console.log(err);
-          //     cb(err);
-          // } else {
           console.log('successfuly made config JSON')
           func.prompter(obj.deleteTables, function(err:string, result:Result) {
             if (err) {
