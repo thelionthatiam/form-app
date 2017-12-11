@@ -1,7 +1,7 @@
 import { exec } from 'child_process'
 import * as prompt from 'prompt';
 import * as fs from 'fs';
-prompt.start()
+
 
 
 interface Item {
@@ -24,6 +24,8 @@ interface Result {
   deleteTables:String;
   prevConn:string;
   version:number;
+  versionDown:number;
+  length:number;
 }
 
 
@@ -70,6 +72,7 @@ function connectCommand(user:string, host:string, database:string, password:stri
 }
 
 function prompter(promptObj:PromptProperty, cb:Function) {
+  prompt.start()
   prompt.get(promptObj, function(err:Error, result:Result) {
     if (err) {
       console.log("something went wrong", err)
@@ -125,7 +128,6 @@ function stringOfFiles(dir:string, array:[string], version:number, rev:boolean) 
     }
     return " -a " + finalArr.join(' ')
   }
-
 }
 
 let makeJSONfromObj = function(path:string, obj:Result, cb:Function) {
@@ -144,7 +146,6 @@ let removeConfig = function(path:string, cb:Function) {
   });
 }
 
-
 export {
   applyDefaults,
   psqlCommand,
@@ -157,5 +158,6 @@ export {
   tableDrop,
   removeConfig,
   filesInDir,
-  stringOfFiles
+  stringOfFiles,
+  Result,
 };

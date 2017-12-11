@@ -3,15 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const obj = require("./build-objects");
 const func = require("./build-functions");
 const build_strings_1 = require("./build-strings");
-let thing = " --command='\\dt'";
+let command = " --command=";
+let informationSchema = '"SELECT * FROM information_schema.tables WHERE table_schema = \'public\'"';
+let tablesExists = command + informationSchema;
 function build(dbConnect, result, cb) {
     let jsonConfig = result;
-    func.childProcess(dbConnect + thing, function (err, stdout, stderr) {
+    func.childProcess(dbConnect + tablesExists, function (err, stdout, stderr) {
         if (err) {
             console.log(err);
         }
         else {
-            // console.log(`stdout: ${stdout}`);
+            console.log(`stdout: ${stdout}`);
             if (build_strings_1.noTable.test(stdout)) {
                 func.prompter(obj.whatVersion, function (err, result) {
                     if (err) {
@@ -92,7 +94,7 @@ if (func.fileChecker('../config/connect-config.json')) {
         if (err) {
             console.log(err);
         }
-        else if (result.prevConn) {
+        else if (result.prevConn || result.prevConn === '') {
             let connConfig = require('../config/connect-config.json');
             let dbConnect = func.connectCommand(connConfig.user, connConfig.host, connConfig.database, connConfig.password);
             build(dbConnect, connConfig, function (err) {

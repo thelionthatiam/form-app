@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const child_process_1 = require("child_process");
 const prompt = require("prompt");
 const fs = require("fs");
-prompt.start();
 let tableDrop = psqlCommand(["DROP TABLE nonce", "DROP TABLE users"]);
 exports.tableDrop = tableDrop;
 function applyDefaults(obj) {
@@ -49,6 +48,7 @@ function connectCommand(user, host, database, password) {
 }
 exports.connectCommand = connectCommand;
 function prompter(promptObj, cb) {
+    prompt.start();
     prompt.get(promptObj, function (err, result) {
         if (err) {
             console.log("something went wrong", err);

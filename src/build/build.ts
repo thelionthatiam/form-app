@@ -3,25 +3,20 @@ import * as func from "./build-functions";
 import { tablesExist, tableDrop, psqlCommand } from "./build-functions";
 import { buildTables, noTable } from './build-strings';
 
-interface Result {
-  user:string;
-  database:string;
-  host:string;
-  password:string;
-  deleteTables:String;
-  prevConn:string;
-}
-let thing = " --command='\\dt'"
 
-function build(dbConnect:string, result:Result , cb:Function) {
+let command = " --command="
+let informationSchema = '"SELECT * FROM information_schema.tables WHERE table_schema = \'public\'"'
+let tablesExists = command + informationSchema;
+
+function build(dbConnect:string, result:func.Result , cb:Function) {
   let jsonConfig = result
-  func.childProcess(dbConnect + thing, function(err:Error, stdout:string, stderr:string) {
+  func.childProcess(dbConnect + tablesExists, function(err:Error, stdout:string, stderr:string) {
       if (err) {
         console.log(err);
       } else { // if they do, ask to delete or exit
-              // console.log(`stdout: ${stdout}`);
+        console.log(`stdout: ${stdout}`);
         if (noTable.test(stdout)) {
-          func.prompter(obj.whatVersion, function(err:string, result:Result) {
+          func.prompter(obj.whatVersion, function(err:string, result:func.Result) {
             if (err) {
               console.log(err)
             } else {
@@ -57,7 +52,7 @@ function build(dbConnect:string, result:Result , cb:Function) {
         } else {
           console.log('this is where I should be')
           console.log('successfuly made config JSON')
-          func.prompter(obj.deleteTables, function(err:string, result:Result) {
+          func.prompter(obj.deleteTables, function(err:string, result:func.Result) {
             if (err) {
               console.log(err)
             } else {
@@ -88,12 +83,13 @@ function build(dbConnect:string, result:Result , cb:Function) {
   })
 }
 
+
 if (func.fileChecker('../config/connect-config.json')) {
   // build with connect string made by passing other prompt obj through
-  func.prompter(obj.prevConn, function(err:string, result:Result) {
+  func.prompter(obj.prevConn, function(err:string, result:func.Result) {
     if (err) {
       console.log(err);
-    } else if (result.prevConn) {
+    } else if (result.prevConn || result.prevConn === '') {
       let connConfig = require('../config/connect-config.json');
       let dbConnect = func.connectCommand(connConfig.user, connConfig.host, connConfig.database, connConfig.password)
       build(dbConnect, connConfig, function (err:Error) {
@@ -115,7 +111,7 @@ if (func.fileChecker('../config/connect-config.json')) {
   })
 } else {
   // build to connect prompt string // make sign in object
-  func.prompter(obj.connectPrompt, function(err:string, result:Result) {
+  func.prompter(obj.connectPrompt, function(err:string, result:func.Result) {
     if (err) {
       console.log(err);
     } else {
