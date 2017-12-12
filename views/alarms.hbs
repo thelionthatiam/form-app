@@ -5,65 +5,12 @@
   </p>
 
   <div class= "categoryListWrapper">
-    <div class="column categoryWrapper">
-      <div class="row categoryTitle">
-        <h4>Dummy alarm</h4>
-        <div class="time-wrapper flex space-around ">
-          <p class="self right">
-            21:00
-          </p>
-          <img src="https://png.icons8.com/ios/540/alarm-clock.png" />
-        </div>
-      </div>
-      <div class="box subCategoryWrapper none">
-        <div class="row subCategoryTitle">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Power_icon_%28the_Noun_Project_35084%29.svg/2000px-Power_icon_%28the_Noun_Project_35084%29.svg.png" />
-          <img src="https://maxcdn.icons8.com/Share/icon/p1em/Editing//edit1600.png" />
-          <img src="https://maxcdn.icons8.com/Share/icon/Media_Controls//high_volume1600.png" />
-          <img src="https://www.pngarts.com/files/1/X-Shape-PNG-High-Quality-Image.png" />
-        </div>
-        <div class="row date-created">
-          <p>
-            whenever!
-          </p>
-        </div>
-      </div>
-    </div>
-    {{{alarmTableToHTML alarmContent}}}
+    {{#each alarmContent}}
+      {{> alarmdiv}}
+    {{/each}}
   </div>
-  <div class="flex column add-alarm-form none">
-    <h3 class="formTitle">add alarm</h3>
-    <form action="/create-alarm" method="post">
-      <p>alarm title</p>
-      <input
-       id="title"
-       name="title"
-       class="userFormItem"
-       type="text"
-       placeholder="work week"
-       />
-      <p class="formErrorReport" id="titleError"></p>
-
-      <p>time</p>
-      <input
-       id="awake"
-       name="awake"
-       class="userFormItem"
-       type="text"
-       placeholder="6:00"
-       />
-      <p class="formErrorReport" id="awakeError"></p>
-     <button id="formSubmitter" class="unavailable submit" type="submit"> add </button>
-   </form>
-  </div>
-
-  <div class="row center add-alarm">
-    <img id="add-close-alarm" src="https://cdn4.iconfinder.com/data/icons/miu/24/circle-add-plus-new-outline-stroke-512.png" />
-  </div>
-  {{ dbError }}
+    <form action="/in-session/add-alarm" method="get">
+        <button class="yes"> add alarm </button>
+    </form>
 </div>
-
-
-
 <script src="/behavior/menu-shuffle.js"></script>
-<script src="/behavior/alarm-action.js"></script>

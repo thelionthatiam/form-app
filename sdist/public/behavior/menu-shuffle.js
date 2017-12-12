@@ -86,8 +86,8 @@ unsquishButton.click(function() {
 
 
 // adding another alarm
-let alarmButtonDiv = $('.add-alarm');
-alarmButtonDiv.click(function() {
-	$('#add-close-alarm').toggleClass('rotate');
-	$('.add-alarm-form').slideToggle();
-})
+// $('.delete-alarm').click(function(){
+//   let id = $(this).attr('id');
+//   $(this).toggleClass('red');
+//   console.log(id);
+// })

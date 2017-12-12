@@ -390,3 +390,7 @@ input:focus {
   transform:rotate(45deg);
   transition:all 300ms;
 }
+
+/*.red {
+  background-color:red;
+}*/

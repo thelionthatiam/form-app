@@ -10,12 +10,14 @@ const session = require("express-session");
 const sessionCheck = require("./middleware/session-check");
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false, limit: '50kb' }));
+app.set('view engine', "hbs");
 app.engine('hbs', hbs({
     extname: 'hbs',
-    defaultLayout: "layout"
+    defaultLayout: __dirname + './../views/layouts/default.hbs',
+    partialsDir: __dirname + './../views/partials',
+    layoutsDir: __dirname + './../views/layouts'
 }));
 app.set('views', path.join(__dirname, "../views"));
-app.set('view engine', "hbs");
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('trust proxy', 1);
 app.use(database_1.init(combiner_1.dbConfig));

@@ -1,0 +1,29 @@
+<div class="column categoryWrapper">
+  <div class="row categoryTitle">
+    <h4>{{title}}</h4>
+    <div class="time-wrapper flex space-around ">
+      <p class="self right">
+        {{awake}}
+      </p>
+      <img src="https://png.icons8.com/ios/540/alarm-clock.png" />
+    </div>
+  </div>
+  <div class="box subCategoryWrapper none">
+    <div class="row subCategoryTitle">
+      <a href='./active-alarm?title={{title}}'/>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Power_icon_%28the_Noun_Project_35084%29.svg/2000px-Power_icon_%28the_Noun_Project_35084%29.svg.png" width="20px" height="20px"/>
+      </a>
+      <a href='./edit-alarm-page?title={{title}}'>
+        <img src="https://maxcdn.icons8.com/Share/icon/p1em/Editing//edit1600.png"
+        width="20px" height="20px" />
+      </a>
+      <img src="https://maxcdn.icons8.com/Share/icon/Media_Controls//high_volume1600.png" />
+      <a href="./delete-alarm?title={{title}}"/>delete</a>
+    </div>
+    <div class="row date-created">
+      <p>
+        {{thedate}}
+      </p>
+    </div>
+  </div>
+</div>

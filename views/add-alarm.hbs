@@ -1,0 +1,29 @@
+<div class="full-page">
+  <div class="flex column add-alarm-form">
+    <h3 class="formTitle">add alarm</h3>
+    <form action="/in-session/create-alarm" method="post">
+      <p>alarm title</p>
+      <input
+       id="title"
+       name="title"
+       class="userFormItem"
+       type="text"
+       placeholder="work week"
+       />
+      <p class="formErrorReport" id="titleError"></p>
+
+      <p>time</p>
+      <input
+       id="awake"
+       name="awake"
+       class="userFormItem"
+       type="text"
+       placeholder="6:00"
+       />
+      <p class="formErrorReport" id="awakeError"></p>
+     <button id="formSubmitter" class="unavailable submit" type="submit"> add </button>
+   </form>
+   {{ dbError }}
+  </div>
+</div>
+<script src="/behavior/alarm-action.js"></script>
