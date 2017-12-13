@@ -10,15 +10,27 @@
   </div>
   <div class="box subCategoryWrapper none">
     <div class="row subCategoryTitle">
-      <a href='./active-alarm?title={{title}}'/>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Power_icon_%28the_Noun_Project_35084%29.svg/2000px-Power_icon_%28the_Noun_Project_35084%29.svg.png" width="20px" height="20px"/>
-      </a>
-      <a href='./edit-alarm-page?title={{title}}'>
-        <img src="https://maxcdn.icons8.com/Share/icon/p1em/Editing//edit1600.png"
-        width="20px" height="20px" />
-      </a>
-      <img src="https://maxcdn.icons8.com/Share/icon/Media_Controls//high_volume1600.png" />
-      <a href="./delete-alarm?title={{title}}"/>delete</a>
+      <form action="/in-session/alarms" method="get">
+          <input type="image" width="20px" height="20px" src="https://maxcdn.icons8.com/Share/icon/Media_Controls//high_volume1600.png">
+          {{!-- <input name="title" type="hidden" value="{{ title }}"> --}}
+      </form>
+      {{#if active}}
+        <p>
+          on
+        </p>
+      {{else}}
+        <p>
+          off
+        </p>
+      {{/if}}
+      <form action="/in-session/alarms/{{title}}" method="get">
+          <input type="image" width="20px" height="20px" src="https://maxcdn.icons8.com/Share/icon/p1em/Editing//edit1600.png">
+          <input name="title" type="hidden" value="{{ title }}">
+      </form>
+      <form action="/in-session/alarms/{{title}}?_method=DELETE" method="post">
+          <input type="image" width="20px" height="20px" src="https://www.pngarts.com/files/1/X-Shape-PNG-High-Quality-Image.png">
+          <input name="title" type="hidden" value="{{ title }}">
+      </form>
     </div>
     <div class="row date-created">
       <p>

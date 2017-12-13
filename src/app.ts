@@ -9,9 +9,10 @@ import { dbConfig } from "./config/combiner";
 import { init } from "./middleware/database";
 import * as session from "express-session";
 import * as sessionCheck from "./middleware/session-check";
+import * as methodOverride from 'method-override';
 const app = express();
 
-
+app.use(methodOverride('_method'))
 app.use(bodyParser.urlencoded({ extended: false,limit:'50kb'}));
 app.set('view engine', "hbs");
 app.engine('hbs', hbs({
@@ -33,7 +34,7 @@ app.use(session({
   secret: 'keyboard cat',
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 240000 }
+  cookie: { maxAge: 3600000 } // one hour
 }));
 
 app.all('/in-session*', sessionCheck.check)

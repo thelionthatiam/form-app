@@ -8,7 +8,9 @@ const combiner_1 = require("./config/combiner");
 const database_1 = require("./middleware/database");
 const session = require("express-session");
 const sessionCheck = require("./middleware/session-check");
+const methodOverride = require("method-override");
 const app = express();
+app.use(methodOverride('_method'));
 app.use(bodyParser.urlencoded({ extended: false, limit: '50kb' }));
 app.set('view engine', "hbs");
 app.engine('hbs', hbs({
@@ -28,7 +30,7 @@ app.use(session({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 240000 }
+    cookie: { maxAge: 3600000 } // one hour
 }));
 app.all('/in-session*', sessionCheck.check);
 app.use('/', require('./routes/index'));
