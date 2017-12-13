@@ -43,17 +43,6 @@ router.get('/add-alarm', (req, res, next) => {
     let nextPage = 'add-alarm';
     res.render(nextPage);
 });
-// router.post('/active-alarm', (req, res, next) => {
-//   let title = req.body.title
-//   db.query('UPDATE alarms SET active = NOT active  WHERE title = $1', [title])
-//     .then((result) => {
-//       res.redirect('alarms');
-//     })
-//     .catch((err) => {
-//       console.log(err.stack);
-//       res.render('alarms', { dbError: err.stack });
-//     });
-// })
 router.route('/alarms/:title')
     .get((req, res) => {
     var title = req.query.title;
