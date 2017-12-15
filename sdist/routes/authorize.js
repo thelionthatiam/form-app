@@ -3,58 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const lib = require("../functions/lib");
 const helper = require("../functions/helpers");
 const express = require("express");
-const app = express();
-app.get('/to-login', function (req, res, next) {
-    console.log('/to-login');
-    res.render('login', null);
-});
-app.post('/login', function (req, res, next) {
-    console.log('/login');
-    var thisPage = 'login';
-    var nextPage = 'account-actions';
-    var inputs = {
-        email: req.body.email,
-        password: req.body.password,
-    };
-    req.querySvc.selectRowViaEmail(inputs, function (err, result) {
-        if (err) {
-            helper.dbError(res, thisPage, JSON.stringify(err));
-        }
-        else {
-            if (result.rows.length === 0) {
-                helper.genError(res, thisPage, "Email not found"); // u
-            }
-            else {
-                var output = result.rows[0];
-                var realPass = output.password;
-                helper.hashCheck(req.body.password, realPass, function (err, result) {
-                    if (err) {
-                        // expand error translator to include bcrypt?
-                        helper.genError(res, thisPage, "Password encryption error"); // u
-                    }
-                    else if (result === false) {
-                        helper.genError(res, thisPage, "Password incorrect."); // u
-                    }
-                    else {
-                        req.session.user = [output.email, output.password, output.phone];
-                        req.session.userID = output.user_uuid;
-                        res.render(nextPage, {
-                            title: 'yo',
-                            email: req.session.user[0],
-                        });
-                    }
-                });
-            }
-        }
-    });
-});
-app.post('/log-out', function (req, res, next) {
+const router = express.Router();
+router.post('/log-out', function (req, res, next) {
     console.log('/log-out');
     var thisPage = 'login';
     var nextPage = 'index';
     lib.logout(req, res, thisPage);
 });
-app.post('/delete', function (req, res, next) {
+router.post('/delete', function (req, res, next) {
     console.log('/delete');
     var thisPage = 'login';
     var nextPage = 'index';
@@ -95,5 +51,5 @@ app.post('/delete', function (req, res, next) {
         }
     });
 });
-module.exports = app;
+module.exports = router;
 //# sourceMappingURL=authorize.js.map

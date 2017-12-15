@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const bcrypt = require("bcrypt");
 // expand to include bcrypt?
 function dbErrTranslator(error) {
-    let emailChecker = /(email)/g, phoneChecker = /(phone)/g, keyChecker = /(key)/g, checkChecker = /(check)/g, passChecker = /(password)/g, lengthChecker = /(value too long)/g;
+    let emailChecker = /(email)/g, phoneChecker = /(phone)/g, keyChecker = /(key)/g, checkChecker = /(check)/g, passChecker = /(password)/g, lengthChecker = /(value too long)/g, alarms = /(alarms)/g, awake = /(awake)/g, title = /(title)/g;
     if (emailChecker.test(error)) {
         if (keyChecker.test(error)) {
             return "The email you put in has already been used. Try again.";
@@ -25,6 +25,14 @@ function dbErrTranslator(error) {
     }
     else if (lengthChecker.test(error)) {
         return "You typed in something over 100 characters. Keep things a shorter and try again.";
+    }
+    else if (alarms.test(error)) {
+        if (awake.test(error)) {
+            return "You need to use military time. If the it is before 10:00, use leading zeros like this 06:00.";
+        }
+        else if (title.test(error)) {
+            return "Keep your title withing 15 characters. Other than that, you should be able to do whatever you want.";
+        }
     }
     else {
         console.log("ERROR", error);
@@ -93,4 +101,17 @@ function genError(res, thisPage, param) {
     res.render(thisPage, { dbError: param });
 }
 exports.genError = genError;
+function compare(a, b) {
+    const awakeA = parseInt(a.awake);
+    const awakeB = parseInt(b.awake);
+    let comp = 0;
+    if (awakeA > awakeB) {
+        comp = 1;
+    }
+    else if (awakeB > awakeA) {
+        comp = -1;
+    }
+    return comp;
+}
+exports.compare = compare;
 //# sourceMappingURL=helpers.js.map

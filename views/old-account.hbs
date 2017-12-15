@@ -1,0 +1,72 @@
+<div class="flex pageWrapper">
+  <div class="flex column userWrapper">
+    <h3 class="formTitle">Account information</h3>
+    <p>
+      {{ subtitle }}
+    </p>
+    <p>email</p>
+    {{#if emailChange}}
+      <form action="/in-session/change-email" method="post">
+        <input id="email" name="email" class="userFormItem" type="text" placeholder="email" />
+        <p class="formErrorReport" id="emailError"></p>
+        <button class="yes" method="submit"> submit </button>
+      </form>
+      <form action='/in-session/to-manage-account' method="get">
+        <button class="no">nevermind</button>
+      </form>
+
+      {{ else }}
+      <p class="preInputMimic">{{ email }}</p>
+      <form action="/in-session/to-change-email" method="get">
+        <button class="yes" type="submit"> change </button>
+      </form>
+    {{/if}}
+
+    <p>phone #</p>
+    {{#if phoneChange}}
+      <form action="/in-session/change-phone" method="post">
+        <input id="phone" name="phone" class="userFormItem numericOnly" type="text" placeholder="phone" />
+        <p class="formErrorReport" id="phoneError"></p>
+        <button class="yes" method="submit"> submit </button>
+      </form>
+      <form action='/in-session/to-manage-account' method="get">
+        <button class="no">nevermind</button>
+      </form>
+
+      {{ else }}
+      <p class="preInputMimic">{{ phone }}</p>
+      <form action="/in-session/to-change-phone" method="get">
+        <button class="yes" type="submit"> change </button>
+      </form>
+    {{/if}}
+
+
+    <p>password</p>
+    {{#if passwordChange}}
+      <form action="/auth/change-password" method="post">
+        <input id="changePassword" name="changePassword" class="userFormItem" type="password" placeholder="type in new password" />
+        <p class="formErrorReport" id="changePasswordError"></p>
+        <button class="yes" method="submit"> change password </button>
+      </form>
+      <form action='/in-session/to-manage-account' method="get">
+        <button class="no">nevermind</button>
+      </form>
+      {{ else }}
+      {{# if mailSent }}
+        <p class="preInputMimic">Mail sent! Go to your email and click the link to change your password.</p>
+        {{ else }}
+        <form action="/auth/mailer" method="post">
+          <button class="yes"> send mail </button>
+        </form>
+    {{/if}}
+    {{/if}}
+    <form action='/in-session/payments' method="get">
+      <button class="yes" type="submit"> payment information </button>
+    </form>
+    <form action='/account/delete' method="post">
+      <button action='submit' class="no"> delete account </button>
+    </form>
+    <p class="formErrorReport">{{ dbError }}</p>
+  </div>
+</div>
+<script src="/behavior/genericChangeForm.js"></script>

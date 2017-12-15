@@ -12,7 +12,7 @@ class Query {
   selectRowViaEmail(inputs:Inputs, cb:Function) {
     const query = "SELECT * FROM users WHERE email = $1";
     const values = [inputs.email];
-
+    console.log(values)
     return this.conn.query(query, values, function(err, result) {
       if (err) {
         cb(err); // u
@@ -92,7 +92,7 @@ class Query {
       }
     });
   };
-
+  //  $2a$10$pi6YWVPsKHsPIVDoIPZGV.BVM5eYXthc/1BX/y62up263aDjtw1Li
   updateNonce = function (inputs:Inputs, cb:Function) {
   const query = "UPDATE nonce SET nonce = $1, theTime = default WHERE user_uuid = $2";
   const values = [inputs.nonce, inputs.user_uuid];

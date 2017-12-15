@@ -4,7 +4,7 @@ body {
 }
 
 div {
-  /*border: .5px solid lightgrey;*/
+  border: .5px solid lightgrey;
 }
 
 h1,h2,h3,h4,h5,h6,p,li,a,button,input {
@@ -44,7 +44,7 @@ h1,h2,h3,h4,h5,h6,p,li,a,button,input {
   width:50vw;
   min-width:300px;
   max-width:450px;
-  height:50vw;
+  /*height:50vw;*/
   min-height:500px;
   max-height:700px;
 }
@@ -143,6 +143,11 @@ input:placeholder-shown {
   color:lightgrey;
 }
 
+.noMarginsPadding {
+  padding:0;
+  margin:0;
+}
+
 .preInputMimic {
   border:none;
   border-bottom:none;
@@ -176,6 +181,37 @@ input:placeholder-shown {
   color:red;
 }
 
+/*------------------------------PAYMENT QUICK ADD-----------------------------*/
+ul {
+ list-style:none;
+ border:0;
+ margin:0;
+ padding:10px;
+}
+
+
+li {
+ border-bottom:1px solid lightgrey;
+ padding-bottom:2px;
+ margin-bottom:2px;
+ font-size:11px;
+}
+
+li:hover {
+ cursor:pointer;
+ background-color:lightgrey;
+}
+
+.shortField {
+ width:40px;
+}
+
+.dropdownWrapper {
+ border-radius:5px;
+ z-index:1;
+ max-height:100px;
+ overflow: scroll;
+}
 
 /*------------------------------SLAPDASH GRAPH FROM BT-----------------------------*/
 
@@ -196,22 +232,6 @@ input:placeholder-shown {
   flex-direction:column;
 }
 
-button {
-  border: none;
-  color:white;
-  background-color:#2a3030;
-  font-weight:500;
-  font-size:12px;
-  border-radius:5px;
-	box-shadow:2px 2px 4px 1px rgba(0, 0, 0, 0.2);
-	align-self: center;
-  padding:5px;
-  margin:5px;
-}
-
-button:focus {
-  outline:0;
-}
 
 .transparent {
   background-color:transparent;

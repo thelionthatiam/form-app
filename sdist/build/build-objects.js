@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs = require("fs");
 const connectPrompt = {
     properties: {
         database: {
@@ -38,14 +37,14 @@ const prevConn = {
     }
 };
 exports.prevConn = prevConn;
-const whatVersion = {
+let whatVersion = {
     properties: {
         version: {
             description: "What version of the database would you like to install? Enter for default up-to-date. (number)",
             message: "Use a number, check the database builds for version numbers.",
             required: true,
-            default: (fs.readdirSync('./database-builds/up')).length,
-            type: "number",
+            default: 0,
+            type: "number"
         }
     }
 };

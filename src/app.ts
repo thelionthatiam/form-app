@@ -37,7 +37,8 @@ app.use(session({
   cookie: { maxAge: 3600000 } // one hour
 }));
 
-app.all('/in-session*', sessionCheck.check)
+// app.all('/in-session*', sessionCheck.check)
+// app.use('/accounts/:id', sessionCheck.check)
 app.use('/', require('./routes/index'))
 
 app.use(function(req, res, next) {

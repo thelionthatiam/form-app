@@ -1,5 +1,6 @@
 import * as obj from "./build-objects";
 import * as func from "./build-functions";
+import * as fs from 'fs';
 import { tablesExist, tableDrop, psqlCommand } from "./build-functions";
 import { buildTables, noTable } from './build-strings';
 
@@ -16,33 +17,40 @@ function build(dbConnect:string, result:func.Result , cb:Function) {
       } else { // if they do, ask to delete or exit
         console.log(`stdout: ${stdout}`);
         if (noTable.test(stdout)) {
-          func.prompter(obj.whatVersion, function(err:string, result:func.Result) {
+          fs.readdir('./database-builds/up', function(err, files) {
             if (err) {
-              console.log(err)
+              return err;
             } else {
-              func.filesInDir('./database-builds/up', function(err:Error, files:[string]){
+              obj.whatVersion.properties.version.default = files.length
+              func.prompter(obj.whatVersion, function(err:string, result:func.Result) {
                 if (err) {
                   console.log(err)
                 } else {
-                  let fileString = func.stringOfFiles('./database-builds/up', files, result.version, false);
-                  console.log(fileString);
-                  func.childProcess(dbConnect + fileString, function(err:Error, stdout:string, stderr:string) {
+                  func.filesInDir('./database-builds/up', function(err:Error, files:[string]){
                     if (err) {
-                      console.error(`exec error: ${err}`);
-                      cb(err);
+                      console.log(err)
                     } else {
-                      console.log(`stdout: ${stdout}`);
-                      console.log(`stderr: ${stderr}`);
-                      console.log('tables added to empty database');
-                      func.makeJSONfromObj('./sdist/config/connect-config.json', jsonConfig, function(err:string) { // store that information in a JSON
-                        if(err) {
-                          console.log(err)
+                      let fileString = func.stringOfFiles('./database-builds/up', files, result.version, false);
+                      console.log(fileString);
+                      func.childProcess(dbConnect + fileString, function(err:Error, stdout:string, stderr:string) {
+                        if (err) {
+                          console.error(`exec error: ${err}`);
                           cb(err);
                         } else {
-                          console.log('successfuly made config JSON')
-                          cb();
+                          console.log(`stdout: ${stdout}`);
+                          console.log(`stderr: ${stderr}`);
+                          console.log('tables added to empty database');
+                          func.makeJSONfromObj('./sdist/config/connect-config.json', jsonConfig, function(err:string) { // store that information in a JSON
+                            if(err) {
+                              console.log(err)
+                              cb(err);
+                            } else {
+                              console.log('successfuly made config JSON')
+                              cb();
+                            }
+                          });
                         }
-                      });
+                      })
                     }
                   })
                 }

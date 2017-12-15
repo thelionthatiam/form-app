@@ -1,0 +1,20 @@
+<div class="full-page">
+  <h1>{{ title }}</h1>
+  <h4>Form submitted successfully, you are now logged in as {{ email }}</h4>
+  <p>
+    You are now in the body of the app!
+  </p>
+  <form action="/accounts/{{email}}/alarms" method="get">
+    <button class="yes">alarms</button>
+  </form>
+  <form action="/in-session/shop">
+    <button class="yes">shopping center</button>
+  </form>
+  <form action="/accounts/{{email}}" method="get">
+    <button class="yes">my account</button>
+  </form>
+  <form action="/log-out" method='post'>
+    <button class="no">sign out</button>
+  </form>
+
+</div>

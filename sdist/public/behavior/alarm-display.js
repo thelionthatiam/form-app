@@ -85,9 +85,10 @@ unsquishButton.click(function() {
 })
 
 
-// adding another alarm
-// $('.delete-alarm').click(function(){
-//   let id = $(this).attr('id');
-//   $(this).toggleClass('red');
-//   console.log(id);
-// })
+// format date a little better
+$('.thedate').each(function() {
+	let dateChanger = /[a-zA-Z]{2,4} [a-zA-Z]{2,4} [\d]{1,2} [\d]{2,4}/g
+	var date = $(this).text();
+	var newDateFormat = date.match(dateChanger)
+	$(this).text(date.replace(date, ("created on: " + newDateFormat)))
+})

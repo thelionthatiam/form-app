@@ -7,7 +7,6 @@ const path = require("path");
 const combiner_1 = require("./config/combiner");
 const database_1 = require("./middleware/database");
 const session = require("express-session");
-const sessionCheck = require("./middleware/session-check");
 const methodOverride = require("method-override");
 const app = express();
 app.use(methodOverride('_method'));
@@ -32,7 +31,8 @@ app.use(session({
     saveUninitialized: true,
     cookie: { maxAge: 3600000 } // one hour
 }));
-app.all('/in-session*', sessionCheck.check);
+// app.all('/in-session*', sessionCheck.check)
+// app.use('/accounts/:id', sessionCheck.check)
 app.use('/', require('./routes/index'));
 app.use(function (req, res, next) {
     res.status(404);

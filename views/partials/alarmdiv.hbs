@@ -2,7 +2,7 @@
   <div class="row categoryTitle">
     <h4>{{title}}</h4>
     <div class="time-wrapper flex space-around ">
-      <p class="self right">
+      <p class="self right awakeTime">
         {{awake}}
       </p>
       <img src="https://png.icons8.com/ios/540/alarm-clock.png" />
@@ -10,9 +10,8 @@
   </div>
   <div class="box subCategoryWrapper none">
     <div class="row subCategoryTitle">
-      <form action="/in-session/alarms" method="get">
+      <form action="/accounts/{{user_uuid}}/alarms" method="get">
           <input type="image" width="20px" height="20px" src="https://maxcdn.icons8.com/Share/icon/Media_Controls//high_volume1600.png">
-          {{!-- <input name="title" type="hidden" value="{{ title }}"> --}}
       </form>
       {{#if active}}
         <p>
@@ -23,17 +22,17 @@
           off
         </p>
       {{/if}}
-      <form action="/in-session/alarms/{{title}}" method="get">
+      <form action="/accounts/{{user_uuid}}/alarms/{{title}}" method="get">
           <input type="image" width="20px" height="20px" src="https://maxcdn.icons8.com/Share/icon/p1em/Editing//edit1600.png">
           <input name="title" type="hidden" value="{{ title }}">
       </form>
-      <form action="/in-session/alarms/{{title}}?_method=DELETE" method="post">
+      <form action="/accounts/{{user_uuid}}/alarms/{{title}}?_method=DELETE" method="post">
           <input type="image" width="20px" height="20px" src="https://www.pngarts.com/files/1/X-Shape-PNG-High-Quality-Image.png">
           <input name="title" type="hidden" value="{{ title }}">
       </form>
     </div>
     <div class="row date-created">
-      <p>
+      <p class="thedate">
         {{thedate}}
       </p>
     </div>

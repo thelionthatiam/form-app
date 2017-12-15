@@ -27,7 +27,7 @@ app.post('/mailer', function(req, res, next) {
   } else {
     res.render('email-password', { mailNotSent:true });
   }
-}, function (req, res, next) {
+}, function (req, res, next) { // start here
     let thisPage = 'login';
     let nextPage ='email-password';
     console.log('inputs', res.locals.inputs);

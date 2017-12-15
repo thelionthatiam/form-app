@@ -8,7 +8,10 @@ function dbErrTranslator(error:string) {
     , keyChecker = /(key)/g
     , checkChecker = /(check)/g
     , passChecker = /(password)/g
-    , lengthChecker = /(value too long)/g;
+    , lengthChecker = /(value too long)/g
+    , alarms = /(alarms)/g
+    , awake = /(awake)/g
+    , title = /(title)/g
 
   if (emailChecker.test(error)) {
     if (keyChecker.test(error)) {
@@ -27,6 +30,12 @@ function dbErrTranslator(error:string) {
 
   } else if (lengthChecker.test(error)) {
     return "You typed in something over 100 characters. Keep things a shorter and try again.";
+  } else if (alarms.test(error)) {
+    if (awake.test(error)) {
+      return "You need to use military time. If the it is before 10:00, use leading zeros like this 06:00."
+    } else if (title.test(error)) {
+      return "Keep your title withing 15 characters. Other than that, you should be able to do whatever you want."
+    }
   } else {
     console.log("ERROR", error);
     return "There was an error. Try again.";
@@ -92,6 +101,27 @@ function genError(res:ModResponse, thisPage:string, param:Error | string) {
   res.render(thisPage, { dbError: param } );
 }
 
+interface Alarm {
+  user_uuid: string;
+  awake: string;
+  thedate: string;
+  title: string;
+  active: boolean;
+}
+
+function compare (a:Alarm, b:Alarm) { // organize alarms so that they are by time
+	const awakeA = parseInt(a.awake);
+	const awakeB = parseInt(b.awake);
+
+	let comp = 0
+	if (awakeA > awakeB) {
+		comp = 1;
+	} else if (awakeB > awakeA) {
+		comp = -1;
+	}
+	return comp;
+}
+
 export {
   dbErrTranslator,
   hash,
@@ -100,5 +130,6 @@ export {
   makeHashedString,
   hashCheck,
   dbError,
-  genError
+  genError,
+  compare
 };

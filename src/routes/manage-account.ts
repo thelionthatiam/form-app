@@ -3,8 +3,11 @@ import * as express from 'express';
 import { Inputs, PGOutput, ModRequest } from '../../typings/typings';
 const app = express();
 
-// back to account actions
+app.get('/payments', function(req,res,next) {
+  res.render('payments')
+})
 
+// back to account actions
 app.get('/back-account-actions', function(req, res, next) {
   res.render('account-actions', {
     title: 'yo',
@@ -14,8 +17,8 @@ app.get('/back-account-actions', function(req, res, next) {
 
 
 // to account information
-app.get('/to-manage-account', function(req, res, next) {
-    res.render('manage-account', {
+app.get('/account', function(req, res, next) {
+    res.render('account', {
       subtitle: "click change if you need to fix something",
       email: req.user.email,
       phone: req.user.phone

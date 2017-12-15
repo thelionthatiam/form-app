@@ -13,7 +13,7 @@ var mailOptions = {
     from: 'juliantheberge@gmail.com',
     to: null,
     subject: 'Password reset from form app',
-    text: "http://localhost:3000/auth/new-password"
+    text: "http://localhost:8000/forgot-password/authorized"
 };
 exports.mailOptions = mailOptions;
 //# sourceMappingURL=mail-config.js.map

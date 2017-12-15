@@ -1,7 +1,7 @@
 <div class="full-page">
   <div class="flex column add-alarm-form">
     <h3 class="formTitle">add alarm</h3>
-    <form action="/in-session/alarms" method="post">
+    <form action="/accounts/{{email}}/alarms" method="post">
       <p>alarm title</p>
       <input
        id="title"
@@ -23,7 +23,10 @@
       <p class="formErrorReport" id="awakeError"></p>
      <button id="formSubmitter" class="unavailable submit" type="submit"> add </button>
    </form>
-   {{ dbError }}
+   <form action="/accounts/{{email}}/alarms" method="get">
+     <button class="no" type="submit">back</button>
+   </form>
+  <p class="formErrorReport">{{ dbError }}</p>
   </div>
 </div>
 <script src="/behavior/alarm-action.js"></script>

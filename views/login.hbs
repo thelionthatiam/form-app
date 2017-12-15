@@ -1,70 +1,47 @@
 <div class="flex pageWrapper">
   <div class="flex column userWrapper">
-    {{#if accountDelete }}
-    <h3 class="formTitle">delete account</h3>
-    <form action="/auth/delete" method="post">
-      <p>email</p>
-      <input
-       id="email"
-       name="email"
-       class="userFormItem"
-       type="text"
-       placeholder="email"
-       />
-      <p class="formErrorReport" id="emailError"></p>
 
-      <p>password</p>
-      <input
-       id="password"
-       name="password"
-       class="userFormItem"
-       type="password"
-       />
-      <p class="formErrorReport" id="passwordError"></p>
-     <p>
-       This is your last chance do keep your account. Deletion cannot be undone.
-     </p>
-     <button id="formSubmitter" class="unavailable submit" type="submit"> delete </button>
-   </form>
+
+    {{#if forgotPassword }}
+      <h3 class="formTitle">forgot password</h3>
+      <form action="/forgot-password/authorized" method="post">
+        <p>email</p>
+        <input id="email" name="email" class="userFormItem" type="text" placeholder="email" />
+        <p class="formErrorReport" id="emailError"></p>
+        <button id="formSubmitter" class="unavailable submit" type="submit"> send mail </button>
+      </form>
+
+
     {{ else }}
-     <h3 class="formTitle"> login </h3>
-     <form action="/auth/login" method="post">
-       <p>
-         {{ subtitle }}
-       </p>
-       <p>email</p>
-       <input
-        id="email"
-        name="email"
-        class="userFormItem"
-        type="text"
-        placeholder="email"
-        value="b@b.bb"
-        />
-       <p class="formErrorReport" id="emailError"></p>
+      <h1>A Budding Alarm App</h1>
+      <p class="noMarginsPadding">things will be more RESTful soon, promise ;)</p>
+      <br />
+      <br />
+      <br />
+      <h3 class="formTitle"> login </h3>
+      <form action="/authorized" method="post">
+        <p>email</p>
+        <input id="email" name="email" class="userFormItem" type="text" placeholder="email" value="b@b.bb" />
+        <p class="formErrorReport" id="emailError"></p>
 
-       <p>password</p>
-       <input
-        id="password"
-        name="password"
-        class="userFormItem"
-        type="password"
-        value="bbbBB11$$"
-        />
-       <p class="formErrorReport" id="passwordError"></p>
+        <p>password</p>
+        <input id="password" name="password" class="userFormItem" type="password" value="bbbBB11$$" />
+        <p class="formErrorReport" id="passwordError"></p>
 
-      <button id="formSubmitter" class="unavailable submit" type="submit"> log in </button>
-    </form>
-     <form action="/auth/mailer" method="post">
-       <button class="no" type="submit"> forgot password </button>
-     </form>
-     <p class="formErrorReport">{{ dbError }}</p>
-     <form class="flex center" action="/" method="get">
-       <button class="flex center back" type="submit">
-         <img class="icon" src="https://image.flaticon.com/icons/svg/53/53567.svg" />
-       </button>
-     </form>
-     {{/if }}
+        <button id="formSubmitter" class="unavailable submit" type="submit"> log in </button>
+      </form>
+      <form action="/new-account" method="get">
+        <button class="yes" type="submit">create account</button>
+      </form>
+      <form action="/forgot-password" method="get">
+        <button class="no" type="submit">forgot password</button>
+      </form>
+    {{/if }}
+
+    <p class="noMarginsPassing preInputMimic">{{ message }}</p>
+    <p class="formErrorReport">{{ dbError }}</p>
+
+
   </div>
- </div>
-<script src="/behavior/loginAction.js"></script>
+</div>
+{{!-- <script src="/behavior/login-action.js"></script> --}}

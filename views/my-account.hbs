@@ -1,0 +1,40 @@
+<div class="full-page">
+  <div class="flex column userWrapper">
+
+
+
+    <h3 class="formTitle">manage your account information</h3>
+    {{#if success}}
+      <p class="preInputMimic">
+        account information updated.
+      </p>
+    {{/if}}
+    <form action="/accounts/:{{title}}?_method=PUT" method="post">
+      <p><b>email: </b>{{ email }}</p>
+      <input id="email" name="email" class="userFormItem" type="text" value= {{email}}>
+      <p class="formErrorReport" id="emailError"></p>
+
+      <p><b>phone: </b>{{ phone }}</p>
+      <input id="phone" name="phone" class="userFormItem numericOnly" type="text" value= {{phone}}>
+      <p class="formErrorReport" id="phoneError"></p>
+      <input type="hidden" name="prevTitle" value="{{title}}" />
+      <p class="formErrorReport" id="awakeError"></p>
+      <button id="formSubmitter" class="submit" type="submit"> change </button>
+    </form>
+
+
+
+    <p><b>password: </b>hidden</p>
+    <form action="/accounts/{{email}}/password" method="get">
+      <button class="yes"> change password </button>
+    </form>
+    <form action="/accounts/{{email}}?_method=DELETE" method="post">
+      <button class="no" type="submit"> delete account </button>
+    </form>
+    {{ dbError }}
+    <form action="/home" method="get">
+      <button class="no" type="submit">back</button>
+    </form>
+  </div>
+</div>
+ <script src="/behavior/genericChangeForm.js"></script>
