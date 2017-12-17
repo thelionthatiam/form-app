@@ -12,7 +12,7 @@ const router = express.Router();
 router.use('/', require('./account'))
 router.use('/auth', require('./mailer'));
 // router.use('/accounts/:id', require('./manage-account'));
-router.use('/accounts/:email', require('./alarms'))
+router.use('/accounts/:email', require('./alarms'));
 
 // render login page
 router.get('/', function (req, res, next) {
@@ -29,14 +29,15 @@ router.route('/forgot-password/authorized')
   .post((req, res) => {
     let uuid = '';
     let nonce = '';
-    let email = req.body.email
+    let email = req.body.email;
+
 
     db.query("SELECT * FROM users WHERE email = $1", [email])
       .then((result) => {
         console.log(result.rows)
         if (result.rows.length === 0) {
-          console.log('should have error')
-          throw new Error("Email not found")
+          console.log('should have error');
+          throw new Error("Email not found");
         } else {
           uuid = result.rows[0].user_uuid
           console.log(uuid)
@@ -48,7 +49,7 @@ router.route('/forgot-password/authorized')
       })
       .then((hash) => {
         nonce = hash
-        return db.query('UPDATE nonce SET (nonce) = ($1), thetime = default WHERE user_uuid = $2', [hash, uuid])
+        return db.query('UPDATE nonce SET nonce = $1, thetime = default WHERE user_uuid = $2', [hash, uuid])
       })
       .then((result) => {
         req.session.uuid = uuid;
@@ -71,7 +72,7 @@ router.route('/forgot-password/authorized')
 
     .get((req, res) => {
       let uuid = req.session.uuid
-      db.query('SELECT * FROM nonce WHERE user_uuid = ($1)', [uuid])
+      db.query('SELECT * FROM nonce WHERE user_uuid = $1', [uuid])
         .then((result) => {
           if (result.rows.length === 0) {
             throw new Error("Account not found.")
@@ -84,7 +85,8 @@ router.route('/forgot-password/authorized')
         .then((result) => {
           if (result) {
             res.render('new-password', {
-              forgotPassword:true
+              forgotPassword:true,
+              email:req.session.uuid,
             })
           }
         })
@@ -110,7 +112,7 @@ router.route('/forgot-password/authorized')
             })
         })
         .catch((error) => {
-          res.render('new-password', { forgotPassword:true, dbError: error })
+          res.render('new-password', { forgotPassword:true, dbError: error, email:req.session.uuid })
         })
     })
 

@@ -4,7 +4,7 @@
   "description": "a basic user app",
   "main": "./sdist/app.js",
   "scripts": {
-    "build": "node ./build.js",
+    "build": "node ./sdist/build/build.js",
     "start": "node ./sdist/app.js",
     "test": "nyc mocha ./test/*",
     "nuke": "psql postgres -a -f ./records/nuke.sql",

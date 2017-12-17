@@ -192,7 +192,7 @@ router.route('/accounts/:email/password')
       .then((hash) => {
         console.log(hash)
         inputs.password = hash;
-        return db.query('UPDATE users SET (password) = ($1) WHERE user_uuid = $2', [inputs.password, req.session.user.uuid])
+        return db.query('UPDATE users SET password = $1 WHERE user_uuid = $2', [inputs.password, req.session.user.uuid])
       })
       .then((result) => {
         res.render('new-password', {
@@ -201,6 +201,7 @@ router.route('/accounts/:email/password')
         })
       })
       .catch((error) => {
+        console.log(error)
         res.render('new-password', { dbError: error })
       })
   })
