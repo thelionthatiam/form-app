@@ -1,0 +1,18 @@
+
+<div class="full-page">
+  <h1>Products</h1>
+  <p>
+     This is where you can select which organizations you would like to support, and which organizations you'd rather not.
+  </p>
+
+  <div class= "categoryListWrapper">
+    {{#each productContent}}
+      {{> productdiv}}
+    {{/each}}
+  </div>
+  <p class="formErrorReport">{{ dbError }}</p>
+  <form action="/home" method="get">
+    <button class="no" type="submit">back</button>
+  </form>
+</div>
+{{!-- <script src="/behavior/.js"></script> --}}

@@ -82,6 +82,7 @@ CREATE TRIGGER alarms_on_update_timestamp
 CREATE TABLE payment_credit (
   user_uuid UUID UNIQUE REFERENCES users(user_uuid) ON DELETE CASCADE,
   card_number varchar(20) NOT NULL, -- will validate and encrypt on server lvl
+  name varchar(100) CHECK(name ~ '^([a-zA-Z]{1,15})( [a-zA-Z]{1,15})?([ -]?[a-zA-Z]{1,15})?$'),
   exp_month varchar(20) NOT NULL CHECK (exp_month ~ '^[\d]{2}$'),
   exp_date varchar(20) NOT NULL CHECK (exp_date ~ '^[\d]{2}$'),
   css varchar(20) NOT NULL CHECK (css ~ '^[\d]{3,4}$'),

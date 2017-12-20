@@ -12,8 +12,11 @@ router.use('/auth', require('./mailer'));
 // router.use('/accounts/:id', require('./manage-account'));
 router.use('/accounts/:email', require('./alarms'));
 // render login page
+// router.get('/', function (req, res, next) {
+//   res.render('login');
+// })
 router.get('/', function (req, res, next) {
-    res.render('login');
+    res.render('add-payment');
 });
 // render forgot pass page
 router.get('/forgot-password', function (req, res, next) {
