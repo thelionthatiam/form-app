@@ -37,4 +37,15 @@ let isSessionValid = (token, outputs) => {
   )
 }
 
-export { randomString, isSessionValid };
+function lastFourOnly(cardNumber) {
+	let arr = [];
+  cardNumber = cardNumber.split('');
+
+  for (let i = cardNumber.length; arr.length < 5; i-- ) {
+    arr.push(cardNumber[i])
+   }
+   arr.reverse()
+   return arr.join('')
+}
+
+export { randomString, isSessionValid, lastFourOnly };

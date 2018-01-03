@@ -1,18 +1,21 @@
 <div class="flex product-wrapper">
 	<div class="flex product-name-price-wrapper">
-		<h3 class="product-title">{{ name }}</h3>
-		<h4>{{ price }}</h4>
+		<h2 class="product-title">{{ name }}</h2>
+		<h4>${{ price }}</h4>
 	</div>
 
 	<div class="flex description-img-wrapper">
-		<p class="description-text">{{ description }}</p>
-		<img class="organization-img" src="https://d20cm4krv6iwag.cloudfront.net/images/nraorg_logo.png">
+		<p class="description-text">{{ description }} {{ product_id}}</p>
+		<img class="organization-img">
 	</div>
 	<div class="flex product-action-wrapper">
-		<form class="flex product-cart-form" action="" type="">
+		<form class="flex product-cart-form" action="/accounts/{{email}}/cart" method="post">
 			<div class="flex input-wrapper">
-				<p>quantity:</p>
-				<input type="text" placeholder="1" maxlength="2">
+				<p>
+					quantity:
+				</p>
+				<input class="quantity" type="text" name="quantity" placeholder="1" maxlength="2" value=1>
+				<input type="hidden" name="product" value="{{ product_id }},{{ name }},{{ price }},{{ size }}" />
 				<button class="yes">add to cart</button>
 			</div>
 		</form>

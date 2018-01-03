@@ -26,4 +26,14 @@ let isSessionValid = (token, outputs) => {
     });
 };
 exports.isSessionValid = isSessionValid;
+function lastFourOnly(cardNumber) {
+    let arr = [];
+    cardNumber = cardNumber.split('');
+    for (let i = cardNumber.length; arr.length < 5; i--) {
+        arr.push(cardNumber[i]);
+    }
+    arr.reverse();
+    return arr.join('');
+}
+exports.lastFourOnly = lastFourOnly;
 //# sourceMappingURL=promise-helpers.js.map

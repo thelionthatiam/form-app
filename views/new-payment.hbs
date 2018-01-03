@@ -1,0 +1,100 @@
+<div class="flex pageWrapper">
+  <div class="flex column userWrapper">
+
+    {{#if success}}
+        <h3 class="formTitle">nice, now you can make a cart</h3>
+        <form>
+          <p>name</p>
+          <p class="inputMimic">{{ name }}</p>
+
+
+          <p>card number</p>
+          <p class="inputMimic">success</p>
+
+
+          <p>expiration</p>
+          <p class="inputMimic">success</p>
+
+
+          <p>CVV</p>
+          <p class="inputMimic">success</p>
+
+
+          <p>address</p>
+          <p class="inputMimic">{{ address_1 }}</p>
+
+
+          <p>city</p>
+          <p class="inputMimic">{{ city }}</p>
+
+
+          <p>state</p>
+          <p class="inputMimic">{{ state }}</p>
+
+
+          <p>ZIP code</p>
+          <p class="inputMimic">{{ zip }}</p>
+        </form>
+
+
+    {{else}}
+
+      <h3 class="formTitle">add a payment method</h3>
+
+      <form action="/accounts/{{ email }}/payment" method="POST">
+        <p>name</p>
+        <input id="name" name="name" class="userFormItem" type="text" placeholder="darth vader" value="asdf asdf" />
+        <p class="formErrorReport" id="nameError"></p>
+
+        <p>card number</p>
+        <input id="cardNumber" name="cardNumber" class="userFormItem numericOnly" type="text" placeholder="put card number here" value="42424242424242" />
+        <p class="formErrorReport" id="cardNumberError"></p>
+
+        <p>expiration</p>
+        <div class="flex expirationWrapper">
+          <input id="expirationMonth" name="expMonth" class="userFormItem numericOnly shortField" type="text" placeholder="MM" maxlength="2" value = "12"/>
+          <p class="expirationSlash">  / </p>
+          <input id="expirationDay" name="expDay" class="userFormItem numericOnly shortField" type="text" placeholder="DD" maxlength="2" value = "12"/>
+        </div>
+        <p class="formErrorReport" id="exiprationMonthError"></p>
+        <p class="formErrorReport" id="exiprationDayError"></p>
+
+        <p>CVV</p>
+        <input id="cvv" name="cvv" class="userFormItem" type="text" placeholder="number" value="123" />
+        <p class="formErrorReport" id="cvvError"></p>
+
+        <p>address</p>
+        <input id="address" name="address" class="userFormItem" type="text" placeholder="E Street South" value="asdfga" />
+        <p class="formErrorReport" id="addressError"></p>
+
+        <p>city</p>
+        <input id="city" name="city" class="userFormItem" type="text" placeholder="Juneau" value="1234" />
+        <p class="formErrorReport" id="cityError"></p>
+
+        <p>state</p>
+        <input id="state" name="state" class="userFormItem dropdownSearch" type="text" placeholder="AK" value="WA" />
+        <p class="formErrorReport" id="stateError"></p>
+        <div class="dropdownWrapper">
+          <ul class="dropdownList"></ul>
+        </div>
+
+        <p>ZIP code</p>
+        <input id="zipCode" name="zip" class="userFormItem numericOnly" type="text" placeholder="ZIP" value="12345" />
+        <p class="formErrorReport" id="zipCodeError"></p>
+
+        <button id="formSubmitter" class="unavailable submit" type="submit">submit</button>
+
+
+      </form>
+    {{/if}}
+
+    <form action="/accounts/:email" method="GET">
+      <button class="submit" type="submit">back</button>
+    </form>
+    {{dbError}}
+
+
+
+  </div>
+</div>
+{{!-- <script src="/behavior/payment-action.js"></script> --}}

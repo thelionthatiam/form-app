@@ -1,0 +1,36 @@
+<div class="column categoryWrapper">
+  <div class="row categoryTitle">
+    <h4>{{name}}</h4>
+    <div class="time-wrapper flex space-around ">
+      <p class="self right awakeTime">
+        {{card_number}}
+      </p>
+      <img src="https://d30y9cdsu7xlg0.cloudfront.net/png/29661-200.png" />
+    </div>
+  </div>
+  <div class="box subCategoryWrapper none">
+    <div class="row subCategoryTitle">
+      {{#if active}}
+        <p>
+          active card
+        </p>
+      {{else}}
+        <p>
+          currently inactive
+        </p>
+        <form action="/accounts/{{user_uuid}}/payment/active-payment?_method=PUT" method="post">
+          <input type="hidden" name="card_number" value={{card_number}} />
+          <button class="yes" type="submit">activate</button>
+        </form>
+      {{/if}}
+      <form action="/accounts/{{user_uuid}}/alarms/{{title}}" method="get">
+          <input type="image" width="20px" height="20px" src="https://maxcdn.icons8.com/Share/icon/p1em/Editing//edit1600.png">
+          <input name="title" type="hidden" value="{{ title }}">
+      </form>
+      <form action="/accounts/{{user_uuid}}/alarms/{{title}}?_method=DELETE" method="post">
+          <input type="image" width="20px" height="20px" src="https://www.pngarts.com/files/1/X-Shape-PNG-High-Quality-Image.png">
+          <input name="title" type="hidden" value="{{ title }}">
+      </form>
+    </div>
+  </div>
+</div>

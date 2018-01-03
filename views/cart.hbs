@@ -1,0 +1,35 @@
+
+<div class="full-page">
+  <h1>Cart</h1>
+  <p>
+    This is where you can view, remove and edit your cart items. You can also make an order here.
+  </p>
+
+  <div class= "categoryListWrapper">
+    {{#each cartContent}}
+      {{> cartdiv}}
+    {{/each}}
+  </div>
+  <p>
+    items: {{ totalItems }}
+  </p>
+  <p>
+    total cost: ${{ totalCost }}
+  </p>
+  <div class = 'last-four-wrapper'>
+    <p>
+      Payment Method: credit card ending in <b>{{ card_number }}</b>
+    </p>
+    <form action="/accounts/{{email}}/payment" method="get">
+      <button class="no long-fixed">change</button>
+    </form>
+  </div>
+  <p class="formErrorReport">{{ dbError }}</p>
+  <form action="/accounts/{{email}}/account/payment" method="get">
+      <button class="yes"> review order </button>
+  </form>
+  <form action="/products" method="get">
+    <button class="no " type="submit"> back </button>
+  </form>
+</div>
+<script src="/behavior/alarm-display.js"></script>

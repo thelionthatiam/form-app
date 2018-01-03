@@ -7,6 +7,7 @@ const path = require("path");
 const combiner_1 = require("./config/combiner");
 const database_1 = require("./middleware/database");
 const session = require("express-session");
+const sessionCheck = require("./middleware/session-check");
 const methodOverride = require("method-override");
 const app = express();
 app.use(methodOverride('_method'));
@@ -24,15 +25,17 @@ app.set('trust proxy', 1);
 app.use(database_1.init(combiner_1.dbConfig));
 console.log(combiner_1.dbConfig);
 //session using memory storage for now. Will not be the case in production. see readme session stores
+app.set('trust proxy', 1);
 app.use(session({
     name: 'session',
-    secret: 'keyboard cat',
+    secret: 'this is my secret',
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 3600000 } // one hour
+    cookie: {
+        maxAge: 3600000,
+    }
 }));
-// app.all('/in-session*', sessionCheck.check)
-// app.use('/accounts/:id', sessionCheck.check)
+app.use('/accounts', sessionCheck.check);
 app.use('/', require('./routes/index'));
 app.use(function (req, res, next) {
     res.status(404);

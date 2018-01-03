@@ -6,26 +6,19 @@ const async_database_1 = require("../middleware/async-database");
 const router = express.Router();
 router.route('/alarms')
     .post((req, res) => {
-    let inputs = {
-        userUUID: req.session.user.uuid,
-        title: req.body.title,
-        awake: req.body.awake
-    };
-    console.log('alarms post happening');
-    async_database_1.db.query('INSERT INTO alarms(user_uuid, title, awake) VALUES ($1, $2, $3) RETURNING *', [inputs.userUUID, inputs.title, inputs.awake])
+    async_database_1.db.query('INSERT INTO alarms(user_uuid, title, awake) VALUES ($1, $2, $3) RETURNING *', [req.session.user.uuid, req.body.title, req.body.awake])
         .then((result) => {
         res.redirect('alarms');
     })
         .catch((err) => {
         console.log(err);
         let userError = helpers_1.dbErrTranslator(err.message);
-        res.render('add-alarm', { dbError: userError });
+        res.render('new-alarm', { dbError: userError });
     });
 })
     .get((req, res) => {
-    let userUUID = [req.session.user.uuid];
-    console.log('alarms get happening');
-    async_database_1.db.query("SELECT * FROM alarms WHERE user_uuid = $1", userUUID)
+    console.log('GET alarms');
+    async_database_1.db.query("SELECT * FROM alarms WHERE user_uuid = $1", [req.session.user.uuid])
         .then((result) => {
         let alarmContent = result.rows;
         let sortedAlarms = alarmContent.sort(helpers_1.compare);
@@ -43,15 +36,15 @@ router.route('/alarms')
         });
     });
 });
-router.get('/add-alarm', (req, res, next) => {
-    res.render('add-alarm', {
+router.get('/new-alarm', (req, res, next) => {
+    res.render('new-alarm', {
         email: req.session.user.email
     });
 });
 router.route('/alarms/:title')
     .get((req, res) => {
     let title = req.query.title;
-    async_database_1.db.query("SELECT * FROM alarms WHERE title = $1", [title])
+    async_database_1.db.query("SELECT * FROM alarms WHERE title = $1 AND user_uuid = $2", [title, req.session.user.uuid])
         .then((result) => {
         console.log(result.rows);
         res.render('edit-alarm', {

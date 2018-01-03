@@ -11,8 +11,12 @@
     {{/each}}
   </div>
   <p class="formErrorReport">{{ dbError }}</p>
+  <form action="/accounts/{{email}}/cart" method="get">
+    <button class="yes" type="submit">my cart</button>
+  </form>
   <form action="/home" method="get">
     <button class="no" type="submit">back</button>
   </form>
+
 </div>
 {{!-- <script src="/behavior/.js"></script> --}}

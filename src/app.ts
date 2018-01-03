@@ -29,16 +29,19 @@ app.use(init(dbConfig));
 console.log(dbConfig);
 
 //session using memory storage for now. Will not be the case in production. see readme session stores
+app.set('trust proxy', 1)
 app.use(session({
   name:'session',
-  secret: 'keyboard cat',
+  secret: 'this is my secret',
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 3600000 } // one hour
+  cookie: {
+    maxAge: 3600000, // one hour
+    // secure: true
+  }
 }));
 
-// app.all('/in-session*', sessionCheck.check)
-// app.use('/accounts/:id', sessionCheck.check)
+app.use('/accounts', sessionCheck.check)
 app.use('/', require('./routes/index'))
 
 app.use(function(req, res, next) {

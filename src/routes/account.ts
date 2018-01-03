@@ -8,152 +8,11 @@ import { db } from '../middleware/async-database';
 const router = express.Router();
 
 
-//to sign up page
-router.get('/new-account', function(req, res, next) {
-  console.log('/to-create');
-  res.render('new-account', {success: false});
-});
-
-router.post('/delete', function (req, res, next) {
-  res.render('login', {
-    accountDelete:true,
-  });
-});
-
-router.route('/authorized')
-  .post((req, res) => {
-    var output = {};
-
-    db.query("SELECT * FROM users WHERE email = $1", [req.body.email])
-      .then((result) => {
-        if (result.rows.length === 0) {
-          throw new Error("Email not found")
-        } else {
-          output = result.rows[0];
-          return bcrypt.compare(req.body.password, result.rows[0].password)
-        }
-      })
-      .then((result) => {
-        if (result === false) {
-          throw new Error('Password incorrect');
-        } else {
-          req.session.user = {
-            uuid:output.user_uuid,
-            id:output.id,
-            email:output.email,
-            phone:output.phone,
-            password:output.password
-          }
-          console.log(req.session)
-          res.render('home', {
-            title:"yo",
-            email:req.session.user.email
-          })
-        }
-      })
-      .catch((error) => {
-        res.render('login', { dbError: error })
-      })
-  })
-
-router.post('/log-out', function(req, res, next) {
-    console.log("before destroy", req.session)
-    req.session.destroy(function(err:Error) {
-      if (err) {
-        res.render('error', { errName: err.message, errMessage: null });
-      } else {
-        console.log("after destory", req.session)
-        res.render('login');
-      }
-    });
-  });
-
-
-router.get('/home', (req, res) => {
-  console.log("home page", req.session)
-  res.render('home', {
-    title:"yo",
-    email:req.session.user.email
-  })
-})
-
-
-router.route('/accounts')
-  .get((req,res) => {
-    res.render('account', {
-      email:req.session.user.email,
-      phone:req.session.user.phone
-    })
-  })
-  .post((req,res) => {
-
-    let inputs = {
-      email: req.body.email,
-      phone: req.body.phone,
-      password:req.body.password,
-      id:'',
-      nonce:''
-    };
-    console.log('POST account')
-    bcrypt.hash(inputs.password, 10)
-      .then((hash) => {
-        inputs.password = hash;
-        console.log('created hash', hash)
-        return db.query('INSERT INTO users(email, phone, password) VALUES($1, $2, $3) RETURNING *', [inputs.email, inputs.phone, inputs.password])
-      })
-      .then((result) => {
-        console.log('inserted', inputs.password, 'into user table ', result)
-        inputs.id = result.rows[0].user_uuid;
-
-        return help.randomString
-      })
-      .then((string) => {
-        console.log('created', string)
-        return bcrypt.hash(string, 10)
-      })
-      .then((hash)=> {
-        inputs.nonce = hash
-        console.log('created another hash', hash)
-        return db.query('INSERT INTO nonce(user_uuid, nonce) VALUES ($1, $2) RETURNING *', [inputs.id, inputs.nonce])
-      })
-      .then((result) => {
-        console.log('inserted', inputs.nonce, 'into nonce table ', result)
-        res.render('new-account', {
-          success: true,
-          email: inputs.email,
-          phone: inputs.phone,
-        });
-      })
-      .catch((err) => { // should I make sure to scrub the users table of this uuid if there is an error? Case where nonce row doesn't get created fails too quietly...
-        console.log(err);
-        res.render('new-account', {
-          dbError:err.message
-        })
-      })
-  })
-
-
-router.route('/accounts/:email')
+router.route('/:email')
   .get((req,res) => {
     res.render('my-account', {
       email:req.session.user.email,
-      phone:req.session.user.phone
     })
-  })
-  .put((req, res) => {
-    db.query('UPDATE users SET (email, phone) = ($1, $2) WHERE user_uuid = $3', [req.body.email, req.body.phone, req.session.user.uuid])
-      .then((result) => {
-        console.log(result)
-        res.render('my-account', {
-          title:"account updated",
-          email:req.session.user.email,
-          success:true,
-        })
-      })
-      .catch((err) => {
-        console.log(err.stack)
-        res.render('my-account', { dbError: err.stack });
-      });
   })
   .delete((req, res) => {
     db.query('DELETE FROM users WHERE user_uuid = $1', [req.session.user.uuid])
@@ -162,9 +21,42 @@ router.route('/accounts/:email')
           message:"account was deleted, please make a new one to enter"
         })
       })
+      .catch((err) => {
+        console.log(err.stack)
+        res.render('my-account', { dbError: err.stack });
+      });
   })
 
-router.route('/accounts/:email/password')
+
+router.route('/:email/contact')
+  .get((req,res) => {
+    res.render('my-contact', {
+      email:req.session.user.email,
+      phone:req.session.user.phone
+    })
+  })
+  .put((req, res) => {
+    let email = req.body.email;
+    let phone = req.body.phone;
+
+    db.query('UPDATE users SET (email, phone) = ($1, $2) WHERE user_uuid = $3', [email, phone, req.session.user.uuid])
+      .then((result) => {
+        console.log(result)
+        req.session.user.email = email;
+        req.session.user.phone = phone
+        res.render('my-account', {
+          title:"account updated",
+          email:req.session.user.email
+        })
+      })
+      .catch((err) => {
+        console.log(err.stack)
+        res.render('my-account', { dbError: err.stack });
+      });
+  })
+
+
+router.route('/:email/password')
   .get((req, res) => {
     res.render('new-password', {
       email:req.session.user.email
@@ -205,6 +97,5 @@ router.route('/accounts/:email/password')
         res.render('new-password', { dbError: error })
       })
   })
-
 
 module.exports = router;
