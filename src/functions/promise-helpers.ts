@@ -37,7 +37,7 @@ let isSessionValid = (token, outputs) => {
   )
 }
 
-function lastFourOnly(cardNumber) {
+function lastFourOnly(cardNumber:string) {
 	let arr = [];
   cardNumber = cardNumber.split('');
 

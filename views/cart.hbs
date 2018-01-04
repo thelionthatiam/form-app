@@ -20,8 +20,8 @@
     <p>
       Payment Method: credit card ending in <b>{{ card_number }}</b>
     </p>
-    <form action="/accounts/{{email}}/payment" method="get">
-      <button class="no long-fixed">change</button>
+    <form action="/accounts/{{email}}/payment-select" method="get">
+      <button class="no long-fixed" type="submit">select another card</button>
     </form>
   </div>
   <p class="formErrorReport">{{ dbError }}</p>

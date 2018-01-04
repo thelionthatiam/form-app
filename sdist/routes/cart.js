@@ -14,14 +14,17 @@ router.route('/cart')
         price: product[2],
         size: product[3],
         uuid: req.session.user.uuid,
-        quantity: req.body.quantity
+        quantity: req.body.quantity,
+        card_number: ''
     };
-    let query = 'SELECT product_id FROM cart WHERE user_uuid = $1 and product_id = $2';
-    let values = [inputs.uuid, inputs.product_id];
-    async_database_1.db.query(query, values)
+    async_database_1.db.query('SELECT card_number FROM payment_credit WHERE (user_uuid, active) = ($1, $2)', [inputs.uuid, true])
+        .then((result) => {
+        inputs.card_number = result.rows[0].card_number;
+        return async_database_1.db.query('SELECT product_id FROM cart WHERE user_uuid = $1 and product_id = $2', [inputs.uuid, inputs.product_id]);
+    })
         .then((result) => {
         if (result.rows.length === 0) {
-            return async_database_1.db.query('INSERT INTO cart(product_id, name, price, size, user_uuid, quantity) VALUES ($1, $2, $3, $4, $5, $6)', [inputs.product_id, inputs.name, inputs.price, inputs.size, inputs.uuid, inputs.quantity]);
+            return async_database_1.db.query('INSERT INTO cart(product_id, name, price, size, user_uuid, quantity, card_number) VALUES ($1, $2, $3, $4, $5, $6, $7)', [inputs.product_id, inputs.name, inputs.price, inputs.size, inputs.uuid, inputs.quantity, inputs.card_number]);
         }
         else {
             return async_database_1.db.query('UPDATE cart SET quantity = quantity+$1 WHERE user_uuid = $2', [inputs.quantity, inputs.uuid]);
@@ -38,9 +41,7 @@ router.route('/cart')
 })
     .get((req, res) => {
     let uuid = req.session.user.uuid, cartContent = [], totalCost = 0, totalItems = 0, price, quantity;
-    let query = 'SELECT * FROM cart WHERE user_uuid = $1';
-    let values = [uuid];
-    async_database_1.db.query(query, values)
+    async_database_1.db.query('SELECT * FROM cart WHERE user_uuid = $1', [uuid])
         .then((result) => {
         cartContent = result.rows;
         for (let i = 0; i < result.rows.length; i++) {
@@ -49,19 +50,18 @@ router.route('/cart')
             totalCost = totalCost + (price * quantity);
             totalItems = totalItems + quantity;
         }
-        return async_database_1.db.query('SELECT card_number FROM payment_credit WHERE (user_uuid, active) = ($1, $2)', [uuid, true]);
-    })
-        .then((result) => {
         let lastFour = promise_helpers_1.lastFourOnly(result.rows[0].card_number);
+        // return db.query('UPDATE cart SET card_number = $1 WHERE (user_uuid, active) = ($1, $2)')
         res.render('cart', {
             cartContent: cartContent,
             totalCost: totalCost,
             totalItems: totalItems,
-            card_number: lastFour
+            card_number: lastFour,
+            email: req.session.user.email
         });
     })
         .catch((err) => {
-        console.log(err);
+        console.log('get cart error', err);
         let userError = helpers_1.dbErrTranslator(err.message);
         res.render('cart', { dbError: userError });
     });
@@ -115,6 +115,35 @@ router.route('/cart/:product_id')
         .catch((err) => {
         console.log(err.stack);
         res.render('cart', { dbError: err.stack });
+    });
+});
+router.route('/payment-select')
+    .get((req, res) => {
+    let uuid = req.session.user.uuid;
+    async_database_1.db.query("SELECT * FROM payment_credit WHERE user_uuid = $1", [uuid])
+        .then((result) => {
+        let paymentContent = result.rows;
+        res.render('payments-cart-select', {
+            paymentContent: paymentContent,
+            email: req.session.user.email
+        });
+    })
+        .catch((error) => {
+        console.log(error);
+        res.redirect('./cart');
+    });
+})
+    .post((req, res) => {
+    let card_number = req.body.card_number;
+    async_database_1.db.query('UPDATE cart SET card_number = $1 WHERE user_uuid = $2', [card_number, req.session.user.uuid])
+        .then((result) => {
+        res.redirect('/accounts/' + req.session.user.email + '/cart');
+    })
+        .catch((error) => {
+        console.log(error);
+        res.render('payments-cart-select', {
+            dbError: error
+        });
     });
 });
 module.exports = router;

@@ -71,6 +71,7 @@ CREATE TABLE cart (
   name varchar(100) REFERENCES products(name) ON DELETE CASCADE ON UPDATE CASCADE,
   size varchar(20),
   quantity numeric(10) NOT NULL default 1,
+  card_number varchar(20) REFERENCES payment_credit(card_number),
   create_timestamp timestamptz NOT NULL DEFAULT now(),
   updated_timestamp timestamptz NOT NULL DEFAULT now()
 );
@@ -103,4 +104,13 @@ CREATE TABLE price_history (
   price numeric(10,2) NOT NULL,
   updated_timestamp timestamptz NOT NULL DEFAULT now(),
   PRIMARY KEY (product_id, updated_timestamp)
+);
+
+CREATE TABLE transactions (
+  user_uuid UUID REFERENCES users(user_uuid) ON DELETE CASCADE ON UPDATE CASCADE,
+  card_number varchar(20) REFERENCES payment_credit(card_number),
+  items varchar[],
+  total -- use totals from cart page
+  create_timestamp timestamptz NOT NULL DEFAULT now(),
+  updated_timestamp timestamptz NOT NULL DEFAULT now()
 );

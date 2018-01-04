@@ -1,0 +1,28 @@
+<div class="column categoryWrapper">
+  <div class="row categoryTitle">
+    <h4>{{name}}</h4>
+    <div class="time-wrapper flex space-around ">
+      <p class="self right awakeTime">
+        {{card_number}}
+      </p>
+      <img src="https://d30y9cdsu7xlg0.cloudfront.net/png/29661-200.png" />
+    </div>
+    <form action='/accounts/{{user_uuid}}/payment-select' method="post">
+      <input type='hidden' value='{{card_number}}' name='card_number' />
+      <button class="long-fixed">select</button>
+    </form>
+  </div>
+  <div class="box subCategoryWrapper none">
+    <div class="row subCategoryTitle">
+      {{#if active}}
+        <p>
+          active card
+        </p>
+      {{else}}
+        <p>
+          currently inactive
+        </p>
+      {{/if}}
+    </div>
+  </div>
+</div>

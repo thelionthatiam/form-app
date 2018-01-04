@@ -12,7 +12,7 @@ const router = express.Router();
 router.get('/new-payment', (req, res) => {
   let email = req.session.user.email;
   res.render('new-payment', {
-    email:email;
+    email:email
   })
 })
 
