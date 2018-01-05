@@ -32,7 +32,7 @@ router.route('/accounts')
       email: req.body.email,
       phone: req.body.phone,
       password:req.body.password,
-      id:'',
+      uuid:'',
       nonce:''
     };
     console.log('POST account')
@@ -44,7 +44,7 @@ router.route('/accounts')
       })
       .then((result) => {
         console.log('inserted', inputs.password, 'into user table ', result)
-        inputs.id = result.rows[0].user_uuid;
+        inputs.uuid = result.rows[0].user_uuid;
 
         return help.randomString
       })
@@ -55,7 +55,10 @@ router.route('/accounts')
       .then((hash)=> {
         inputs.nonce = hash
         console.log('created another hash', hash)
-        return db.query('INSERT INTO nonce(user_uuid, nonce) VALUES ($1, $2) RETURNING *', [inputs.id, inputs.nonce])
+        return db.query('INSERT INTO nonce(user_uuid, nonce) VALUES ($1, $2) RETURNING *', [inputs.uuid, inputs.nonce])
+      })
+      .then((result) => {
+        return db.query('INSERT INTO session (user_uuid, sessionID) VALUES ($1, $2)', [inputs.uuid, req.sessionID]);
       })
       .then((result) => {
         console.log('inserted', inputs.nonce, 'into nonce table ', result)

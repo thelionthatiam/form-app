@@ -4,6 +4,7 @@ const express = require("express");
 const help = require("../functions/promise-helpers");
 const bcrypt = require("bcrypt");
 const async_database_1 = require("../middleware/async-database");
+const uuidv4 = require("uuid/v4");
 const router = express.Router();
 router.route('/authorized')
     .post((req, res) => {
@@ -28,8 +29,10 @@ router.route('/authorized')
         }
     })
         .then(() => {
+        return async_database_1.db.query('UPDATE session SET sessionid = $1 WHERE user_uuid = $2', [req.sessionID, output.user_uuid]);
+    })
+        .then((result) => {
         console.log(req.sessionID);
-        console.log(output);
         req.session.user = {
             uuid: output.user_uuid,
             email: output.email,
@@ -42,19 +45,24 @@ router.route('/authorized')
         });
     })
         .catch((error) => {
+        console.log(error);
         res.render('login', { dbError: error });
     });
 });
 router.post('/log-out', function (req, res, next) {
     console.log("before destroy", req.session);
-    req.session.destroy(function (err) {
-        if (err) {
-            res.render('error', { errName: err.message, errMessage: null });
-        }
-        else {
-            console.log("after destory", req.session);
-            res.render('login');
-        }
+    let inactive = uuidv4(); //if its uuidv4 its inactive
+    async_database_1.db.query('UPDATE session SET sessionid = $1 WHERE user_uuid = $2', [inactive, req.session.user.uuid])
+        .then((result) => {
+        req.session.destroy(function (err) {
+            if (err) {
+                res.render('error', { errName: err.message, errMessage: null });
+            }
+            else {
+                console.log("after destory", req.session);
+                res.render('login');
+            }
+        });
     });
 });
 module.exports = router;

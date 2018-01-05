@@ -30,8 +30,11 @@ router.route('/authorized')
         }
       })
       .then(() => {
+        return db.query('UPDATE session SET sessionid = $1 WHERE user_uuid = $2', [req.sessionID, output.user_uuid]);
+      })
+      .then((result) => {
         console.log(req.sessionID)
-        console.log(output)
+
         req.session.user = {
           uuid:output.user_uuid,
           email:output.email,
@@ -44,6 +47,7 @@ router.route('/authorized')
         })
       })
       .catch((error) => {
+        console.log(error)
         res.render('login', { dbError: error })
       })
   })
@@ -52,14 +56,18 @@ router.route('/authorized')
 
 router.post('/log-out', function(req, res, next) {
     console.log("before destroy", req.session)
-    req.session.destroy(function(err:Error) {
-      if (err) {
-        res.render('error', { errName: err.message, errMessage: null });
-      } else {
-        console.log("after destory", req.session)
-        res.render('login');
-      }
-    });
+    let inactive = uuidv4(); //if its uuidv4 its inactive
+    db.query('UPDATE session SET sessionid = $1 WHERE user_uuid = $2', [inactive, req.session.user.uuid])
+    .then((result) => {
+      req.session.destroy(function(err:Error) {
+        if (err) {
+          res.render('error', { errName: err.message, errMessage: null });
+        } else {
+          console.log("after destory", req.session)
+          res.render('login');
+        }
+      });
+    })
   });
 
 

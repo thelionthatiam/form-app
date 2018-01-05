@@ -106,11 +106,18 @@ CREATE TABLE price_history (
   PRIMARY KEY (product_id, updated_timestamp)
 );
 
-CREATE TABLE transactions (
+CREATE TABLE orders (
   user_uuid UUID REFERENCES users(user_uuid) ON DELETE CASCADE ON UPDATE CASCADE,
   card_number varchar(20) REFERENCES payment_credit(card_number),
   items varchar[],
   total -- use totals from cart page
+  create_timestamp timestamptz NOT NULL DEFAULT now(),
+  updated_timestamp timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE session (
+  user_uuid UUID REFERENCES users(user_uuid) ON DELETE CASCADE ON UPDATE CASCADE,
+  sessionID varchar(100) NOT NULL UNIQUE,
   create_timestamp timestamptz NOT NULL DEFAULT now(),
   updated_timestamp timestamptz NOT NULL DEFAULT now()
 );
