@@ -26,6 +26,17 @@ let isSessionValid = (token, outputs) => {
     });
 };
 exports.isSessionValid = isSessionValid;
+function regenerateSession(req) {
+    return new Promise((resolve, reject) => {
+        req.session.regenerate(function (err) {
+            if (err)
+                reject(err);
+            else
+                resolve();
+        });
+    });
+}
+exports.regenerateSession = regenerateSession;
 function lastFourOnly(cardNumber) {
     let arr = [];
     cardNumber = cardNumber.split('');

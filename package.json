@@ -14,9 +14,11 @@
   "license": "ISC",
   "dependencies": {
     "@types/bcrypt": "^1.0.0",
+    "@types/cookie-parser": "^1.4.1",
     "@types/filesystem": "0.0.28",
     "@types/handlebars": "^4.0.36",
     "@types/method-override": "0.0.31",
+    "@types/uuid": "^3.4.3",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
     "express": "^4.15.4",
@@ -30,6 +32,7 @@
     "prompt": "^1.0.0",
     "request": "^2.83.0",
     "strict-mode": "^1.1.2",
+    "uuid": "^3.1.0",
     "yargs": "^10.0.3"
   },
   "devDependencies": {

@@ -24,8 +24,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('trust proxy', 1);
 app.use(database_1.init(combiner_1.dbConfig));
 console.log(combiner_1.dbConfig);
-//session using memory storage for now. Will not be the case in production. see readme session stores
-app.set('trust proxy', 1);
+//session using memory storage (I think this is application memory) for now. Will not be the case in production. see readme session stores
+// app.set('trust proxy', 1) // necessary of server is behind a proxy and using secure:true for cookie
 app.use(session({
     name: 'session',
     secret: 'this is my secret',
@@ -33,7 +33,9 @@ app.use(session({
     saveUninitialized: true,
     cookie: {
         maxAge: 3600000,
-    }
+        httpOnly: true,
+    },
+    name: 'id'
 }));
 app.use('/accounts', sessionCheck.check);
 app.use('/', require('./routes/index'));

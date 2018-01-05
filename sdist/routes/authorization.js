@@ -1,12 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
+const help = require("../functions/promise-helpers");
 const bcrypt = require("bcrypt");
 const async_database_1 = require("../middleware/async-database");
 const router = express.Router();
 router.route('/authorized')
     .post((req, res) => {
     var output = {};
+    console.log('before', req.sessionID);
     async_database_1.db.query("SELECT * FROM users WHERE email = $1", [req.body.email])
         .then((result) => {
         if (result.rows.length === 0) {
@@ -22,19 +24,22 @@ router.route('/authorized')
             throw new Error('Password incorrect');
         }
         else {
-            req.session.user = {
-                uuid: output.user_uuid,
-                id: output.id,
-                email: output.email,
-                phone: output.phone,
-                password: output.password
-            };
-            console.log(req.session);
-            res.render('home', {
-                title: "yo",
-                email: req.session.user.email
-            });
+            return help.regenerateSession(req);
         }
+    })
+        .then(() => {
+        console.log(req.sessionID);
+        console.log(output);
+        req.session.user = {
+            uuid: output.user_uuid,
+            email: output.email,
+            phone: output.phone,
+        };
+        // req.session.ID = uuidv4();
+        res.render('home', {
+            title: "yo",
+            email: req.session.user.email
+        });
     })
         .catch((error) => {
         res.render('login', { dbError: error });

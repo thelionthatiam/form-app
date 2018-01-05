@@ -37,6 +37,17 @@ let isSessionValid = (token, outputs) => {
   )
 }
 
+function regenerateSession(req) {
+  return new Promise (
+    (resolve, reject) => {
+      req.session.regenerate(function(err) {
+        if (err) reject(err)
+        else resolve();
+      })
+    }
+  )
+}
+
 function lastFourOnly(cardNumber:string) {
 	let arr = [];
   cardNumber = cardNumber.split('');
@@ -48,4 +59,4 @@ function lastFourOnly(cardNumber:string) {
    return arr.join('')
 }
 
-export { randomString, isSessionValid, lastFourOnly };
+export { randomString, isSessionValid, regenerateSession, lastFourOnly };
