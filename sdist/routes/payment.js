@@ -73,7 +73,7 @@ router.route('/payment/active-payment')
     console.log(card_number);
     async_database_1.db.query('UPDATE payment_credit SET active = $1 WHERE user_uuid = $2', [false, req.session.user.uuid])
         .then((result) => {
-        return async_database_1.db.query('UPDATE payment_credit SET active = $1 WHERE card_number = $2', [true, card_number]);
+        return async_database_1.db.query('UPDATE payment_credit SET active = $1 WHERE (card_number, user_uuid) = ($2, $3)', [true, card_number, req.session.user.uuid]);
     })
         .then((result) => {
         res.redirect('/accounts/' + req.session.user.email + '/payment');

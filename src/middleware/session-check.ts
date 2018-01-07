@@ -11,7 +11,6 @@ function check(req:Express.Request, res:ModResponse, next:Function) {
   if (req.session.user && req.sessionID) {
     db.query('SELECT sessionID FROM session WHERE user_uuid = $1', [req.session.user.uuid])
       .then((result) => {
-        console.log(req.sessionID, result.rows[0].sessionid)
         if (result.rows[0].sessionid === req.sessionID) {
           next();
         } else {

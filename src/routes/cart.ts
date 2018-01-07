@@ -128,11 +128,19 @@ router.route('/cart/:product_id')
 router.route('/payment-select')
   .get((req, res) => {
     let uuid = req.session.user.uuid;
+    let paymentContent;
     db.query("SELECT * FROM payment_credit WHERE user_uuid = $1", [uuid])
       .then((result) => {
-        let paymentContent = result.rows
+        paymentContent = result.rows
+        return db.query('SELECT card_number FROM cart WHERE user_uuid = $1', [req.session.user.uuid])
+      })
+      .then((result) => {
+        console.log(result)
+        let lastFour = lastFourOnly(result.rows[0].card_number);
+
         res.render('payments-cart-select', {
           paymentContent:paymentContent,
+          activeCard:lastFour,
           email:req.session.user.email
         })
       })

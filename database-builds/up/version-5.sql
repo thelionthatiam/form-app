@@ -9,7 +9,6 @@ BEGIN
 END;
 $$;
 
-
 ALTER TABLE users ADD COLUMN create_timestamp timestamptz NOT NULL DEFAULT now()
 ALTER TABLE users ADD COLUMN updated_timestamp timestamptz NOT NULL DEFAULT now();
 CREATE TRIGGER alarms_on_update_timestamp
@@ -107,6 +106,7 @@ CREATE TABLE price_history (
 );
 
 CREATE TABLE orders (
+  PRIMARY KEY (create_timestamp, user_uuid)
   user_uuid UUID REFERENCES users(user_uuid) ON DELETE CASCADE ON UPDATE CASCADE,
   card_number varchar(20) REFERENCES payment_credit(card_number),
   items varchar[],
