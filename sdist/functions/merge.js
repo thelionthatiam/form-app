@@ -1,13 +1,5 @@
-// if obj1 is an Array of T and obj2 is an Array of T
-//   return mergeArray(obj1 as Array of T, obj2 as Array of T)
-// else if obj1 is a Map and obj2 is a Map
-//   return mergeMap(obj1 as Map, obj2 as Map)
-// # the rest are non object but we also need to verify their types...
-// else if obj1 is Scalar Type 1 and obj is Scalar Type 1
-//   return mergeScalarType1(obj1 as Scalar Type1, obj2 as Scalar Type 2)
-// ...
-// else # invalid merge
-//   throw error that indicates invalid merge.
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 function isCyclic(obj) {
     var seenObjects = [];
     function detect(obj) {
@@ -63,7 +55,7 @@ function typeSort(item1, item2) {
         return "Invalid merge";
     }
 }
-function merge(one, two) {
+function deepMerge(one, two) {
     if ((!isCyclic(one)) && (!isCyclic(two))) {
         for (let prop in two) {
             one[prop] = typeSort(one[prop], two[prop]);
@@ -74,4 +66,5 @@ function merge(one, two) {
     }
     return one;
 }
-//# sourceMappingURL=new-merge.js.map
+exports.deepMerge = deepMerge;
+//# sourceMappingURL=merge.js.map

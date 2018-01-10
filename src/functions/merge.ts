@@ -1,14 +1,3 @@
-// if obj1 is an Array of T and obj2 is an Array of T
-//   return mergeArray(obj1 as Array of T, obj2 as Array of T)
-// else if obj1 is a Map and obj2 is a Map
-//   return mergeMap(obj1 as Map, obj2 as Map)
-// # the rest are non object but we also need to verify their types...
-// else if obj1 is Scalar Type 1 and obj is Scalar Type 1
-//   return mergeScalarType1(obj1 as Scalar Type1, obj2 as Scalar Type 2)
-// ...
-// else # invalid merge
-//   throw error that indicates invalid merge.
-
 function isCyclic<C>(obj:C) {
   var seenObjects:[C] = [];
   function detect (obj:C) {
@@ -63,7 +52,7 @@ function typeSort<U>(item1:U, item2:U) {
 }
 
 
-function merge<E>(one:E, two:E) {
+function deepMerge<E>(one:E, two:E) {
   if( (!isCyclic(one)) && (!isCyclic(two)) ) {
     for (let prop in two) {
 		one[prop] = typeSort(one[prop], two[prop]);
@@ -73,3 +62,5 @@ function merge<E>(one:E, two:E) {
   }
   return one;
 }
+
+export { deepMerge };

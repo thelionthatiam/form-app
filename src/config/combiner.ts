@@ -1,4 +1,4 @@
-import { deepMerge } from '../functions/deepMerge.js';
+import { deepMerge } from '../functions/merge.js';
 import * as dbConfigDefault from './db-default.json';
 import * as connectCredentials  from './connect-config.json';
 
