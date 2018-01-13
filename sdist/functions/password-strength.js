@@ -18,7 +18,7 @@ function cardinalityGuess(password) {
         cardinality = cardinality + 10;
     }
     if (password.match(symbols)) {
-        console.log('positive symbole search', password.search(symbols));
+        console.log('positive symbol search', password.search(symbols));
         cardinality = cardinality + 31;
     }
     return cardinality;

@@ -12,7 +12,6 @@ const router = express.Router();
 router.route('/authorized')
   .post((req, res) => {
     var output = {};
-    console.log('before', req.sessionID);
     db.query("SELECT * FROM users WHERE email = $1", [req.body.email])
       .then((result) => {
         if (result.rows.length === 0) {
@@ -33,12 +32,16 @@ router.route('/authorized')
         return db.query('UPDATE session SET sessionid = $1 WHERE user_uuid = $2', [req.sessionID, output.user_uuid]);
       })
       .then((result) => {
-        console.log(req.sessionID)
+        return db.query('SELECT cart_uuid FROM cart WHERE user_uuid = $1', [output.user_uuid])
+      })
+      .then((result) => {
+        let cart_uuid = result.rows[0].cart_uuid;
 
         req.session.user = {
           uuid:output.user_uuid,
           email:output.email,
           phone:output.phone,
+          cart_uuid:cart_uuid
         }
         // req.session.ID = uuidv4();
         res.render('home', {
@@ -55,7 +58,6 @@ router.route('/authorized')
 
 
 router.post('/log-out', function(req, res, next) {
-    console.log("before destroy", req.session)
     let inactive = uuidv4(); //if its uuidv4 its inactive
     db.query('UPDATE session SET sessionid = $1 WHERE user_uuid = $2', [inactive, req.session.user.uuid])
     .then((result) => {

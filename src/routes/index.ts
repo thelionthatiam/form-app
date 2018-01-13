@@ -16,6 +16,7 @@ router.use('/accounts', require('./account'));
 router.use('/accounts/:email', require('./payment'));
 router.use('/accounts/:email', require('./alarms'));
 router.use('/accounts/:email', require('./cart'));
+router.use('/accounts/:email/', require('./orders'));
 
 
 
@@ -27,7 +28,7 @@ router.get('/home', (req, res) => {
   console.log("home page", req.session)
   res.render('home', {
     title:"yo",
-    email:req.session.user.email
+    email:req.session.user.email;
   })
 })
 

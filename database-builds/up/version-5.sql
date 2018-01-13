@@ -39,6 +39,11 @@ CREATE TRIGGER alarms_on_update_timestamp
   FOR EACH ROW EXECUTE
   PROCEDURE set_updated_timestamp();
 
+CREATE TRIGGER payment_credit_update_timestamp
+  BEFORE UPDATE ON products
+  FOR EACH ROW EXECUTE
+  PROCEDURE set_updated_timestamp();
+
 
 -- Master Card, Visa, Discover, American Express
 CREATE TABLE payment_credit (
@@ -54,10 +59,12 @@ CREATE TABLE payment_credit (
   city varchar(20) NOT NULL CHECK (city ~ '^[\da-zA-Z]{1,20}$'),
   state varchar(20) NOT NULL CHECK (state ~ '^[A-Z]{2}'),
   zip varchar(20) NOT NULL CHECK (zip ~ '^\d{5}$'),
-  active boolean default TRUE
+  active boolean default TRUE,
+  create_timestamp timestamptz NOT NULL DEFAULT now(),
+  updated_timestamp timestamptz NOT NULL DEFAULT now()
 );
 
-CREATE TRIGGER products_on_update_timestamp
+CREATE TRIGGER products_update_timestamp
   BEFORE UPDATE ON products
   FOR EACH ROW EXECUTE
   PROCEDURE set_updated_timestamp();
@@ -70,11 +77,16 @@ CREATE TABLE products (
   price numeric(10,2) NOT NULL,
   name varchar(100) NOT NULL UNIQUE CHECK (name ~ '^[A-Za-z\d ]{1,30}$'),
   description varchar(100) NOT NULL CHECK (name ~ '^[A-Za-z\d ]{1,99}$'),
-  size varchar(20) CHECK (size ~ '^[sml]{1}$'),
+  size varchar(20) NOT NULL CHECK (size ~ '^[sml]{1}$'),
   create_timestamp timestamptz NOT NULL DEFAULT now(),
   updated_timestamp timestamptz NOT NULL DEFAULT now(),
   UNIQUE (product_id, updated_timestamp)
 );
+
+CREATE TRIGGER cart_update_timestamp
+  BEFORE UPDATE ON cart
+  FOR EACH ROW EXECUTE
+  PROCEDURE set_updated_timestamp();
 
 CREATE TABLE cart (
   id BIGSERIAL PRIMARY KEY NOT NULL,
@@ -85,15 +97,22 @@ CREATE TABLE cart (
   updated_timestamp timestamptz NOT NULL DEFAULT now()
 );
 
+CREATE TRIGGER cart_items_update_timestamp
+  BEFORE UPDATE ON cart_items
+  FOR EACH ROW EXECUTE
+  PROCEDURE set_updated_timestamp();
+
 CREATE TABLE cart_items (
   id BIGSERIAL PRIMARY KEY NOT NULL,
   cart_uuid UUID REFERENCES cart(cart_uuid),
   cart_item_uuid UUID UNIQUE NOT NULL default uuid_generate_v4(),
+  product_id varchar(20) REFERENCES products(product_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  price numeric(10, 2) NOT NULL,
   quantity numeric(10) NOT NULL default 1,
-  item_number numeric(10) NOT NULL default 1, -- needs to check how many items are in cart
+  name varchar(100) REFERENCES products(name) NOT NULL CHECK (name ~ '^[A-Za-z\d ]{1,30}$'),
+  size varchar(20) NOT NULL CHECK (size ~ '^[sml]{1}$'),
   create_timestamp timestamptz NOT NULL DEFAULT now(),
-  updated_timestamp timestamptz NOT NULL DEFAULT now(),
-  product_id varchar(20) REFERENCES products(product_id) ON DELETE CASCADE ON UPDATE CASCADE
+  updated_timestamp timestamptz NOT NULL DEFAULT now()
 );
 
 CREATE OR REPLACE FUNCTION function_copy() RETURNS TRIGGER AS
@@ -123,25 +142,38 @@ CREATE TABLE price_history (
   product_id varchar(20) NOT NULL CHECK (product_id ~ '([A-Z\d]{4})-([A-Z]{1})-([A-Z\d]{4})-([\d]{4})'),
   price numeric(10,2) NOT NULL,
   updated_timestamp timestamptz NOT NULL DEFAULT now(),
-  PRIMARY KEY (product_id, updated_timestamp) -- this is wrong 
+  PRIMARY KEY (product_id, updated_timestamp) -- this is wrong
 );
+
+CREATE TRIGGER orders_update_timestamp
+  BEFORE UPDATE ON orders
+  FOR EACH ROW EXECUTE
+  PROCEDURE set_updated_timestamp();
 
 CREATE TABLE orders (
   id BIGSERIAL PRIMARY KEY NOT NULL,
   cart_uuid UUID REFERENCES cart(cart_uuid),
-  order_uuid UUID NOT NULL default uuid_generate_v4(),
-  card_number varchar(20) REFERENCES cart(card_number) ON UPDATE CASCADE,
-  UNIQUE (cart_uuid, item_number),
+  order_uuid UUID UNIQUE NOT NULL default uuid_generate_v4(),
+  card_number varchar(20) REFERENCES payment_credit(card_number),
   create_timestamp timestamptz NOT NULL DEFAULT now(),
   updated_timestamp timestamptz NOT NULL DEFAULT now()
 );
+
+CREATE TRIGGER order_items_update_timestamp
+  BEFORE UPDATE ON order
+  FOR EACH ROW EXECUTE
+  PROCEDURE set_updated_timestamp();
 
 CREATE TABLE order_items (
   id BIGSERIAL PRIMARY KEY NOT NULL,
   order_uuid UUID REFERENCES orders(order_uuid),
   order_item_uuid UUID NOT NULL default uuid_generate_v4(),
   item_number numeric(10) NOT NULL default 1, -- needs to check how many items are in cart
-  UNIQUE (order_uuid, item_number),
+  product_id varchar(20) REFERENCES products(product_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  price numeric(10, 2) NOT NULL,
+  quantity numeric(10) NOT NULL default 1,
+  name varchar(100) REFERENCES products(name) NOT NULL CHECK (name ~ '^[A-Za-z\d ]{1,30}$'),
+  size varchar(20) NOT NULL CHECK (size ~ '^[sml]{1}$'),
   create_timestamp timestamptz NOT NULL DEFAULT now(),
   updated_timestamp timestamptz NOT NULL DEFAULT now()
 );

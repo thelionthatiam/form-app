@@ -6,7 +6,7 @@ const async_database_1 = require("../middleware/async-database");
 const router = express.Router();
 router.route('/products')
     .post((req, res) => {
-    // all happens in on the server end
+    // all happens manually
 })
     .get((req, res) => {
     let email = req.session.user.email;
@@ -17,7 +17,6 @@ router.route('/products')
         for (let i = 0; i < productContent.length; i++) {
             productContent[i].email = email;
         }
-        console.log(productContent);
         res.render('products', {
             productContent: productContent,
             email: email

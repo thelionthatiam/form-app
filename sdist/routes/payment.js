@@ -22,7 +22,8 @@ router.route('/payment')
         .catch((error) => {
         console.log(error);
         res.render('payments', {
-            dbError: error
+            dbError: error,
+            email: req.session.user.email
         });
     });
 })
@@ -50,6 +51,9 @@ router.route('/payment')
         return async_database_1.db.query('INSERT INTO payment_credit (user_uuid, card_number, name, exp_month, exp_date, cvv, address_1, city, state, zip) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)', [uuid, inputs.cardNumber, inputs.name, inputs.expMonth, inputs.expDay, inputs.cvv, inputs.address, inputs.city, inputs.state, inputs.zip]);
     })
         .then((result) => {
+        return async_database_1.db.query('INSERT INTO cart (card_number, user_uuid) VALUES ($1, $2)', [inputs.cardNumber, req.session.user.uuid]);
+    })
+        .then((result) => {
         res.render('new-payment', {
             success: true,
             name: inputs.name,
@@ -63,7 +67,8 @@ router.route('/payment')
         .catch((error) => {
         console.log(error);
         res.render('new-payment', {
-            dbError: error
+            dbError: error,
+            email: req.session.user.email
         });
     });
 });
@@ -81,7 +86,8 @@ router.route('/payment/active-payment')
         .catch((error) => {
         console.log(error);
         res.render('payments', {
-            dbError: error
+            dbError: error,
+            email: req.session.user.email
         });
     });
 });

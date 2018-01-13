@@ -18,15 +18,16 @@
   </p>
   <div class = 'last-four-wrapper'>
     <p>
-      Payment Method: credit card ending in <b>{{ card_number }}</b>
+      Payment Method: credit card ending in <b>{{ lastFour }}</b>
     </p>
     <form action="/accounts/{{email}}/payment-select" method="get">
       <button class="no long-fixed" type="submit">select another card</button>
     </form>
   </div>
   <p class="formErrorReport">{{ dbError }}</p>
-  <form action="/accounts/{{email}}/account/payment" method="get">
-      <button class="yes"> review order </button>
+  <form action="/accounts/{{email}}/orders" method="post">
+    <input type="hidden" value='{{card_number}}' name='card_number' />
+    <button class="yes">purchase </button>
   </form>
   <form action="/products" method="get">
     <button class="no " type="submit"> back </button>

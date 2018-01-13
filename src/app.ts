@@ -44,7 +44,7 @@ app.use(session({
   })
 );
 
-app.use('/accounts', sessionCheck.check)
+app.use('/accounts/\*', sessionCheck.check)
 app.use('/', require('./routes/index'))
 
 app.use(function(req, res, next) {
