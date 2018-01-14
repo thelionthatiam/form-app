@@ -1,93 +1,66 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const promise_helpers_1 = require("../functions/promise-helpers");
 const express = require("express");
 const async_database_1 = require("../middleware/async-database");
+const mail_config_js_1 = require("../config/mail-config.js");
 const router = express.Router();
-function queryVariables(result) {
-    let tempField = [];
-    let finalField = [];
-    for (let j = 0; j < result.length; j++) {
-        console.log(result.length);
-        tempField.push('(');
-        for (let i = 1; i <= 6; i++) {
-            if (i < 6) {
-                tempField.push('$' + [i + (j * 6)] + ', ');
-            }
-            else {
-                tempField.push('$' + [i + (j * 6)]);
-            }
-        }
-        tempField.push(')');
-        finalField.push(tempField.join(''));
-        tempField = [];
-    }
-    return finalField.join(', ');
-}
-function inputs(result, order_uuid) {
-    let tempArray = [];
-    for (let i = 0; i < result.length; i++) {
-        tempArray.push(order_uuid);
-        for (let k in result[i]) {
-            if (k === 'order_uuid') {
-                // console.log('order_uuid', k, result[i][k])
-                tempArray.push(result[i][k]);
-            }
-            else if (k === 'product_id') {
-                // console.log('product_it', k, result[i][k])
-                tempArray.push(result[i][k]);
-            }
-            else if (k === 'price') {
-                // console.log('price', k, result[i][k])
-                tempArray.push(result[i][k]);
-            }
-            else if (k === 'quantity') {
-                // console.log('quantity', k, result[i][k])
-                tempArray.push(result[i][k]);
-            }
-            else if (k === 'name') {
-                // console.log('name', k, result[i][k])
-                tempArray.push(result[i][k]);
-            }
-            else if (k === 'size') {
-                // console.log('size', k, result[i][k])
-                tempArray.push(result[i][k]);
-            }
-        }
-    }
-    return tempArray;
-}
-function concatQuery(sqlVariables) {
-    return "INSERT INTO order_items (order_uuid, product_id, price, quantity, name, size) VALUES " + sqlVariables;
-}
 router.route('/orders')
     .post((req, res) => {
     console.log('post purchase');
     let card_number = req.body.card_number;
     let order_uuid = '';
-    async_database_1.db.query('INSERT INTO orders (cart_uuid, card_number) VALUES ($1, $2)', [req.session.user.cart_uuid, card_number])
+    let numberOfOrders = 0;
+    async_database_1.db.query('SELECT * FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid])
         .then((result) => {
-        console.log('result of insert into orders', result);
-        return async_database_1.db.query('SELECT order_uuid FROM orders WHERE cart_uuid = $1', [req.session.user.cart_uuid]);
+        if (result.rowCount === 0) {
+            res.redirect('/accounts/' + req.session.user.email + '/cart');
+        }
+        else {
+            return async_database_1.db.query('SELECT * FROM orders WHERE cart_uuid = $1', [req.session.user.cart_uuid]);
+        }
     })
         .then((result) => {
-        console.log('select order_uuid', result);
+        let number = result.rows.length;
+        numberOfOrders = number + 1;
+        return async_database_1.db.query('INSERT INTO orders (cart_uuid, card_number, order_number) VALUES ($1, $2, $3)', [req.session.user.cart_uuid, card_number, numberOfOrders]);
+    })
+        .then((result) => {
+        return async_database_1.db.query('SELECT order_uuid FROM orders WHERE cart_uuid = $1 AND order_number = $2', [req.session.user.cart_uuid, numberOfOrders]);
+    })
+        .then((result) => {
         order_uuid = result.rows[0].order_uuid;
-        return async_database_1.db.query('SELECT * FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid]);
+        return async_database_1.db.query('SELECT product_id, quantity FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid]);
     })
         .then((result) => {
-        console.log(order_uuid);
-        let cart_items = result.rows;
-        let sqlVariables = queryVariables(cart_items);
-        let values = inputs(cart_items, order_uuid);
-        let query = concatQuery(sqlVariables);
-        console.log('inputs', inputs);
+        let cart_items = promise_helpers_1.addOrderUUIDItemNumber(result.rows, order_uuid);
+        console.log('cartitems', cart_items);
+        let sqlVariables = promise_helpers_1.queryVariables(cart_items);
+        let values = promise_helpers_1.inputs(cart_items);
+        let query = promise_helpers_1.concatQuery(sqlVariables);
         console.log(query, values);
         return async_database_1.db.query(query, values);
     })
         .then((result) => {
-        // eventually send mail
-        // empty cart
-        res.render('order-sent');
+        return async_database_1.db.query('DELETE FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid]);
+    })
+        .then((result) => {
+        return async_database_1.db.query('SELECT p.product_id, name, price, size, description, quantity FROM products p INNER JOIN order_items o ON p.product_id = o.product_id AND (o.order_uuid = $1)', [order_uuid]);
+    })
+        .then((result) => {
+        var mailInvoice = {
+            from: 'juliantheberge@gmail.com',
+            to: req.session.user.email,
+            subject: 'Recent Purchse from Alarm App',
+            text: promise_helpers_1.stringifyQueryOutput(result.rows)
+        };
+        return mail_config_js_1.transporter.sendMail(mailInvoice);
+    })
+        .then((result) => {
+        console.log(result);
+        res.render('order-sent', {
+            email: req.session.user.email
+        });
     })
         .catch((error) => {
         console.log(error);

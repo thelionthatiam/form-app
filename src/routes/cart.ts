@@ -29,16 +29,8 @@ router.route('/cart')
         return db.query('SELECT product_id FROM cart_items WHERE cart_uuid = $1 and product_id = $2', [inputs.cart_uuid, inputs.product_id])
       })
       .then((result) => {
-        if (result.rows.length === 0) { // reading ahead
-          return db.query('INSERT INTO cart_items(product_id, name, price, cart_uuid, quantity, size) VALUES ($1, $2, $3, $4, $5, $6)',
-          [
-            inputs.product_id,
-            inputs.name,
-            inputs.price,
-            inputs.cart_uuid,
-            inputs.quantity,
-            inputs.size
-          ])
+        if (result.rows.length === 0) {
+          return db.query('INSERT INTO cart_items(product_id, cart_uuid, quantity) VALUES ($1, $2, $3)', [inputs.product_id, inputs.cart_uuid, inputs.quantity])
         } else {
           return db.query('UPDATE cart_items SET quantity = quantity+$1 WHERE cart_uuid = $2 AND product_id = $3', [inputs.quantity, inputs.cart_uuid, inputs.product_id])
         }
@@ -51,7 +43,6 @@ router.route('/cart')
         let userError = dbErrTranslator(err.message)
         res.render('products', { dbError: userError });
       });
-
   })
   .get((req, res) => {
     let uuid = req.session.user.uuid,
@@ -61,13 +52,24 @@ router.route('/cart')
         price,
         quantity;
 
-    db.query('SELECT * FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid])
+    db.query('SELECT p.product_id, name, price, size, description FROM products p INNER JOIN cart_items c ON p.product_id = c.product_id AND (c.cart_uuid = $1)', [req.session.user.cart_uuid])
       .then((result) => {
         cartContent = result.rows
-
-        for (let i = 0; i < result.rows.length; i++) {
-          price = parseInt(result.rows[i].price);
-          quantity = parseInt(result.rows[i].quantity);
+        for (let i = 0; i < cartContent.length; i++) {
+          cartContent[i].email = req.session.user.email;
+        }
+        console.log('CARTCONTENT', cartContent)
+        return db.query('SELECT * FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid])
+      })
+      .then((result) => {
+        for (let i = 0; i < cartContent.length; i++) {
+          for (let j = 0; j < result.rows.length; j++) {
+            if (cartContent[i].product_id === result.rows[j].product_id) {
+              cartContent[i].quantity = result.rows[j].quantity
+            }
+          }
+          price = parseInt(cartContent[i].price);
+          quantity = parseInt(cartContent[i].quantity);
           totalCost = totalCost + (price * quantity);
           totalItems = totalItems + quantity;
         }
@@ -76,14 +78,14 @@ router.route('/cart')
       .then((result) => {
         let lastFour = lastFourOnly(result.rows[0].card_number);
         let card_number = result.rows[0].card_number
-        
+
         res.render('cart', {
           cartContent:cartContent,
           totalCost:totalCost,
           totalItems:totalItems,
           lastFour:lastFour,
           card_number:card_number,
-          email:req.session.user.email
+          email:req.session.user.email,
         })
       })
       .catch((err) => {
@@ -102,7 +104,8 @@ router.route('/cart/:product_id')
           name: result.rows[0].name,
           product_id: result.rows[0].product_id,
           quantity: result.rows[0].quantity,
-          uuid: cart_uuid
+          uuid: cart_uuid,
+          email:req.session.user.email
         })
       })
       .catch((err) => {

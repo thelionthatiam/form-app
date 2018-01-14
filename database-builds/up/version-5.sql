@@ -1,14 +1,14 @@
 -- INSERT INTO users (email, phone, password) VALUES ('a@a.aa', '1', 'a');
-
+--
 -- INSERT INTO payment_credit (card_number, name, exp_month, exp_date, cvv, address_1, city, state, zip) VALUES ('4539 9626 3821 7151', 'JOE', '12', '12', '123', '1234', 'BLAH', 'WA', '12345');
--- INSERT INTO cart (user_uuid, card_number) VALUES ('5d096b2b-3db9-4153-ae70-41a9c029182b', '4539 9626 3821 7151' );
+-- INSERT INTO cart (user_uuid, card_number) VALUES ('ce1ab5fb-897c-43ad-b6a5-4318b830eb4c', '4539 9626 3821 7151' );
 -- INSERT INTO products (product_id, universal_id, price, name, description, size) VALUES ('AAAA-A-AAAA-1111', '123412341234', 1, 'one', 'the one', 's');
 -- INSERT INTO products (product_id, universal_id, price, name, description, size) VALUES ('BBBB-B-BBBB-2222', '123412341234', 2, 'two', 'the two', 'm');
 -- INSERT INTO products (product_id, universal_id, price, name, description, size) VALUES ('CCCC-C-CCCC-1111', '123412341234', 3, 'three', 'the three', 'l');
--- INSERT INTO cart_items ('user_uuid', 'product_id') VALUES ('5d096b2b-3db9-4153-ae70-41a9c029182b')
+-- INSERT INTO cart_items (cart_uuid, product_id) VALUES ('d59ec67c-13a7-4577-8074-8d63280e1a56', 'AAAA-A-AAAA-1111'), ('d59ec67c-13a7-4577-8074-8d63280e1a56', 'BBBB-B-BBBB-2222');
 
--- temp user_uuid 5d096b2b-3db9-4153-ae70-41a9c029182b
--- temp cart_uuid 2b5f108e-5afe-4c57-93c6-684baf8f4507
+-- temp user_uuid ce1ab5fb-897c-43ad-b6a5-4318b830eb4c
+-- temp cart_uuid d59ec67c-13a7-4577-8074-8d63280e1a56
 
 CREATE FUNCTION set_updated_timestamp()
   RETURNS TRIGGER
@@ -107,10 +107,7 @@ CREATE TABLE cart_items (
   cart_uuid UUID REFERENCES cart(cart_uuid),
   cart_item_uuid UUID UNIQUE NOT NULL default uuid_generate_v4(),
   product_id varchar(20) REFERENCES products(product_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  price numeric(10, 2) NOT NULL,
   quantity numeric(10) NOT NULL default 1,
-  name varchar(100) REFERENCES products(name) NOT NULL CHECK (name ~ '^[A-Za-z\d ]{1,30}$'),
-  size varchar(20) NOT NULL CHECK (size ~ '^[sml]{1}$'),
   create_timestamp timestamptz NOT NULL DEFAULT now(),
   updated_timestamp timestamptz NOT NULL DEFAULT now()
 );
@@ -142,8 +139,8 @@ CREATE TABLE price_history (
   product_id varchar(20) NOT NULL CHECK (product_id ~ '([A-Z\d]{4})-([A-Z]{1})-([A-Z\d]{4})-([\d]{4})'),
   price numeric(10,2) NOT NULL,
   updated_timestamp timestamptz NOT NULL DEFAULT now(),
-  PRIMARY KEY (product_id, updated_timestamp) -- this is wrong
-);
+  UNIQUE (product_id, updated_timestamp)
+)
 
 CREATE TRIGGER orders_update_timestamp
   BEFORE UPDATE ON orders
@@ -155,6 +152,8 @@ CREATE TABLE orders (
   cart_uuid UUID REFERENCES cart(cart_uuid),
   order_uuid UUID UNIQUE NOT NULL default uuid_generate_v4(),
   card_number varchar(20) REFERENCES payment_credit(card_number),
+  order_number numeric(10) NOT NULL default 1,
+  UNIQUE (cart_uuid, order_number),
   create_timestamp timestamptz NOT NULL DEFAULT now(),
   updated_timestamp timestamptz NOT NULL DEFAULT now()
 );
@@ -168,12 +167,10 @@ CREATE TABLE order_items (
   id BIGSERIAL PRIMARY KEY NOT NULL,
   order_uuid UUID REFERENCES orders(order_uuid),
   order_item_uuid UUID NOT NULL default uuid_generate_v4(),
-  item_number numeric(10) NOT NULL default 1, -- needs to check how many items are in cart
   product_id varchar(20) REFERENCES products(product_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  price numeric(10, 2) NOT NULL,
   quantity numeric(10) NOT NULL default 1,
-  name varchar(100) REFERENCES products(name) NOT NULL CHECK (name ~ '^[A-Za-z\d ]{1,30}$'),
-  size varchar(20) NOT NULL CHECK (size ~ '^[sml]{1}$'),
+  item_number numeric(10) NOT NULL default 1,
+  UNIQUE (order_uuid, item_number),
   create_timestamp timestamptz NOT NULL DEFAULT now(),
   updated_timestamp timestamptz NOT NULL DEFAULT now()
 );

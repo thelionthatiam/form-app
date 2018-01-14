@@ -52,16 +52,14 @@ function queryVariables(queryResult) {
     let tempField = [];
     let finalField = [];
     let length = queryResult.length;
-    let innerLength = Object.keys(queryResult[0]).length;
-    console.log('length', length);
     for (let j = 0; j < length; j++) {
         tempField.push('(');
-        for (let i = 1; i <= innerLength; i++) {
-            if (i < innerLength) {
-                tempField.push('$' + [i + (j * innerLength)] + ', ');
+        for (let i = 1; i <= length; i++) {
+            if (i < length) {
+                tempField.push('$' + [i + (j * length)] + ', ');
             }
             else {
-                tempField.push('$' + [i + (j * innerLength)]);
+                tempField.push('$' + [i + (j * length)]);
             }
         }
         tempField.push(')');
@@ -71,17 +69,10 @@ function queryVariables(queryResult) {
     return finalField.join(', ');
 }
 exports.queryVariables = queryVariables;
-function addOrderUUIDItemNumber(queryResult, order_uuid) {
-    for (let i = 0; i < queryResult.length; i++) {
-        queryResult[i].order_uuid = order_uuid;
-        queryResult[i].item_number = i + 1;
-    }
-    return queryResult;
-}
-exports.addOrderUUIDItemNumber = addOrderUUIDItemNumber;
-function inputs(queryResult) {
+function inputs(queryResult, order_uuid) {
     let tempArray = [];
     for (let i = 0; i < queryResult.length; i++) {
+        tempArray.push(order_uuid);
         for (let k in queryResult[i]) {
             if (k === 'product_id') {
                 // console.log('product_it', k, queryResult[i][k])
@@ -91,27 +82,13 @@ function inputs(queryResult) {
                 // console.log('quantity', k, queryResult[i][k])
                 tempArray.push(queryResult[i][k]);
             }
-            else if (k === 'order_uuid') {
-                tempArray.push(queryResult[i][k]);
-            }
-            else if (k === 'item_number') {
-                tempArray.push(queryResult[i][k]);
-            }
         }
     }
     return tempArray;
 }
 exports.inputs = inputs;
 function concatQuery(sqlVariables) {
-    return "INSERT INTO order_items (product_id, quantity, order_uuid, item_number) VALUES " + sqlVariables;
+    return "INSERT INTO order_items (order_uuid, product_id, quantity) VALUES " + sqlVariables;
 }
 exports.concatQuery = concatQuery;
-function stringifyQueryOutput(output) {
-    let final = '';
-    for (let i = 0; i < output.length; i++) {
-        final = final + JSON.stringify(output[i]);
-    }
-    return final;
-}
-exports.stringifyQueryOutput = stringifyQueryOutput;
-//# sourceMappingURL=promise-helpers.js.map
+//# sourceMappingURL=helpers-promise.js.map

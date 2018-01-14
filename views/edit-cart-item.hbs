@@ -11,7 +11,7 @@
       <p class="formErrorReport" id="awakeError"></p>
       <button id="formSubmitter" class="unavailable submit" type="submit"> update </button>
     </form>
-    <form action="/cart" method="get">
+    <form action="/accounts/{{ email }}/cart" method="get">
       <button class="no" type="submit">back</button>
     </form>
     {{ dbError }}

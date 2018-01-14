@@ -14,13 +14,13 @@
         size: {{ size }}
       </p>
       <p>
-        item sub total: {{ quantity }}
+        item sub total: {{ quantity }}  {{ id }} {{ cart_uuid}} {{product_id}} {{create_timestamp}}
       </p>
-      <form action="/accounts/{{ cart_uuid }}/cart/{{ product_id }}" method="get">
+      <form action="/accounts/{{ email }}/cart/{{ product_id }}" method="get">
           <input type="image" width="20px" height="20px" src="https://maxcdn.icons8.com/Share/icon/p1em/Editing//edit1600.png">
           <input name="product_id" type="hidden" value="{{ product_id }}">
       </form>
-      <form action="/accounts/{{ cart_uuid }}/cart/{{ product_id }}?_method=DELETE" method="post">
+      <form action="/accounts/{{ email }}/cart/{{ product_id }}?_method=DELETE" method="post">
           <input type="image" width="20px" height="20px" src="https://www.pngarts.com/files/1/X-Shape-PNG-High-Quality-Image.png">
           <input name="product_id" type="hidden" value="{{ product_id }}">
       </form>
