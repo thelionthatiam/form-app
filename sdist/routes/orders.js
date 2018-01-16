@@ -17,16 +17,16 @@ router.route('/orders')
             res.redirect('/accounts/' + req.session.user.email + '/cart');
         }
         else {
-            return async_database_1.db.query('SELECT * FROM orders WHERE cart_uuid = $1', [req.session.user.cart_uuid]);
+            return async_database_1.db.query('SELECT * FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid]);
         }
     })
         .then((result) => {
         let number = result.rows.length;
         numberOfOrders = number + 1;
-        return async_database_1.db.query('INSERT INTO orders (cart_uuid, card_number, order_number) VALUES ($1, $2, $3)', [req.session.user.cart_uuid, card_number, numberOfOrders]);
+        return async_database_1.db.query('INSERT INTO orders (user_uuid, card_number, order_number) VALUES ($1, $2, $3)', [req.session.user.uuid, card_number, numberOfOrders]);
     })
         .then((result) => {
-        return async_database_1.db.query('SELECT order_uuid FROM orders WHERE cart_uuid = $1 AND order_number = $2', [req.session.user.cart_uuid, numberOfOrders]);
+        return async_database_1.db.query('SELECT order_uuid FROM orders WHERE user_uuid = $1 AND order_number = $2', [req.session.user.uuid, numberOfOrders]);
     })
         .then((result) => {
         order_uuid = result.rows[0].order_uuid;

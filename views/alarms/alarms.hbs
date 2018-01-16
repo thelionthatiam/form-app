@@ -1,0 +1,21 @@
+
+<div class="full-page">
+  <h1>Alarms</h1>
+  <p>
+    This is where you can view, add, remove and edit your alarms
+  </p>
+
+  <div class= "categoryListWrapper">
+    {{#each alarmContent}}
+      {{> alarmdiv}}
+    {{/each}}
+  </div>
+  <p class="formErrorReport">{{ dbError }}</p>
+  <form action="/accounts/{{email}}/new-alarm" method="get">
+      <button class="yes"> add alarm </button>
+  </form>
+  <form action="/home" method="get">
+    <button class="no" type="submit">back</button>
+  </form>
+</div>
+<script src="/behavior/alarm-display.js"></script>

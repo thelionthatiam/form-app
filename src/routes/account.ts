@@ -7,10 +7,11 @@ import { Inputs, PGOutput, ModRequest } from '../../typings/typings';
 import { db } from '../middleware/async-database';
 const router = express.Router();
 
+let viewPrefix = 'account/'
 
 router.route('/:email')
   .get((req,res) => {
-    res.render('my-account', {
+    res.render(viewPrefix + 'my-account', {
       email:req.session.user.email,
     })
   })
@@ -23,14 +24,14 @@ router.route('/:email')
       })
       .catch((err) => {
         console.log(err.stack)
-        res.render('my-account', { dbError: err.stack });
+        res.render(viewPrefix + 'my-account', { dbError: err.stack });
       });
   })
 
 
 router.route('/:email/contact')
   .get((req,res) => {
-    res.render('my-contact', {
+    res.render(viewPrefix + 'my-contact', {
       email:req.session.user.email,
       phone:req.session.user.phone
     })
@@ -44,21 +45,21 @@ router.route('/:email/contact')
         console.log(result)
         req.session.user.email = email;
         req.session.user.phone = phone
-        res.render('my-account', {
+        res.render(viewPrefix + 'my-account', {
           title:"account updated",
           email:req.session.user.email
         })
       })
       .catch((err) => {
         console.log(err.stack)
-        res.render('my-account', { dbError: err.stack });
+        res.render(viewPrefix + 'my-account', { dbError: err.stack });
       });
   })
 
 
 router.route('/:email/password')
   .get((req, res) => {
-    res.render('new-password', {
+    res.render(viewPrefix + 'new-password', {
       email:req.session.user.email
     })
   })
@@ -87,14 +88,14 @@ router.route('/:email/password')
         return db.query('UPDATE users SET password = $1 WHERE user_uuid = $2', [inputs.password, req.session.user.uuid])
       })
       .then((result) => {
-        res.render('new-password', {
+        res.render(viewPrefix + 'new-password', {
           success:true,
           email:req.session.user.email
         })
       })
       .catch((error) => {
         console.log(error)
-        res.render('new-password', { dbError: error })
+        res.render(viewPrefix + 'new-password', { dbError: error })
       })
   })
 

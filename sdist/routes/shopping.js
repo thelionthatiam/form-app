@@ -4,9 +4,10 @@ const helpers_1 = require("../functions/helpers");
 const express = require("express");
 const async_database_1 = require("../middleware/async-database");
 const router = express.Router();
+let viewPefix = 'shopping/';
 router.route('/products')
     .post((req, res) => {
-    // all happens manually
+    // all happens via admin
 })
     .get((req, res) => {
     let email = req.session.user.email;
@@ -17,7 +18,7 @@ router.route('/products')
         for (let i = 0; i < productContent.length; i++) {
             productContent[i].email = email;
         }
-        res.render('products', {
+        res.render(viewPrefix + 'products', {
             productContent: productContent,
             email: email
         });
@@ -25,7 +26,7 @@ router.route('/products')
         .catch((err) => {
         console.log(err);
         let userError = helpers_1.dbErrTranslator(err.message);
-        res.render('products', { dbError: userError });
+        res.render(viewPrefix + 'products', { dbError: userError });
     });
 });
 module.exports = router;

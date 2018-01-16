@@ -3,6 +3,7 @@ import * as express from 'express';
 import { db } from '../middleware/async-database';
 const router = express.Router();
 
+let viewPrefix = 'alarms/'
 
 router.route('/alarms')
   .post((req, res) => {
@@ -14,7 +15,7 @@ router.route('/alarms')
       .catch((err) => {
         console.log(err);
         let userError = dbErrTranslator(err.message)
-        res.render('new-alarm', { dbError: userError });
+        res.render(viewPrefix + 'new-alarm', { dbError: userError });
       });
   })
   .get((req, res) => {
@@ -24,7 +25,7 @@ router.route('/alarms')
         let alarmContent = result.rows;
         let sortedAlarms = alarmContent.sort(compare)
         console.log(sortedAlarms)
-        res.render('alarms', {
+        res.render(viewPrefix + 'alarms', {
           alarmContent:sortedAlarms,
           email:req.session.user.email
         })
@@ -39,7 +40,7 @@ router.route('/alarms')
   })
 
 router.get('/new-alarm', (req, res, next) => {
-  res.render('new-alarm', {
+  res.render(viewPrefix + 'new-alarm', {
     email:req.session.user.email
   })
 })
@@ -50,7 +51,7 @@ router.route('/alarms/:title')
     db.query("SELECT * FROM alarms WHERE title = $1 AND user_uuid = $2", [title, req.session.user.uuid])
       .then((result) => {
         console.log(result.rows)
-        res.render('edit-alarm', {
+        res.render(viewPrefix + 'edit-alarm', {
           title:result.rows[0].title,
           awake:result.rows[0].awake,
           active:result.rows[0].active,
@@ -77,7 +78,7 @@ router.route('/alarms/:title')
         })
         .catch((err) => {
           console.log(err.stack)
-          res.render('alarms', { dbError: err.stack });
+          res.render(viewPrefix + 'alarms', { dbError: err.stack });
         });
     })
     .delete((req, res) => {
@@ -90,7 +91,7 @@ router.route('/alarms/:title')
         })
         .catch((err) => {
           console.log(err.stack)
-          res.render('alarms', { dbError: err.stack });
+          res.render(viewPrefix + 'alarms', { dbError: err.stack });
         });
     })
 

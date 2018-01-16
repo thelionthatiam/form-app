@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const async_database_1 = require("../middleware/async-database");
 const router = express.Router();
+let viewPefix = 'payment/';
 router.get('/new-payment', (req, res) => {
     let email = req.session.user.email;
     res.render('new-payment', {
@@ -14,14 +15,14 @@ router.route('/payment')
     async_database_1.db.query("SELECT * FROM payment_credit WHERE user_uuid = $1", [req.session.user.uuid])
         .then((result) => {
         let paymentContent = result.rows;
-        res.render('payments', {
+        res.render(viewPefix + 'payments', {
             paymentContent: paymentContent,
             email: req.session.user.email
         });
     })
         .catch((error) => {
         console.log(error);
-        res.render('payments', {
+        res.render(viewPefix + 'payments', {
             dbError: error,
             email: req.session.user.email
         });
@@ -54,7 +55,7 @@ router.route('/payment')
         return async_database_1.db.query('INSERT INTO cart (card_number, user_uuid) VALUES ($1, $2)', [inputs.cardNumber, req.session.user.uuid]);
     })
         .then((result) => {
-        res.render('new-payment', {
+        res.render(viewPefix + 'new-payment', {
             success: true,
             name: inputs.name,
             address: inputs.address,
@@ -66,7 +67,7 @@ router.route('/payment')
     })
         .catch((error) => {
         console.log(error);
-        res.render('new-payment', {
+        res.render(viewPefix + 'new-payment', {
             dbError: error,
             email: req.session.user.email
         });
@@ -85,7 +86,7 @@ router.route('/payment/active-payment')
     })
         .catch((error) => {
         console.log(error);
-        res.render('payments', {
+        res.render(viewPefix + 'payments', {
             dbError: error,
             email: req.session.user.email
         });

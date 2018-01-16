@@ -5,6 +5,7 @@ const promise_helpers_1 = require("../functions/promise-helpers");
 const express = require("express");
 const async_database_1 = require("../middleware/async-database");
 const router = express.Router();
+let viewPrefix = 'cart/';
 router.route('/cart')
     .post((req, res) => {
     let product = req.body.product.split(',');
@@ -41,7 +42,7 @@ router.route('/cart')
         .catch((err) => {
         console.log(err);
         let userError = helpers_1.dbErrTranslator(err.message);
-        res.render('products', { dbError: userError });
+        res.render('shopping/products', { dbError: userError });
     });
 })
     .get((req, res) => {
@@ -72,7 +73,7 @@ router.route('/cart')
         .then((result) => {
         let lastFour = promise_helpers_1.lastFourOnly(result.rows[0].card_number);
         let card_number = result.rows[0].card_number;
-        res.render('cart', {
+        res.render(viewPrefix + 'cart', {
             cartContent: cartContent,
             totalCost: totalCost,
             totalItems: totalItems,
@@ -84,7 +85,7 @@ router.route('/cart')
         .catch((err) => {
         console.log('get cart error', err);
         let userError = helpers_1.dbErrTranslator(err.message);
-        res.render('cart', { dbError: userError });
+        res.render(viewPrefix + 'cart', { dbError: userError });
     });
 });
 router.route('/cart/:product_id')
@@ -92,7 +93,7 @@ router.route('/cart/:product_id')
     let cart_uuid = req.session.user.cart_uuid;
     async_database_1.db.query('SELECT * FROM cart_items WHERE cart_uuid = $1 AND product_id = $2', [cart_uuid, req.query.product_id])
         .then((result) => {
-        res.render('edit-cart-item', {
+        res.render(viewPrefix + 'edit-cart-item', {
             name: result.rows[0].name,
             product_id: result.rows[0].product_id,
             quantity: result.rows[0].quantity,
@@ -102,7 +103,7 @@ router.route('/cart/:product_id')
     })
         .catch((err) => {
         console.log(err.stack);
-        res.render('cart', { dbError: err.stack });
+        res.render(viewPrefix + 'cart', { dbError: err.stack });
     });
 })
     .put((req, res) => {
@@ -116,7 +117,7 @@ router.route('/cart/:product_id')
         })
             .catch((err) => {
             console.log(err.stack);
-            res.render('cart', { dbError: err.stack });
+            res.render(viewPrefix + 'cart', { dbError: err.stack });
         });
     }
     async_database_1.db.query('UPDATE cart_items SET quantity = $1 WHERE cart_uuid = $2 AND product_id = $3', [quantity, cart_uuid, product_id])
@@ -125,7 +126,7 @@ router.route('/cart/:product_id')
     })
         .catch((err) => {
         console.log(err.stack);
-        res.render('cart', { dbError: err.stack });
+        res.render(viewPrefix + 'cart', { dbError: err.stack });
     });
 })
     .delete((req, res) => {
@@ -136,7 +137,7 @@ router.route('/cart/:product_id')
     })
         .catch((err) => {
         console.log(err.stack);
-        res.render('cart', { dbError: err.stack });
+        res.render(viewPrefix + 'cart', { dbError: err.stack });
     });
 });
 router.route('/payment-select')
@@ -150,7 +151,7 @@ router.route('/payment-select')
     })
         .then((result) => {
         let lastFour = promise_helpers_1.lastFourOnly(result.rows[0].card_number);
-        res.render('payments-cart-select', {
+        res.render(viewPrefix + 'payments-cart-select', {
             paymentContent: paymentContent,
             activeCard: lastFour,
             email: req.session.user.email
@@ -169,7 +170,7 @@ router.route('/payment-select')
     })
         .catch((error) => {
         console.log(error);
-        res.render('payments-cart-select', {
+        res.render(viewPrefix + 'payments-cart-select', {
             dbError: error
         });
     });

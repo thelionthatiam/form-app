@@ -140,7 +140,7 @@ CREATE TABLE price_history (
   price numeric(10,2) NOT NULL,
   updated_timestamp timestamptz NOT NULL DEFAULT now(),
   UNIQUE (product_id, updated_timestamp)
-)
+);
 
 CREATE TRIGGER orders_update_timestamp
   BEFORE UPDATE ON orders
@@ -149,7 +149,7 @@ CREATE TRIGGER orders_update_timestamp
 
 CREATE TABLE orders (
   id BIGSERIAL PRIMARY KEY NOT NULL,
-  cart_uuid UUID REFERENCES cart(cart_uuid),
+  user_uuid UUID references users(user_uuid),
   order_uuid UUID UNIQUE NOT NULL default uuid_generate_v4(),
   card_number varchar(20) REFERENCES payment_credit(card_number),
   order_number numeric(10) NOT NULL default 1,

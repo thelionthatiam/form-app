@@ -187,6 +187,20 @@ input:placeholder-shown {
   color:red;
 }
 
+.image-wrapper {
+  display:flex;
+  flex-direction:column;
+  justify-content: center;
+  align-items: center;
+  width:100%;
+  height:auto;
+  overflow:hidden;
+}
+
+.image-wrapper > img {
+  width:100%;
+}
+
 /*------------------------------PAYMENT QUICK ADD-----------------------------*/
 ul {
  list-style:none;
@@ -249,8 +263,18 @@ input:placeholder-shown {
 }
 
 .organization-img {
-	width:auto;
-	height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content: center;
+  align-items: center;
+  width:20vw;
+  height:auto;
+  max-height:17vw;
+  overflow:hidden;
+}
+
+.organization-img > img {
+    width:100%;
 }
 
 .product-name-price-wrapper {
