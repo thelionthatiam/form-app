@@ -19,14 +19,12 @@ router.route('/forgot-password/authorized')
     let email = req.body.email;
     async_database_1.db.query("SELECT * FROM users WHERE email = $1", [email])
         .then((result) => {
-        console.log(result.rows);
         if (result.rows.length === 0) {
             console.log('should have error');
             throw new Error("Email not found");
         }
         else {
             uuid = result.rows[0].user_uuid;
-            console.log(uuid);
             return help.randomString;
         }
     })
@@ -44,7 +42,6 @@ router.route('/forgot-password/authorized')
         return mail_config_js_1.transporter.sendMail(mail_config_js_1.mailOptions);
     })
         .then((result) => {
-        console.log(result);
         res.render('login', {
             forgotPassword: true,
             message: "check your email to authorize new password!"
@@ -83,7 +80,6 @@ router.route('/forgot-password/authorized')
     .put((req, res) => {
     let password = req.body.password;
     let uuid = req.session.uuid;
-    console.log('PUT', uuid);
     bcrypt.hash(password, 10)
         .then((hash) => {
         console.log(hash);

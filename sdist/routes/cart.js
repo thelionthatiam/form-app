@@ -47,7 +47,9 @@ router.route('/cart')
 })
     .get((req, res) => {
     let uuid = req.session.user.uuid, cartContent = [], totalCost = 0, totalItems = 0, price, quantity;
-    async_database_1.db.query('SELECT p.product_id, name, price, size, description FROM products p INNER JOIN cart_items c ON p.product_id = c.product_id AND (c.cart_uuid = $1)', [req.session.user.cart_uuid])
+    let query = 'SELECT p.product_id, name, price, size, description FROM products p INNER JOIN cart_items c ON p.product_id = c.product_id AND (c.cart_uuid = $1)';
+    let input = [req.session.user.cart_uuid];
+    async_database_1.db.query(query, input)
         .then((result) => {
         cartContent = result.rows;
         for (let i = 0; i < cartContent.length; i++) {

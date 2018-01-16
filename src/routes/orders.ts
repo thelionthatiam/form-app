@@ -1,4 +1,3 @@
-import { dbErrTranslator, compare } from '../functions/helpers';
 import { lastFourOnly, queryVariables, inputs, concatQuery, addOrderUUIDItemNumber, stringifyQueryOutput } from '../functions/promise-helpers'
 import * as express from 'express';
 import { db } from '../middleware/async-database';
@@ -23,10 +22,15 @@ router.route('/orders')
       .then((result) => {
         let number = result.rows.length;
         numberOfOrders = number + 1;
-        return db.query('INSERT INTO orders (user_uuid, card_number, order_number) VALUES ($1, $2, $3)', [req.session.user.uuid, card_number, numberOfOrders])
+
+        let query = 'INSERT INTO orders (user_uuid, card_number, order_number) VALUES ($1, $2, $3)';
+        let input = [req.session.user.uuid, card_number, numberOfOrders];
+        return db.query(query, input)
       })
       .then((result) => {
-        return db.query('SELECT order_uuid FROM orders WHERE user_uuid = $1 AND order_number = $2', [req.session.user.uuid, numberOfOrders])
+        let query = 'SELECT order_uuid FROM orders WHERE user_uuid = $1 AND order_number = $2';
+        let input = [req.session.user.uuid, numberOfOrders];
+        return db.query(query, input)
       })
       .then((result) => {
         order_uuid = result.rows[0].order_uuid;
@@ -45,7 +49,9 @@ router.route('/orders')
         return db.query('DELETE FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid])
       })
       .then((result) => {
-        return db.query('SELECT p.product_id, name, price, size, description, quantity FROM products p INNER JOIN order_items o ON p.product_id = o.product_id AND (o.order_uuid = $1)', [order_uuid])
+        let query = 'SELECT p.product_id, name, price, size, description, quantity FROM products p INNER JOIN order_items o ON p.product_id = o.product_id AND (o.order_uuid = $1)';
+        let input = [order_uuid];
+        return db.query(query, input)
       })
       .then((result) => {
         var mailInvoice = {

@@ -3,11 +3,9 @@ import * as help from '../functions/promise-helpers';
 import * as helper from '../functions/helpers';
 import * as bcrypt from 'bcrypt';
 import * as url from 'url';
-import { Inputs, PGOutput, ModRequest } from '../../typings/typings';
+import { Inputs, PGOutput } from '../../typings/typings';
 import { db } from '../middleware/async-database';
 const router = express.Router();
-
-
 
 //to sign up page
 router.get('/new-account', function(req, res, next) {
@@ -36,7 +34,9 @@ router.route('/accounts')
     bcrypt.hash(inputs.password, 10)
       .then((hash) => {
         inputs.password = hash;
-        return db.query('INSERT INTO users(email, phone, password) VALUES($1, $2, $3) RETURNING *', [inputs.email, inputs.phone, inputs.password])
+        let query = 'INSERT INTO users(email, phone, password) VALUES($1, $2, $3) RETURNING *';
+        let input = [inputs.email, inputs.phone, inputs.password];
+        return db.query(query, input)
       })
       .then((result) => {
         inputs.uuid = result.rows[0].user_uuid;
@@ -51,7 +51,9 @@ router.route('/accounts')
         return db.query('INSERT INTO nonce(user_uuid, nonce) VALUES ($1, $2) RETURNING *', [inputs.uuid, inputs.nonce])
       })
       .then((result) => {
-        return db.query('INSERT INTO session (user_uuid, sessionID) VALUES ($1, $2)', [inputs.uuid, req.sessionID]);
+        let query = 'INSERT INTO session (user_uuid, sessionID) VALUES ($1, $2)';
+        let input = [inputs.uuid, req.sessionID];
+        return db.query(query, input);
       })
       .then((result) => {
         return db.query('INSERT INTO cart (user_uuid) VALUES ($1) RETURNING *', [inputs.uuid])

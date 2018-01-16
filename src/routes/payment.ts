@@ -1,9 +1,7 @@
 import * as express from 'express';
-import * as help from '../functions/promise-helpers';
-import * as helper from '../functions/helpers';
 import * as bcrypt from 'bcrypt';
 import * as url from 'url';
-import { Inputs, PGOutput, ModRequest } from '../../typings/typings';
+import { Inputs, PGOutput } from '../../typings/typings';
 import { db } from '../middleware/async-database';
 const router = express.Router();
 
@@ -55,10 +53,15 @@ router.route('/payment')
         }
       })
       .then((result) => {
-        return db.query('INSERT INTO payment_credit (user_uuid, card_number, name, exp_month, exp_date, cvv, address_1, city, state, zip) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)', [uuid, inputs.cardNumber, inputs.name, inputs.expMonth, inputs.expDay, inputs.cvv, inputs.address, inputs.city, inputs.state, inputs.zip])
+        let query = 'INSERT INTO payment_credit (user_uuid, card_number, name, exp_month, exp_date, cvv, address_1, city, state, zip) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)';
+        let input = [uuid, inputs.cardNumber, inputs.name, inputs.expMonth, inputs.expDay, inputs.cvv, inputs.address, inputs.city, inputs.state, inputs.zip];
+
+        return db.query(query, input);
       })
       .then((result) => {
-        return db.query('INSERT INTO cart (card_number, user_uuid) VALUES ($1, $2)', [inputs.cardNumber, req.session.user.uuid]);
+        let query = 'INSERT INTO cart (card_number, user_uuid) VALUES ($1, $2)';
+        let input = [inputs.cardNumber, req.session.user.uuid];
+        return db.query(query, input);
       })
       .then((result) => {
         res.render(viewPefix + 'new-payment', {
@@ -86,7 +89,9 @@ router.route('/payment/active-payment')
     console.log(card_number)
     db.query('UPDATE payment_credit SET active = $1 WHERE user_uuid = $2', [false, req.session.user.uuid])
       .then((result) => {
-        return db.query('UPDATE payment_credit SET active = $1 WHERE (card_number, user_uuid) = ($2, $3)', [true, card_number, req.session.user.uuid])
+        let query = 'UPDATE payment_credit SET active = $1 WHERE (card_number, user_uuid) = ($2, $3)';
+        let input = [true, card_number, req.session.user.uuid];
+        return db.query(query, input)
       })
       .then((result) => {
         res.redirect('/accounts/' + req.session.user.email + '/payment')

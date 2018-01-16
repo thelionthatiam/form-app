@@ -33,9 +33,10 @@ router.route('/:email/contact')
     .put((req, res) => {
     let email = req.body.email;
     let phone = req.body.phone;
-    async_database_1.db.query('UPDATE users SET (email, phone) = ($1, $2) WHERE user_uuid = $3', [email, phone, req.session.user.uuid])
+    let query = 'UPDATE users SET (email, phone) = ($1, $2) WHERE user_uuid = $3';
+    let input = [email, phone, req.session.user.uuid];
+    async_database_1.db.query(query, input)
         .then((result) => {
-        console.log(result);
         req.session.user.email = email;
         req.session.user.phone = phone;
         res.render(viewPrefix + 'my-account', {
@@ -55,7 +56,6 @@ router.route('/:email/password')
     });
 })
     .post((req, res) => {
-    console.log;
     let inputs = {
         password: req.body.password,
         oldPassword: req.body.oldPassword
@@ -66,7 +66,6 @@ router.route('/:email/password')
         return bcrypt.compare(req.body.oldPassword, result.rows[0].password);
     })
         .then((result) => {
-        console.log(result);
         if (result === false) {
             throw new Error('Password incorrect');
         }
@@ -75,9 +74,10 @@ router.route('/:email/password')
         }
     })
         .then((hash) => {
-        console.log(hash);
         inputs.password = hash;
-        return async_database_1.db.query('UPDATE users SET password = $1 WHERE user_uuid = $2', [inputs.password, req.session.user.uuid]);
+        let query = 'UPDATE users SET password = $1 WHERE user_uuid = $2';
+        let input = [inputs.password, req.session.user.uuid];
+        return async_database_1.db.query(query, input);
     })
         .then((result) => {
         res.render(viewPrefix + 'new-password', {

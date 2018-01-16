@@ -3,7 +3,7 @@ import * as express from 'express';
 import { db } from '../middleware/async-database';
 const router = express.Router();
 
-let viewPefix = 'shopping/'
+let viewPrefix = 'shopping/'
 
 router.route('/products')
   .post((req, res) => {

@@ -1,8 +1,7 @@
 import * as fs from "fs";
 import * as help from '../functions/promise-helpers';
-import * as helper from '../functions/helpers';
 import * as bcrypt from 'bcrypt';
-import { Inputs, PGOutput, ModRequest } from '../../typings/typings';
+import { Inputs, PGOutput } from '../../typings/typings';
 import { transporter, mailOptions } from "../config/mail-config.js";
 import * as express from 'express';
 import { db } from '../middleware/async-database';
@@ -24,13 +23,11 @@ router.route('/forgot-password/authorized')
 
     db.query("SELECT * FROM users WHERE email = $1", [email])
       .then((result) => {
-        console.log(result.rows)
         if (result.rows.length === 0) {
           console.log('should have error');
           throw new Error("Email not found");
         } else {
           uuid = result.rows[0].user_uuid
-          console.log(uuid)
           return help.randomString
         }
       })
@@ -49,7 +46,6 @@ router.route('/forgot-password/authorized')
         return transporter.sendMail(mailOptions)
       })
       .then((result) => {
-        console.log(result);
         res.render('login', {
           forgotPassword:true,
           message: "check your email to authorize new password!"
@@ -88,7 +84,6 @@ router.route('/forgot-password/authorized')
     .put((req, res) => {
       let password = req.body.password;
       let uuid = req.session.uuid;
-      console.log('PUT', uuid)
       bcrypt.hash(password, 10)
         .then((hash) => {
           console.log(hash)

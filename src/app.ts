@@ -26,21 +26,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('trust proxy', 1);
 
 app.use(init(dbConfig));
-console.log(dbConfig);
 
 //session using memory storage (I think this is application memory) for now. Will not be the case in production. see readme session stores
 // app.set('trust proxy', 1) // necessary of server is behind a proxy and using secure:true for cookie
 app.use(session({
-  name:'session',
+  name:'id',
   secret: 'this is my secret',
   resave: false,
   saveUninitialized: true,
   cookie: {
-    maxAge: 3600000, // one hour
-    httpOnly:true,
-    // secure: true // will not send cookie unless https connection is established
-  },
-  name:'id'
+      maxAge: 3600000, // one hour
+      httpOnly:true,
+      // secure: true // will not send cookie unless https connection is established
+    },
   })
 );
 

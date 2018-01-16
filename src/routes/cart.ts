@@ -47,13 +47,16 @@ router.route('/cart')
   })
   .get((req, res) => {
     let uuid = req.session.user.uuid,
-        cartContent = [],
+        cartContent:any[] = [],
         totalCost = 0,
         totalItems = 0,
         price,
         quantity;
 
-    db.query('SELECT p.product_id, name, price, size, description FROM products p INNER JOIN cart_items c ON p.product_id = c.product_id AND (c.cart_uuid = $1)', [req.session.user.cart_uuid])
+    let query = 'SELECT p.product_id, name, price, size, description FROM products p INNER JOIN cart_items c ON p.product_id = c.product_id AND (c.cart_uuid = $1)';
+    let input = [req.session.user.cart_uuid];
+
+    db.query(query, input)
       .then((result) => {
         cartContent = result.rows
         for (let i = 0; i < cartContent.length; i++) {
@@ -118,7 +121,7 @@ router.route('/cart/:product_id')
     let quantity = parseInt(req.body.quantity);
     let product_id = req.body.product_id;
     let cart_uuid = req.session.user.cart_uuid;
-    if (req.body.quantity === 0) { // run delete
+    if (req.body.quantity === 0) {
       db.query('DELETE FROM cart_items WHERE product_id = $1 AND cart_uuid = $2', [req.query.product_id, cart_uuid])
         .then((result) => {
           res.redirect('/acccounts/:email/cart');
@@ -152,7 +155,7 @@ router.route('/cart/:product_id')
 router.route('/payment-select')
   .get((req, res) => {
     let uuid = req.session.user.uuid;
-    let paymentContent;
+    let paymentContent:any[];
     db.query("SELECT * FROM payment_credit WHERE user_uuid = $1", [uuid])
       .then((result) => {
         paymentContent = result.rows

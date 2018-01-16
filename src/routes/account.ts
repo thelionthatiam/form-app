@@ -1,9 +1,7 @@
 import * as express from 'express';
-import * as help from '../functions/promise-helpers';
-import * as helper from '../functions/helpers';
 import * as bcrypt from 'bcrypt';
 import * as url from 'url';
-import { Inputs, PGOutput, ModRequest } from '../../typings/typings';
+import { Inputs, PGOutput } from '../../typings/typings';
 import { db } from '../middleware/async-database';
 const router = express.Router();
 
@@ -39,12 +37,14 @@ router.route('/:email/contact')
   .put((req, res) => {
     let email = req.body.email;
     let phone = req.body.phone;
+    let query = 'UPDATE users SET (email, phone) = ($1, $2) WHERE user_uuid = $3';
+    let input = [email, phone, req.session.user.uuid];
 
-    db.query('UPDATE users SET (email, phone) = ($1, $2) WHERE user_uuid = $3', [email, phone, req.session.user.uuid])
+    db.query(query, input)
       .then((result) => {
-        console.log(result)
         req.session.user.email = email;
-        req.session.user.phone = phone
+        req.session.user.phone = phone;
+
         res.render(viewPrefix + 'my-account', {
           title:"account updated",
           email:req.session.user.email
@@ -64,7 +64,6 @@ router.route('/:email/password')
     })
   })
   .post((req, res) => {
-    console.log
     let inputs = {
       password:req.body.password,
       oldPassword:req.body.oldPassword
@@ -75,7 +74,7 @@ router.route('/:email/password')
         return bcrypt.compare(req.body.oldPassword, result.rows[0].password)
       })
       .then((result) => {
-        console.log(result)
+
         if (result === false) {
           throw new Error('Password incorrect');
         } else {
@@ -83,9 +82,11 @@ router.route('/:email/password')
         }
       })
       .then((hash) => {
-        console.log(hash)
+
         inputs.password = hash;
-        return db.query('UPDATE users SET password = $1 WHERE user_uuid = $2', [inputs.password, req.session.user.uuid])
+        let query = 'UPDATE users SET password = $1 WHERE user_uuid = $2'
+        let input = [inputs.password, req.session.user.uuid]
+        return db.query(query, input)
       })
       .then((result) => {
         res.render(viewPrefix + 'new-password', {

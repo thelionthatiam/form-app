@@ -8,14 +8,14 @@ const uuidv4 = require("uuid/v4");
 const router = express.Router();
 router.route('/authorized')
     .post((req, res) => {
-    var output = {};
+    let input = {};
     async_database_1.db.query("SELECT * FROM users WHERE email = $1", [req.body.email])
         .then((result) => {
         if (result.rows.length === 0) {
             throw new Error("Email not found");
         }
         else {
-            output = result.rows[0];
+            input = result.rows[0];
             return bcrypt.compare(req.body.password, result.rows[0].password);
         }
     })
@@ -28,20 +28,19 @@ router.route('/authorized')
         }
     })
         .then(() => {
-        return async_database_1.db.query('UPDATE session SET sessionid = $1 WHERE user_uuid = $2', [req.sessionID, output.user_uuid]);
+        return async_database_1.db.query('UPDATE session SET sessionid = $1 WHERE user_uuid = $2', [req.sessionID, input.user_uuid]);
     })
         .then((result) => {
-        return async_database_1.db.query('SELECT cart_uuid FROM cart WHERE user_uuid = $1', [output.user_uuid]);
+        return async_database_1.db.query('SELECT cart_uuid FROM cart WHERE user_uuid = $1', [input.user_uuid]);
     })
         .then((result) => {
         let cart_uuid = result.rows[0].cart_uuid;
         req.session.user = {
-            uuid: output.user_uuid,
-            email: output.email,
-            phone: output.phone,
+            email: input.email,
+            uuid: input.user_uuid,
+            phone: input.phone,
             cart_uuid: cart_uuid
         };
-        // req.session.ID = uuidv4();
         res.render('home', {
             title: "yo",
             email: req.session.user.email

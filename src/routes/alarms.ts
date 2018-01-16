@@ -7,8 +7,10 @@ let viewPrefix = 'alarms/'
 
 router.route('/alarms')
   .post((req, res) => {
+    let query = 'INSERT INTO alarms(user_uuid, title, awake) VALUES ($1, $2, $3) RETURNING *';
+    let input = [req.session.user.uuid, req.body.title, req.body.awake];
 
-    db.query('INSERT INTO alarms(user_uuid, title, awake) VALUES ($1, $2, $3) RETURNING *', [req.session.user.uuid, req.body.title, req.body.awake])
+    db.query(query, input)
       .then((result) => {
         res.redirect('alarms');
       })
@@ -19,12 +21,12 @@ router.route('/alarms')
       });
   })
   .get((req, res) => {
-    console.log('GET alarms')
+
     db.query("SELECT * FROM alarms WHERE user_uuid = $1", [req.session.user.uuid])
       .then((result) => {
         let alarmContent = result.rows;
         let sortedAlarms = alarmContent.sort(compare)
-        console.log(sortedAlarms)
+
         res.render(viewPrefix + 'alarms', {
           alarmContent:sortedAlarms,
           email:req.session.user.email
@@ -48,9 +50,9 @@ router.get('/new-alarm', (req, res, next) => {
 router.route('/alarms/:title')
   .get((req, res) => {
     let title = req.query.title;
+
     db.query("SELECT * FROM alarms WHERE title = $1 AND user_uuid = $2", [title, req.session.user.uuid])
       .then((result) => {
-        console.log(result.rows)
         res.render(viewPrefix + 'edit-alarm', {
           title:result.rows[0].title,
           awake:result.rows[0].awake,
@@ -70,8 +72,10 @@ router.route('/alarms/:title')
         awake:req.body.awake,
         active:req.body.active
       }
-      console.log('alarms PUT happening')
-      db.query('UPDATE alarms SET (title, awake, active) = ($1, $2, $3) WHERE title = $4 RETURNING *', [inputs.title, inputs.awake, inputs.active, inputs.prevTitle])
+
+      let query = 'UPDATE alarms SET (title, awake, active) = ($1, $2, $3) WHERE title = $4 RETURNING *';
+      let input = [inputs.title, inputs.awake, inputs.active, inputs.prevTitle];
+      db.query(query, input)
         .then((result) => {
           console.log(result)
           res.redirect('/accounts/' + req.session.user.email + '/alarms');
@@ -82,11 +86,10 @@ router.route('/alarms/:title')
         });
     })
     .delete((req, res) => {
+
       let title = req.body.title
-      console.log('delete-alarm happening')
       db.query('DELETE FROM alarms WHERE title = $1', [title])
         .then((result) => {
-          console.log('alarm deleted')
           res.redirect('/accounts/' + req.session.user.email + '/alarms');
         })
         .catch((err) => {

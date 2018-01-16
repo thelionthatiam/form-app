@@ -4,7 +4,7 @@ const helpers_1 = require("../functions/helpers");
 const express = require("express");
 const async_database_1 = require("../middleware/async-database");
 const router = express.Router();
-let viewPefix = 'shopping/';
+let viewPrefix = 'shopping/';
 router.route('/products')
     .post((req, res) => {
     // all happens via admin

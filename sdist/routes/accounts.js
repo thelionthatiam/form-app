@@ -27,7 +27,9 @@ router.route('/accounts')
     bcrypt.hash(inputs.password, 10)
         .then((hash) => {
         inputs.password = hash;
-        return async_database_1.db.query('INSERT INTO users(email, phone, password) VALUES($1, $2, $3) RETURNING *', [inputs.email, inputs.phone, inputs.password]);
+        let query = 'INSERT INTO users(email, phone, password) VALUES($1, $2, $3) RETURNING *';
+        let input = [inputs.email, inputs.phone, inputs.password];
+        return async_database_1.db.query(query, input);
     })
         .then((result) => {
         inputs.uuid = result.rows[0].user_uuid;
@@ -41,7 +43,9 @@ router.route('/accounts')
         return async_database_1.db.query('INSERT INTO nonce(user_uuid, nonce) VALUES ($1, $2) RETURNING *', [inputs.uuid, inputs.nonce]);
     })
         .then((result) => {
-        return async_database_1.db.query('INSERT INTO session (user_uuid, sessionID) VALUES ($1, $2)', [inputs.uuid, req.sessionID]);
+        let query = 'INSERT INTO session (user_uuid, sessionID) VALUES ($1, $2)';
+        let input = [inputs.uuid, req.sessionID];
+        return async_database_1.db.query(query, input);
     })
         .then((result) => {
         return async_database_1.db.query('INSERT INTO cart (user_uuid) VALUES ($1) RETURNING *', [inputs.uuid]);
