@@ -1,4 +1,5 @@
-import { lastFourOnly, queryVariables, inputs, concatQuery, addOrderUUIDItemNumber, stringifyQueryOutput } from '../functions/promise-helpers'
+import { lastFourOnly, queryVariables, inputs, concatQuery, addOrderUUIDItemNumber, stringifyQueryOutput } from '../functions/promise-helpers';
+import * as inv from '../functions/invoice';
 import * as express from 'express';
 import { db } from '../middleware/async-database';
 import { transporter, mailOptions } from "../config/mail-config.js";
@@ -16,7 +17,7 @@ router.route('/orders')
         if (result.rowCount === 0) {
           res.redirect('/accounts/' + req.session.user.email + '/cart');
         } else {
-          return db.query('SELECT * FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid])
+          return db.query('SELECT * FROM orders WHERE user_uuid = $1', [req.session.user.uuid])
         }
       })
       .then((result) => {
@@ -34,11 +35,12 @@ router.route('/orders')
       })
       .then((result) => {
         order_uuid = result.rows[0].order_uuid;
-        return db.query('SELECT product_id, quantity FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid])
+        console.log('order uuid', order_uuid)
+        return db.query('SELECT product_id, quantity, product_history_id FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid])
       })
       .then((result) => {
+        console.log('SELECT product_id, quantity, product_history_id FROM cart_items WHERE cart_uuid = $1', result)
         let cart_items = addOrderUUIDItemNumber(result.rows, order_uuid);
-        console.log('cartitems', cart_items)
         let sqlVariables = queryVariables(cart_items);
         let values = inputs(cart_items);
         let query = concatQuery(sqlVariables);
@@ -54,17 +56,21 @@ router.route('/orders')
         return db.query(query, input)
       })
       .then((result) => {
+        console.log(result.rows)
+        let items = stringifyQueryOutput(inv.invoiceItems(result.rows));
+        let total = inv.total(inv.invoiceItems(result.rows)).toString();
         var mailInvoice = {
           from: 'juliantheberge@gmail.com',
           to: req.session.user.email,
           subject: 'Recent Purchse from Alarm App',
-          text: stringifyQueryOutput(result.rows)
+          text: 'items: \n' + items + '\n' + 'total:\n' + total
         };
+        console.log(mailInvoice.text);
         return transporter.sendMail(mailInvoice)
       })
       .then((result) => {
         console.log(result);
-        res.render('order-sent', {
+        res.render('orders/order-sent', {
           email:req.session.user.email
         })
       })

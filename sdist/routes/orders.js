@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const promise_helpers_1 = require("../functions/promise-helpers");
+const inv = require("../functions/invoice");
 const express = require("express");
 const async_database_1 = require("../middleware/async-database");
 const mail_config_js_1 = require("../config/mail-config.js");
@@ -17,7 +18,7 @@ router.route('/orders')
             res.redirect('/accounts/' + req.session.user.email + '/cart');
         }
         else {
-            return async_database_1.db.query('SELECT * FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid]);
+            return async_database_1.db.query('SELECT * FROM orders WHERE user_uuid = $1', [req.session.user.uuid]);
         }
     })
         .then((result) => {
@@ -34,11 +35,12 @@ router.route('/orders')
     })
         .then((result) => {
         order_uuid = result.rows[0].order_uuid;
-        return async_database_1.db.query('SELECT product_id, quantity FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid]);
+        console.log('order uuid', order_uuid);
+        return async_database_1.db.query('SELECT product_id, quantity, product_history_id FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid]);
     })
         .then((result) => {
+        console.log('SELECT product_id, quantity, product_history_id FROM cart_items WHERE cart_uuid = $1', result);
         let cart_items = promise_helpers_1.addOrderUUIDItemNumber(result.rows, order_uuid);
-        console.log('cartitems', cart_items);
         let sqlVariables = promise_helpers_1.queryVariables(cart_items);
         let values = promise_helpers_1.inputs(cart_items);
         let query = promise_helpers_1.concatQuery(sqlVariables);
@@ -54,17 +56,21 @@ router.route('/orders')
         return async_database_1.db.query(query, input);
     })
         .then((result) => {
+        console.log(result.rows);
+        let items = promise_helpers_1.stringifyQueryOutput(inv.invoiceItems(result.rows));
+        let total = inv.total(inv.invoiceItems(result.rows)).toString();
         var mailInvoice = {
             from: 'juliantheberge@gmail.com',
             to: req.session.user.email,
             subject: 'Recent Purchse from Alarm App',
-            text: promise_helpers_1.stringifyQueryOutput(result.rows)
+            text: 'items: \n' + items + '\n' + 'total:\n' + total
         };
+        console.log(mailInvoice.text);
         return mail_config_js_1.transporter.sendMail(mailInvoice);
     })
         .then((result) => {
         console.log(result);
-        res.render('order-sent', {
+        res.render('orders/order-sent', {
             email: req.session.user.email
         });
     })

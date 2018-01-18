@@ -105,6 +105,8 @@ function inputs(queryResult) {
         tempArray.push(queryResult[i][k])
       } else if (k === 'item_number') {
         tempArray.push(queryResult[i][k])
+      } else if (k === 'product_history_id') {
+        tempArray.push(queryResult[i][k])
       }
     }
   }
@@ -112,7 +114,7 @@ function inputs(queryResult) {
 }
 
 function concatQuery(sqlVariables) {
-  return "INSERT INTO order_items (product_id, quantity, order_uuid, item_number) VALUES " + sqlVariables;
+  return "INSERT INTO order_items (product_id, quantity, product_history_id, order_uuid, item_number) VALUES " + sqlVariables;
 }
 
 function stringifyQueryOutput(output) {

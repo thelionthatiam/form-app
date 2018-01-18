@@ -1,0 +1,18 @@
+
+<div class="full-page">
+  <h1>Your Coupons</h1>
+  <p>
+    This is where you can apply your coupons.
+  </p>
+
+  <div class= "categoryListWrapper">
+    {{#each couponContent}}
+      {{> coupondiv}}
+    {{/each}}
+  </div>
+  <p class="formErrorReport">{{ dbError }}</p>
+  <form action="/cart" method="get">
+    <button class="no" type="submit"> back </button>
+  </form>
+</div>
+<script src="/behavior/alarm-display.js"></script>

@@ -10,6 +10,7 @@ router.use('/accounts', require('./account'));
 router.use('/accounts/:email', require('./payment'));
 router.use('/accounts/:email', require('./alarms'));
 router.use('/accounts/:email', require('./cart'));
+router.use('/accounts/:email', require('./coupons'));
 router.use('/accounts/:email', require('./orders'));
 router.get('/', function (req, res, next) {
     res.render('login');

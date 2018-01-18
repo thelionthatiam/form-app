@@ -1,0 +1,31 @@
+<div class="column categoryWrapper">
+  <div class="row categoryTitle">
+    <h4>{{name}}</h4>
+    <div class="time-wrapper flex space-around ">
+      <p class="self right awakeTime">
+        {{!-- {{coupon_uuid}} --}}
+      </p>
+      <img src="https://d30y9cdsu7xlg0.cloudfront.net/png/357441-200.png" />
+    </div>
+  </div>
+  <div class="box subCategoryWrapper none">
+    <div class="row subCategoryTitle">
+      {{#if applied}}
+        <p>
+          already applied
+        </p>
+      {{else}}
+        <p>
+          not yet applied to purchase
+        </p>
+      {{/if}}
+      <form action="/accounts/{{email}}/coupons/{{coupon_uuid}}?_method=PUT" method="post">
+          <input type="image" width="20px" height="20px" src="https://png.icons8.com/ios/540/add.png">
+          <input name="coupon_uuid" type="hidden" value="{{ coupon_uuid }}">
+      </form>
+    </div>
+    <div class="row date-created">
+      <p><b>expires on:</b> {{expires_on}}</p>
+    </div>
+  </div>
+</div>

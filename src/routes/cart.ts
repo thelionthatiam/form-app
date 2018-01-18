@@ -17,8 +17,10 @@ router.route('/cart')
       uuid: req.session.user.uuid,
       quantity: req.body.quantity,
       cart_uuid:'',
-      card_number:''
+      card_number:'',
+      product_history_id:''
     }
+
     db.query('SELECT card_number FROM payment_credit WHERE (user_uuid, active) = ($1, $2)', [inputs.uuid, true])
       .then((result) => {
         inputs.card_number = result.rows[0].card_number;
@@ -27,13 +29,21 @@ router.route('/cart')
       })
       .then((result) => {
         inputs.cart_uuid = result.rows[0].cart_uuid;
+        return db.query('SELECT product_history_id FROM product_history p WHERE updated_timestamp = (SELECT MAX(updated_timestamp) FROM product_history WHERE product_id = $1)', [inputs.product_id])
+      })
+      .then((result) => {
+        inputs.product_history_id = result.rows[0].product_history_id;
         return db.query('SELECT product_id FROM cart_items WHERE cart_uuid = $1 and product_id = $2', [inputs.cart_uuid, inputs.product_id])
       })
       .then((result) => {
         if (result.rows.length === 0) {
-          return db.query('INSERT INTO cart_items(product_id, cart_uuid, quantity) VALUES ($1, $2, $3)', [inputs.product_id, inputs.cart_uuid, inputs.quantity])
+          let query = 'INSERT INTO cart_items(product_id, cart_uuid, quantity, product_history_id) VALUES ($1, $2, $3, $4)';
+          let input = [inputs.product_id, inputs.cart_uuid, inputs.quantity, inputs.product_history_id];
+          return db.query(query, input);
         } else {
-          return db.query('UPDATE cart_items SET quantity = quantity+$1 WHERE cart_uuid = $2 AND product_id = $3', [inputs.quantity, inputs.cart_uuid, inputs.product_id])
+          let query = 'UPDATE cart_items SET quantity = quantity+$1 WHERE cart_uuid = $2 AND product_id = $3';
+          let input = [inputs.quantity, inputs.cart_uuid, inputs.product_id];
+          return db.query(query, input);
         }
       })
       .then((result) => {
@@ -51,18 +61,17 @@ router.route('/cart')
         totalCost = 0,
         totalItems = 0,
         price,
-        quantity;
+        quantity,
+        card_number:string,
+        lastFour:string,
+        discounted:number = 1;
 
-    let query = 'SELECT p.product_id, name, price, size, description FROM products p INNER JOIN cart_items c ON p.product_id = c.product_id AND (c.cart_uuid = $1)';
-    let input = [req.session.user.cart_uuid];
-
-    db.query(query, input)
+    db.query('SELECT p.product_id, name, price, size, description FROM products p INNER JOIN cart_items c ON p.product_id = c.product_id AND (c.cart_uuid = $1)', [req.session.user.cart_uuid])
       .then((result) => {
         cartContent = result.rows
         for (let i = 0; i < cartContent.length; i++) {
           cartContent[i].email = req.session.user.email;
         }
-        console.log('CARTCONTENT', cartContent)
         return db.query('SELECT * FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid])
       })
       .then((result) => {
@@ -72,7 +81,8 @@ router.route('/cart')
               cartContent[i].quantity = result.rows[j].quantity
             }
           }
-          price = parseInt(cartContent[i].price);
+          let discounted:number = cartContent[i].price * cartContent[i].discount
+          price = parseInt(discounted);
           quantity = parseInt(cartContent[i].quantity);
           totalCost = totalCost + (price * quantity);
           totalItems = totalItems + quantity;
@@ -80,8 +90,13 @@ router.route('/cart')
         return db.query('SELECT card_number FROM cart WHERE user_uuid = $1', [req.session.user.uuid])
       })
       .then((result) => {
-        let lastFour = lastFourOnly(result.rows[0].card_number);
-        let card_number = result.rows[0].card_number
+        lastFour = lastFourOnly(result.rows[0].card_number);
+        card_number = result.rows[0].card_number;
+
+        return db.query('SELECT * FROM users', []);
+
+      })
+      .then((result) => {
 
         res.render(viewPrefix + 'cart', {
           cartContent:cartContent,

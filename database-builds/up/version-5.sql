@@ -83,10 +83,41 @@ CREATE TABLE products (
   UNIQUE (product_id, updated_timestamp)
 );
 
-CREATE TRIGGER cart_update_timestamp
-  BEFORE UPDATE ON cart
-  FOR EACH ROW EXECUTE
-  PROCEDURE set_updated_timestamp();
+-- this needs help, its not running at all
+CREATE TABLE product_history (
+  id BIGSERIAL PRIMARY KEY NOT NULL,
+  product_history_id UUID UNIQUE default uuid_generate_v4(),
+  product_id varchar(20) NOT NULL CHECK (product_id ~ '([A-Z\d]{4})-([A-Z]{1})-([A-Z\d]{4})-([\d]{4})'),
+  universal_id varchar(20) NOT NULL CHECK (universal_id ~ '^[\d]{12}$'),  -- could be a lot better, probably validate server lvl too
+  price numeric(10,2) NOT NULL,
+  name varchar(100) NOT NULL CHECK (name ~ '^[A-Za-z\d ]{1,30}$'),
+  description varchar(100) NOT NULL CHECK (name ~ '^[A-Za-z\d ]{1,99}$'),
+  size varchar(20) NOT NULL CHECK (size ~ '^[sml]{1}$'),
+  updated_timestamp timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (product_id, updated_timestamp)
+);
+
+CREATE OR REPLACE FUNCTION function_copy() RETURNS TRIGGER AS
+$BODY$
+BEGIN
+    INSERT INTO
+        product_history(product_id, universal_id, updated_timestamp, price, name, description, size)
+        VALUES(new.product_id,new.universal_id, new.updated_timestamp, new.price, new.name, new.description, new.size);
+           RETURN new;
+END;
+$BODY$
+language plpgsql;
+
+CREATE TRIGGER trig_copy
+    AFTER INSERT ON products
+    FOR EACH ROW
+    EXECUTE PROCEDURE function_copy();
+
+CREATE TRIGGER trig_update
+    AFTER UPDATE ON products
+    FOR EACH ROW
+    EXECUTE PROCEDURE function_copy();
+
 
 CREATE TABLE cart (
   id BIGSERIAL PRIMARY KEY NOT NULL,
@@ -108,39 +139,11 @@ CREATE TABLE cart_items (
   cart_item_uuid UUID UNIQUE NOT NULL default uuid_generate_v4(),
   product_id varchar(20) REFERENCES products(product_id) ON DELETE CASCADE ON UPDATE CASCADE,
   quantity numeric(10) NOT NULL default 1,
+  product_history_id UUID REFERENCE product_history(product_history_id);
   create_timestamp timestamptz NOT NULL DEFAULT now(),
   updated_timestamp timestamptz NOT NULL DEFAULT now()
 );
 
-CREATE OR REPLACE FUNCTION function_copy() RETURNS TRIGGER AS
-$BODY$
-BEGIN
-    INSERT INTO
-        price_history(product_id,updated_timestamp, price)
-        VALUES(new.product_id,new.updated_timestamp, new.price);
-           RETURN new;
-END;
-$BODY$
-language plpgsql;
-
-CREATE TRIGGER trig_copy
-    AFTER INSERT ON products
-    FOR EACH ROW
-    EXECUTE PROCEDURE function_copy();
-
-CREATE TRIGGER trig_update
-    AFTER UPDATE ON products
-    FOR EACH ROW
-    EXECUTE PROCEDURE function_copy();
-
--- this needs help, its not running at all
-CREATE TABLE price_history (
-  id BIGSERIAL PRIMARY KEY NOT NULL,
-  product_id varchar(20) NOT NULL CHECK (product_id ~ '([A-Z\d]{4})-([A-Z]{1})-([A-Z\d]{4})-([\d]{4})'),
-  price numeric(10,2) NOT NULL,
-  updated_timestamp timestamptz NOT NULL DEFAULT now(),
-  UNIQUE (product_id, updated_timestamp)
-);
 
 CREATE TRIGGER orders_update_timestamp
   BEFORE UPDATE ON orders
@@ -170,10 +173,16 @@ CREATE TABLE order_items (
   product_id varchar(20) REFERENCES products(product_id) ON DELETE CASCADE ON UPDATE CASCADE,
   quantity numeric(10) NOT NULL default 1,
   item_number numeric(10) NOT NULL default 1,
+  product_history_id UUID default uuid_generate_v4(),
   UNIQUE (order_uuid, item_number),
   create_timestamp timestamptz NOT NULL DEFAULT now(),
   updated_timestamp timestamptz NOT NULL DEFAULT now()
 );
+
+CREATE TRIGGER cart_update_timestamp
+  BEFORE UPDATE ON cart
+  FOR EACH ROW EXECUTE
+  PROCEDURE set_updated_timestamp();
 
 CREATE TABLE session (
   user_uuid UUID REFERENCES users(user_uuid) ON DELETE CASCADE ON UPDATE CASCADE,
