@@ -1,4 +1,5 @@
 import { lastFourOnly, queryVariables, inputs, concatQuery, addOrderUUIDItemNumber, stringifyQueryOutput } from '../functions/promise-helpers';
+import * as coupons from '../functions/coupon-helpers'
 import * as inv from '../functions/invoice';
 import * as express from 'express';
 import { db } from '../middleware/async-database';
@@ -11,6 +12,7 @@ router.route('/orders')
     let card_number = req.body.card_number;
     let order_uuid = '';
     let numberOfOrders = 0;
+    let discount:number;
 
     db.query('SELECT * FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid])
       .then((result) => {
@@ -36,10 +38,11 @@ router.route('/orders')
       .then((result) => {
         order_uuid = result.rows[0].order_uuid;
         console.log('order uuid', order_uuid)
-        return db.query('SELECT product_id, quantity, product_history_id FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid])
+        return db.query('SELECT product_id, quantity, product_history_id, discount FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid])
       })
       .then((result) => {
-        console.log('SELECT product_id, quantity, product_history_id FROM cart_items WHERE cart_uuid = $1', result)
+        console.log('nooooo', result)
+        discount = result.rows[0].discount
         let cart_items = addOrderUUIDItemNumber(result.rows, order_uuid);
         let sqlVariables = queryVariables(cart_items);
         let values = inputs(cart_items);
@@ -58,7 +61,7 @@ router.route('/orders')
       .then((result) => {
         console.log(result.rows)
         let items = stringifyQueryOutput(inv.invoiceItems(result.rows));
-        let total = inv.total(inv.invoiceItems(result.rows)).toString();
+        let total = coupons.percentOff(discount, inv.total(inv.invoiceItems(result.rows))).toString();
         var mailInvoice = {
           from: 'juliantheberge@gmail.com',
           to: req.session.user.email,
@@ -70,6 +73,9 @@ router.route('/orders')
       })
       .then((result) => {
         console.log(result);
+        return db.query('UPDATE cart_coupons SET used = $1', [true])
+      })
+      .then((result) => {
         res.render('orders/order-sent', {
           email:req.session.user.email
         })

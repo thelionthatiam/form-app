@@ -11,7 +11,7 @@
     {{/each}}
   </div>
   <p class="formErrorReport">{{ dbError }}</p>
-  <form action="/cart" method="get">
+  <form action="/accounts/{{email}}/cart" method="get">
     <button class="no" type="submit"> back </button>
   </form>
 </div>

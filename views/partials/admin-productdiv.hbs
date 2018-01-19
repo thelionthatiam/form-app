@@ -1,0 +1,40 @@
+<div class="flex product-wrapper">
+	<div class="flex product-name-price-wrapper">
+		<h2 class="product-title">{{ name }}</h2>
+		<h4>${{ price }}</h4>
+	</div>
+
+	<div class="flex description-img-wrapper">
+    <div class = 'flex column'>
+      <p >
+        <b>description text: </b> {{ description }}
+      </p>
+    </br>
+      <p>
+        <b>Product id: </b> {{ product_id}}
+      </p>
+    </br>
+      <p >
+        <b>image: </b> {{ image }}
+      </p>
+    </br>
+    </div>
+		<div class = "organization-img">
+			<img src = "/product-pictures/{{ image }}" />
+		</div>
+	</div>
+	<div class="flex product-action-wrapper">
+		<form class="flex product-cart-form" action="/admin/products/{{product_id}}" method="get">
+			<div class="flex input-wrapper">
+				<input type="hidden" name="product_id" value="{{ product_id }}" />
+				<button class="yes">edit</button>
+			</div>
+		</form>
+    <form class="flex product-cart-form" action="/admin/products/{{product_id}}?_method=DELETE" method="post">
+			<div class="flex input-wrapper">
+				<input type="hidden" name="product_id" value="{{ product_id }}" />
+				<button class="no">delete</button>
+			</div>
+		</form>
+	</div>
+</div>

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const helpers_1 = require("../functions/helpers");
 const promise_helpers_1 = require("../functions/promise-helpers");
+const coupons = require("../functions/coupon-helpers");
 const express = require("express");
 const async_database_1 = require("../middleware/async-database");
 const router = express.Router();
@@ -20,6 +21,7 @@ router.route('/cart')
         card_number: '',
         product_history_id: ''
     };
+    console.log('post to cart');
     async_database_1.db.query('SELECT card_number FROM payment_credit WHERE (user_uuid, active) = ($1, $2)', [inputs.uuid, true])
         .then((result) => {
         inputs.card_number = result.rows[0].card_number;
@@ -35,9 +37,19 @@ router.route('/cart')
     })
         .then((result) => {
         if (result.rows.length === 0) {
-            let query = 'INSERT INTO cart_items(product_id, cart_uuid, quantity, product_history_id) VALUES ($1, $2, $3, $4)';
-            let input = [inputs.product_id, inputs.cart_uuid, inputs.quantity, inputs.product_history_id];
-            return async_database_1.db.query(query, input);
+            async_database_1.db.query('SELECT cc.coupon_uuid, discount, applies_to, applied FROM cart_coupons cc INNER JOIN coupons c ON c.coupon_uuid = cc.coupon_uuid AND (cc.cart_uuid = $1)', [req.session.user.cart_uuid])
+                .then((result) => {
+                if (result.rows[0].applied === true && (result.rows[0].applies_to === inputs.product_id || result.rows[0].applies_to === 'order')) {
+                    let query = 'INSERT INTO cart_items(product_id, cart_uuid, quantity, product_history_id, discount) VALUES ($1, $2, $3, $4, $5)';
+                    let input = [inputs.product_id, inputs.cart_uuid, inputs.quantity, inputs.product_history_id, result.rows[0].discount];
+                    return async_database_1.db.query(query, input);
+                }
+                else {
+                    let query = 'INSERT INTO cart_items(product_id, cart_uuid, quantity, product_history_id) VALUES ($1, $2, $3, $4)';
+                    let input = [inputs.product_id, inputs.cart_uuid, inputs.quantity, inputs.product_history_id];
+                    return async_database_1.db.query(query, input);
+                }
+            });
         }
         else {
             let query = 'UPDATE cart_items SET quantity = quantity+$1 WHERE cart_uuid = $2 AND product_id = $3';
@@ -71,11 +83,13 @@ router.route('/cart')
                     cartContent[i].quantity = result.rows[j].quantity;
                 }
             }
-            let discounted = cartContent[i].price * cartContent[i].discount;
-            price = parseInt(discounted);
+            let discounted = coupons.percentOff(result.rows[i].discount, cartContent[i].price);
+            console.log(discounted);
+            price = discounted;
             quantity = parseInt(cartContent[i].quantity);
             totalCost = totalCost + (price * quantity);
             totalItems = totalItems + quantity;
+            console.log(price, quantity, totalCost, totalItems);
         }
         return async_database_1.db.query('SELECT card_number FROM cart WHERE user_uuid = $1', [req.session.user.uuid]);
     })
