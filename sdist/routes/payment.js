@@ -6,7 +6,7 @@ const router = express.Router();
 let viewPefix = 'payment/';
 router.get('/new-payment', (req, res) => {
     let email = req.session.user.email;
-    res.render('new-payment', {
+    res.render(viewPefix + 'new-payment', {
         email: email
     });
 });

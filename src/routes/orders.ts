@@ -41,7 +41,6 @@ router.route('/orders')
         return db.query('SELECT product_id, quantity, product_history_id, discount FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid])
       })
       .then((result) => {
-        console.log('nooooo', result)
         discount = result.rows[0].discount
         let cart_items = addOrderUUIDItemNumber(result.rows, order_uuid);
         let sqlVariables = queryVariables(cart_items);

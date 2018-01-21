@@ -41,7 +41,6 @@ router.route('/orders')
         return async_database_1.db.query('SELECT product_id, quantity, product_history_id, discount FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid]);
     })
         .then((result) => {
-        console.log('nooooo', result);
         discount = result.rows[0].discount;
         let cart_items = promise_helpers_1.addOrderUUIDItemNumber(result.rows, order_uuid);
         let sqlVariables = promise_helpers_1.queryVariables(cart_items);
