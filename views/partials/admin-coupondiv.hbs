@@ -1,0 +1,43 @@
+<div class="flex product-wrapper">
+	<div class="flex product-name-price-wrapper">
+		<h2 class="product-title">{{ name }}</h2>
+		<h4>%{{ discount }}</h4>
+	</div>
+
+	<div class="flex description-img-wrapper">
+    <div class = 'flex column'>
+      <p >
+        <b>description text: </b> {{ description }}
+      </p>
+	    </br>
+	      <p>
+	        <b>expires_on: </b> {{ expires_on }}
+	      </p>
+	    </br>
+	      <p >
+	        <b>applies_to: </b> {{ applies_to }}
+	      </p>
+	    </br>
+    </div>
+	</div>
+	<div class="flex product-action-wrapper">
+		<form class="flex product-cart-form" action="/admin/coupons/{{coupon_uuid}}" method="get">
+			<div class="flex input-wrapper">
+				<input type="hidden" name="uuid" value="{{ coupon_uuid }}" />
+				<button class="yes">edit</button>
+			</div>
+		</form>
+		<form class="flex product-cart-form" action="/admin/coupons/issue-coupon" method="post">
+			<div class="flex input-wrapper">
+				<input type="hidden" name="uuid" value="{{ coupon_uuid }}" />
+				<button class="no">issue</button>
+			</div>
+		</form>
+    <form class="flex product-cart-form" action="/admin/coupons/{{ coupon_uuid }}?_method=DELETE" method="post">
+			<div class="flex input-wrapper">
+				<input type="hidden" name="uuid" value="{{ coupon_uuid }}" />
+				<button class="no">delete</button>
+			</div>
+		</form>
+	</div>
+</div>

@@ -201,6 +201,14 @@ input:placeholder-shown {
   width:100%;
 }
 
+.title-border-bottom {
+  background-color:#639797;
+  color:white;
+  padding:5px;
+  font-weight:100;
+  letter-spacing: 2px;
+}
+
 /*------------------------------PAYMENT QUICK ADD-----------------------------*/
 ul {
  list-style:none;

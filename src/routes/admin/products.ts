@@ -3,11 +3,6 @@ import * as express from 'express';
 import { db } from '../../middleware/async-database';
 const router = express.Router();
 
-/////////
-///////// VARIALBES
-///////// UNCHANGED
-/////////
-
 
 router.route('/products')
   .post((req, res) => {

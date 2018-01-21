@@ -4,10 +4,6 @@ const helpers_1 = require("../../functions/helpers");
 const express = require("express");
 const async_database_1 = require("../../middleware/async-database");
 const router = express.Router();
-/////////
-///////// VARIALBES
-///////// UNCHANGED
-/////////
 router.route('/products')
     .post((req, res) => {
     let product_id = req.body.product_id, universal_id = req.body.universal_id, price = req.body.price, name = req.body.name, description = req.body.description, size = req.body.size, img = req.body.img;

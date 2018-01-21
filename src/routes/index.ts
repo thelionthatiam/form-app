@@ -6,7 +6,7 @@ router.use('/', require('./email'));
 router.use('/', require('./accounts'));
 router.use('/', require('./shopping'));
 
-router.use('/admin', require('./admin/authorized'));
+router.use('/admin-auth', require('./admin/authorized'));
 router.use('/admin', require('./admin/products'));
 router.use('/admin', require('./admin/coupons'));
 router.use('/admin', require('./admin/accounts'));

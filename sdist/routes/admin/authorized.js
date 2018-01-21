@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
+const help = require("../../functions/promise-helpers");
 const router = express.Router();
 /////////
 ///////// VARIALBES
@@ -16,10 +17,20 @@ router.route('/authorized')
     .post((req, res) => {
     let username = req.body.email;
     let password = req.body.password;
-    console.log(username, password);
     if (password === 'password' && username === 'admin') {
         console.log('positive');
-        res.render('admin/home', {});
+        help.regenerateSession(req)
+            .then(() => {
+            req.session.user = {
+                uuid: '',
+            };
+            req.session.admin = {
+                isAdmin: true,
+                current_uuid: 'none'
+            };
+            console.log(req.session.admin, req.session.user);
+            res.render('admin/home', {});
+        });
     }
     else {
         console.log('negative');
@@ -50,12 +61,12 @@ router.route('/authorized')
     //   .then((result) => {
     //     let cart_uuid = result.rows[0].cart_uuid;
     //
-    //     req.session.user = {
-    //       email:input.email,
-    //       uuid:input.user_uuid,
-    //       phone:input.phone,
-    //       cart_uuid:cart_uuid
-    //     }
+    // req.session.user = {
+    //   email:input.email,
+    //   uuid:input.user_uuid,
+    //   phone:input.phone,
+    //   cart_uuid:cart_uuid
+    // }
     //
     //     res.render('home', {
     //       title:"yo",

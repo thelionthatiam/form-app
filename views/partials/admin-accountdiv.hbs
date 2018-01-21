@@ -1,0 +1,59 @@
+//////////////
+////////////// VARIABLES UNCHANGED
+//////////////
+
+<div class="flex product-wrapper">
+	<div class="flex product-name-price-wrapper">
+		<h2 class="product-title">{{ user_uuid }}</h2>
+		<h4>{{ name }}</h4>
+	</div>
+	<div class="flex column ">
+		<div class = 'flex column'>
+			<h2 class = 'title-border-bottom'>contact</h2>
+			<p>
+				<b>email: </b> {{ email }}
+			</p>
+			</br>
+				<p>
+					<b>phone: </b> {{ phone }}
+				</p>
+			</br>
+		</div>
+		<div class = 'flex column'>
+			<h2 class = 'title-border-bottom'>security</h2>
+			<p>
+				<b>password: </b> password reset and send coming soon
+			</p>
+		</div>
+		<h2 class = 'title-border-bottom'>alarms</h2>
+		<div class= "categoryListWrapper">
+			{{#each alarmContent}}
+				{{> alarmdiv}}
+			{{/each}}
+		</div>
+		<form action="/admin/accounts/gather-id" method="post">
+				<input type='hidden' name='user_uuid' value = '{{user_uuid}}' />
+				<button class="yes"> add alarm </button>
+		</form>
+		<h2 class = 'title-border-bottom'>payment</h2>
+		<div class= "categoryListWrapper">
+			{{#each paymentContent}}
+				{{> paymentdiv}}
+			{{/each}}
+		</div>
+	</div>
+	<div class="flex product-action-wrapper">
+		{{!-- <form class="flex product-cart-form" action="/admin/coupons/{{coupon_uuid}}" method="get">
+			<div class="flex input-wrapper">
+				<input type="hidden" name="uuid" value="{{ coupon_uuid }}" />
+				<button class="yes">edit</button>
+			</div>
+		</form> --}}
+    <form class="flex product-cart-form" action="/admin/accounts/{{ user_uuid }}?_method=DELETE" method="post">
+			<div class="flex input-wrapper">
+				<input type="hidden" name="user_uuid" value="{{ user_uuid }}" />
+				<button class="no">delete</button>
+			</div>
+		</form>
+	</div>
+</div>

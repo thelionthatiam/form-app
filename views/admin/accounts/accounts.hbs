@@ -1,14 +1,14 @@
 <div class="full-page">
-  <h1>Cuopons</h1>
+  <h1>Accounts</h1>
   <p>
-    View, create, edit and delete coupons.
+    View, create, edit and delete accounts.
   </p>
-  <form action="/admin/new-coupon" method="get">
-    <button class="no" type="submit">new coupon</button>
+  <form action="/admin/new-product" method="get">
+    <button class="no" type="submit">new account(doens't work)</button>
   </form>
   <div class= "categoryListWrapper">
-    {{#each couponContent}}
-      {{> admin-coupondiv}}
+    {{#each accountContent}}
+      {{> admin-accountdiv}}
     {{/each}}
   </div>
   <p class="formErrorReport">{{ dbError }}</p>
@@ -18,3 +18,4 @@
 
 </div>
 {{!-- <script src="/behavior/.js"></script> --}}
+<script src="/behavior/alarm-display.js"></script>

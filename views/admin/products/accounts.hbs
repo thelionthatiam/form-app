@@ -1,14 +1,18 @@
+//////////////
+////////////// VARIABLES UNCHANGED
+//////////////
+
 <div class="full-page">
-  <h1>Products</h1>
+  <h1>Accounts</h1>
   <p>
-    View, create, edit and delete products.
+    View, create, edit and delete accounts.
   </p>
   <form action="/admin/new-product" method="get">
-    <button class="no" type="submit">new product</button>
+    <button class="no" type="submit">new account</button>
   </form>
   <div class= "categoryListWrapper">
-    {{#each productContent}}
-      {{> admin-productdiv}}
+    {{#each accountProduct}}
+      {{> admin-accountdiv}}
     {{/each}}
   </div>
   <p class="formErrorReport">{{ dbError }}</p>
