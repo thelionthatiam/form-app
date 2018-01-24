@@ -43,3 +43,5 @@ CREATE TRIGGER cart_coupons_update_timestamp
   BEFORE UPDATE ON cart_coupons
   FOR EACH ROW EXECUTE
   PROCEDURE set_updated_timestamp();
+
+ALTER TABLE users ADD COLUMN permission varchar(20) NOT NULL default 'guest' CHECK(permission ~'(guest)|(user)|(admin)');

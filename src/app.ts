@@ -6,7 +6,7 @@ import * as bodyParser from "body-parser";
 import * as hbs from "express-handlebars";
 import * as path from "path";
 import { dbConfig } from "./config/combiner";
-import { init } from "./middleware/database";
+import { init } from "./middleware/async-database";
 import * as session from "express-session";
 import * as sessionCheck from "./middleware/session-check";
 import * as methodOverride from 'method-override';

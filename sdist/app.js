@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const hbs = require("express-handlebars");
 const path = require("path");
 const combiner_1 = require("./config/combiner");
-const database_1 = require("./middleware/database");
+const async_database_1 = require("./middleware/async-database");
 const session = require("express-session");
 const sessionCheck = require("./middleware/session-check");
 const methodOverride = require("method-override");
@@ -22,7 +22,7 @@ app.engine('hbs', hbs({
 app.set('views', path.join(__dirname, "../views"));
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('trust proxy', 1);
-app.use(database_1.init(combiner_1.dbConfig));
+app.use(async_database_1.init(combiner_1.dbConfig));
 //session using memory storage (I think this is application memory) for now. Will not be the case in production. see readme session stores
 // app.set('trust proxy', 1) // necessary of server is behind a proxy and using secure:true for cookie
 app.use(session({

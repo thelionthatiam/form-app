@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { ModResponse } from '../../typings/typings';
+import * as merge from './merge';
 
 let randomString = new Promise(
   (resolve, reject) => {
@@ -34,6 +35,21 @@ let isSessionValid = (token, outputs) => {
     }
   )
 }
+
+let merger = (objectOne, objectTwo) => {
+  return new Promise(
+    (resolve, reject) => {
+      let ans = merge.deepMerge(objectOne, objectTwo);
+      if (ans === 'circular object') {
+        let failure = new Error('Circular object')
+        reject(failure);
+      } else {
+        resolve(ans);
+      }
+    }
+  )
+}
+
 
 function regenerateSession(req) {
   return new Promise (
@@ -128,4 +144,4 @@ function stringifyQueryOutput(output) {
 }
 
 
-export { randomString, isSessionValid, regenerateSession, lastFourOnly, queryVariables, inputs, concatQuery, addOrderUUIDItemNumber, stringifyQueryOutput };
+export { randomString, isSessionValid, regenerateSession, lastFourOnly, queryVariables, inputs, concatQuery, addOrderUUIDItemNumber, stringifyQueryOutput, merger };

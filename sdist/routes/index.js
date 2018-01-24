@@ -6,6 +6,7 @@ router.use('/', require('./authorization'));
 router.use('/', require('./email'));
 router.use('/', require('./accounts'));
 router.use('/', require('./shopping'));
+router.use('/', require('./test'));
 router.use('/admin-auth', require('./admin/authorized'));
 router.use('/admin', require('./admin/products'));
 router.use('/admin', require('./admin/coupons'));
@@ -17,6 +18,7 @@ router.use('/accounts/:email', require('./cart'));
 router.use('/accounts/:email', require('./coupons'));
 router.use('/accounts/:email', require('./orders'));
 router.get('/', function (req, res, next) {
+    req.db.release();
     res.render('login');
 });
 router.get('/home', (req, res) => {

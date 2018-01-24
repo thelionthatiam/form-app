@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const merge = require("./merge");
 let randomString = new Promise((resolve, reject) => {
     let string = "";
     let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=`,.<>/?;:'{}[]|";
@@ -26,6 +27,19 @@ let isSessionValid = (token, outputs) => {
     });
 };
 exports.isSessionValid = isSessionValid;
+let merger = (objectOne, objectTwo) => {
+    return new Promise((resolve, reject) => {
+        let ans = merge.deepMerge(objectOne, objectTwo);
+        if (ans === 'circular object') {
+            let failure = new Error('Circular object');
+            reject(failure);
+        }
+        else {
+            resolve(ans);
+        }
+    });
+};
+exports.merger = merger;
 function regenerateSession(req) {
     return new Promise((resolve, reject) => {
         req.session.regenerate(function (err) {
