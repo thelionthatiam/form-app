@@ -1,0 +1,100 @@
+<div class="flex pageWrapper">
+  <div class="flex column userWrapper">
+
+    <h3 class="formTitle">edit a payment method</h3>
+    {{#if permission}}
+    <h1>ADMIN UPDATE</h1>
+      <form action="/admin/accounts/{{ user_uuid }}/payment/{{card_number}}?_method=PUT" method="POST">
+        <p>name {{name}}</p>
+        <input id="name" name="name" class="userFormItem" type="text" placeholder="darth vader" value="{{name}}" />
+        <p class="formErrorReport" id="nameError"></p>
+
+        <p>card number {{card_number}}</p>
+        <input id="cardNumber" name="cardNumber" class="userFormItem numericOnly" type="text" placeholder="card_number" value="{{card_number}}" />
+        <p class="formErrorReport" id="cardNumberError"></p>
+
+        <p>expiration {{exp_month}}-{{exp_date}}</p>
+        <div class="flex expirationWrapper">
+          <input id="expirationMonth" name="expMonth" class="userFormItem numericOnly shortField" type="text" placeholder="MM" maxlength="2" value = "{{exp_month}}"/>
+          <p class="expirationSlash">  / </p>
+          <input id="expirationDay" name="expDay" class="userFormItem numericOnly shortField" type="text" placeholder="DD" maxlength="2" value = "{{exp_date}}"/>
+        </div>
+        <p class="formErrorReport" id="exiprationMonthError"></p>
+        <p class="formErrorReport" id="exiprationDayError"></p>
+
+        <p>CVV {{cvv}}</p>
+        <input id="cvv" name="cvv" class="userFormItem" type="text" placeholder="number" value="{{cvv}}" />
+        <p class="formErrorReport" id="cvvError"></p>
+
+        <p>address {{address_1}}</p>
+        <input id="address" name="address" class="userFormItem" type="text" placeholder="E Street South" value="{{address_1}}" />
+        <p class="formErrorReport" id="addressError"></p>
+
+        <p>city {{city}}</p>
+        <input id="city" name="city" class="userFormItem" type="text" placeholder="Juneau" value="{{city}}" />
+        <p class="formErrorReport" id="cityError"></p>
+
+        <p>state {{state}}</p>
+        <input id="state" name="state" class="userFormItem dropdownSearch" type="text" placeholder="AK" value="{{state}}" />
+        <p class="formErrorReport" id="stateError"></p>
+        <div class="dropdownWrapper">
+          <ul class="dropdownList"></ul>
+        </div>
+
+        <p>ZIP code {{code}}</p>
+        <input id="zipCode" name="zip" class="userFormItem numericOnly" type="text" placeholder="ZIP" value="{{zip}}" />
+        <p class="formErrorReport" id="zipCodeError"></p>
+
+        <input type="hidden" name="oldCard" value={{card_number}} />
+        <input type="hidden" name="user_uuid" value={{user_uuid}} />
+        <button id="formSubmitter" class="unavailable submit" type="submit">submit</button>
+      </form>`
+    {{else}}
+      <form action="/accounts/{{ user_uuid }}/payment/{{card_number}}?_method=PUT" method="POST">
+        <p>name {{name}}</p>
+        <input id="name" name="name" class="userFormItem" type="text" placeholder="darth vader" value="{{name}}" />
+        <p class="formErrorReport" id="nameError"></p>
+
+        <p>card number {{card_number}}</p>
+        <input id="cardNumber" name="cardNumber" class="userFormItem numericOnly" type="text" placeholder="card_number" value="{{card_number}}" />
+        <p class="formErrorReport" id="cardNumberError"></p>
+
+        <p>expiration {{exp_month}}-{{exp_date}}</p>
+        <div class="flex expirationWrapper">
+          <input id="expirationMonth" name="expMonth" class="userFormItem numericOnly shortField" type="text" placeholder="MM" maxlength="2" value = "{{exp_month}}"/>
+          <p class="expirationSlash">  / </p>
+          <input id="expirationDay" name="expDay" class="userFormItem numericOnly shortField" type="text" placeholder="DD" maxlength="2" value = "{{exp_date}}"/>
+        </div>
+        <p class="formErrorReport" id="exiprationMonthError"></p>
+        <p class="formErrorReport" id="exiprationDayError"></p>
+
+        <p>CVV {{cvv}}</p>
+        <input id="cvv" name="cvv" class="userFormItem" type="text" placeholder="number" value="{{cvv}}" />
+        <p class="formErrorReport" id="cvvError"></p>
+
+        <p>address {{address_1}}</p>
+        <input id="address" name="address" class="userFormItem" type="text" placeholder="E Street South" value="{{address_1}}" />
+        <p class="formErrorReport" id="addressError"></p>
+
+        <p>city {{city}}</p>
+        <input id="city" name="city" class="userFormItem" type="text" placeholder="Juneau" value="{{city}}" />
+        <p class="formErrorReport" id="cityError"></p>
+
+        <p>state {{state}}</p>
+        <input id="state" name="state" class="userFormItem dropdownSearch" type="text" placeholder="AK" value="{{state}}" />
+        <p class="formErrorReport" id="stateError"></p>
+        <div class="dropdownWrapper">
+          <ul class="dropdownList"></ul>
+        </div>
+
+        <p>ZIP code {{code}}</p>
+        <input id="zipCode" name="zip" class="userFormItem numericOnly" type="text" placeholder="ZIP" value="{{zip}}" />
+        <p class="formErrorReport" id="zipCodeError"></p>
+
+        <input type="hidden" name="oldCard" value={{card_number}} />
+        <button id="formSubmitter" class="unavailable submit" type="submit">submit</button>
+      </form>
+    {{/if}}
+
+  </div>
+</div>
