@@ -36,20 +36,20 @@ class BaseReqestHandler {
     handler(promises) {
         return promises
             .then((ObjDB) => {
-            this.db.release();
-            console.log('after release', this.db.processID, this.db.readyForQuery);
             this.onSuccess(ObjDB);
         })
             .catch((error) => {
-            this.db.release();
-            console.log('after release', this.db.processID, this.db.readyForQuery);
             this.onFailure(error);
         });
     }
     onSuccess(ObjDB) {
+        this.db.release();
+        console.log('after release', this.db.processID, this.db.readyForQuery);
         return this.res.render('test', ObjDB);
     }
     onFailure(error) {
+        this.db.release();
+        console.log('after release', this.db.processID, this.db.readyForQuery);
         return this.res.render('login', { dbError: error });
     }
 }

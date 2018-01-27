@@ -106,15 +106,81 @@ router.route('/payment/active-payment')
   })
 
 
-router.route('/payment/:credit')
+router.route('/payment/:card_number')
   .get((req, res) => {
-    // show users particular payment
+    let card_number = req.query.card_number;
+    let payment;
+    console.log('payment get')
+    db.query('SELECT * FROM payment_credit WHERE user_uuid = $1 AND card_number = $2', [req.session.user.uuid, card_number])
+      .then((result) =>{
+        payment = result.rows[0]
+        console.log(payment)
+
+        res.render('payment/edit-payment', {
+          name: payment.name,
+          card_number: payment.card_number,
+          exp_date: payment.exp_date,
+          exp_month: payment.exp_month,
+          cvv: payment.cvv,
+          address_1: payment.address_1,
+          city: payment.city,
+          state: payment.state,
+          zip: payment.zip,
+          user_uuid:req.session.user.uuid
+        })
+      })
+      .catch((error) => {
+        console.log(error)
+        res.render(viewPefix + 'payments', {
+          dbError:error,
+          email:req.session.user.email
+        })
+      })
   })
   .put((req, res) => {
-    // update all of the information (no partial change)
+    let oldCard = req.body.oldCard;
+    let inputs = {
+      name:req.body.name,
+      cardNumber:req.body.cardNumber,
+      expDay:req.body.expDay,
+      expMonth:req.body.expMonth,
+      cvv:req.body.cvv,
+      address:req.body.address,
+      city:req.body.city,
+      state:req.body.state,
+      zip:req.body.zip,
+    }
+    let query = 'UPDATE payment_credit SET (card_number, name, exp_month, exp_date, cvv, address_1, city, state, zip) = ($1, $2, $3, $4, $5, $6, $7, $8, $9) WHERE user_uuid = $10 AND card_number = $11';
+    let input = [inputs.cardNumber, inputs.name, inputs.expMonth, inputs.expDay, inputs.cvv, inputs.address, inputs.city, inputs.state, inputs.zip, req.session.user.uuid, oldCard];
+
+    db.query(query, input)
+      .then((result)=>{
+        res.redirect('/accounts/' + req.session.user.email + '/payment')
+      })
+      .catch((error) => {
+        console.log(error)
+        res.render(viewPefix + 'payments', {
+          dbError:error,
+          email:req.session.user.email
+        })
+      })
   })
   .delete((req, res) => {
-    // remove card information entirely
+    let card_number = req.body.card_number
+    let query = 'DELETE FROM payment_credit WHERE user_uuid = $1 AND card_number =$2'
+    let input = [req.session.user.uuid, card_number]
+
+    db.query(query, input)
+      .then((result) => {
+        res.redirect('/accounts/' + req.session.user.email + '/payment')
+      })
+      .catch((error) => {
+        console.log(error)
+        res.render(viewPefix + 'payments', {
+          dbError:error,
+          email:req.session.user.email
+        })
+      })
   })
 
 module.exports = router;

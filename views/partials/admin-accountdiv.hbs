@@ -1,7 +1,3 @@
-//////////////
-////////////// VARIABLES UNCHANGED
-//////////////
-
 <div class="flex product-wrapper">
 	<div class="flex product-name-price-wrapper">
 		<h2 class="product-title">{{ user_uuid }}</h2>
@@ -14,11 +10,15 @@
 				<b>email: </b> {{ email }}
 			</p>
 			</br>
-				<p>
-					<b>phone: </b> {{ phone }}
-				</p>
+			<p>
+				<b>phone: </b> {{ phone }}
+			</p>
 			</br>
 		</div>
+		<form action="/admin/accounts/{{user_uuid}}/contact" method='get'>
+			<button class='yes' type='submit'>update contact</button>
+			<input type="hidden" name="user_uuid" value = "{{ user_uuid }}" />
+		</form>
 		<div class = 'flex column'>
 			<h2 class = 'title-border-bottom'>security</h2>
 			<p>
@@ -52,7 +52,7 @@
     <form class="flex product-cart-form" action="/admin/accounts/{{ user_uuid }}?_method=DELETE" method="post">
 			<div class="flex input-wrapper">
 				<input type="hidden" name="user_uuid" value="{{ user_uuid }}" />
-				<button class="no">delete</button>
+				<button class="no">delete user</button>
 			</div>
 		</form>
 	</div>

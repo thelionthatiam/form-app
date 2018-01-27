@@ -8,23 +8,22 @@ const router = express.Router();
 
 
 function check(req:Express.Request, res:ModResponse, next:Function) {
-  if (req.session.user && req.session.admin) {
-    console.log(req.session.admin)
-    if (req.session.admin.current_uuid === 'none') {
-      console.log('none')
-      next();
-    } else {
-      console.log('something', req.session.admin)
-      req.session.user.uuid = req.session.admin.current_uuid;
-      next();
-    }
-  } else if (req.session.user && req.sessionID) {
+  if (req.session.user && req.sessionID) {
     db.query('SELECT sessionID FROM session WHERE user_uuid = $1', [req.session.user.uuid])
       .then((result) => {
         if (result.rows[0].sessionid === req.sessionID) {
-          next();
+          return db.query('SELECT permission FROM users WHERE user_uuid = $1', [req.session.user.uuid])
         } else {
-          throw new Error ('incorrect session id')
+          helper.genError(res, 'login', "you were no longer logged in, try to log in again");
+        }
+      })
+      .then((result) => {
+        if (result.rows[0].permission === 'admin') {
+          next();
+        } else if (result.rows[0].permission === 'user') {
+          next();
+        } else if (result.rows[0].permission === 'guest') {
+
         }
       })
       .catch((error) => {

@@ -1,11 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const pg_1 = require("pg");
-// const pool = new Pool(dbConfig);
-//
-// let db = {
-//   query: (text:string, params:any[]) => pool.query(text, params)
-// }
+const combiner_1 = require("../config/combiner");
+const pool = new pg_1.Pool(combiner_1.dbConfig);
+let db = {
+    query: (text, params) => pool.query(text, params)
+};
+exports.db = db;
 function init(databaseInformation) {
     const pool = new pg_1.Pool(databaseInformation);
     return (req, res, next) => {

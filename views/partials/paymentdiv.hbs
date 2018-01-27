@@ -23,14 +23,30 @@
           <button class="yes" type="submit">activate</button>
         </form>
       {{/if}}
-      <form action="/accounts/{{user_uuid}}/alarms/{{title}}" method="get">
+      {{#if permission}}
+
+      <h1>A.V.</h1>
+      <form action="/admin/accounts/{{user_uuid}}/payment/{{card_number}}" method="get">
           <input type="image" width="20px" height="20px" src="https://maxcdn.icons8.com/Share/icon/p1em/Editing//edit1600.png">
-          <input name="title" type="hidden" value="{{ title }}">
+          <input name="card_number" type="hidden" value="{{ card_number }}">
+          <input name="user_uuid" type="hidden" value="{{ user_uuid }}">
       </form>
-      <form action="/accounts/{{user_uuid}}/alarms/{{title}}?_method=DELETE" method="post">
+      <form action="/admin/accounts/{{user_uuid}}/payment/{{card_number}}?_method=DELETE" method="post">
           <input type="image" width="20px" height="20px" src="https://www.pngarts.com/files/1/X-Shape-PNG-High-Quality-Image.png">
-          <input name="title" type="hidden" value="{{ title }}">
+          <input name="card_number" type="hidden" value="{{ card_number }}">
+          <input name="user_uuid" type="hidden" value="{{ user_uuid }}">
       </form>
+      {{else}}
+
+      <form action="/accounts/{{user_uuid}}/payment/{{card_number}}" method="get">
+          <input type="image" width="20px" height="20px" src="https://maxcdn.icons8.com/Share/icon/p1em/Editing//edit1600.png">
+          <input name="card_number" type="hidden" value="{{ card_number }}">
+      </form>
+      <form action="/accounts/{{user_uuid}}/payment/{{card_number}}?_method=DELETE" method="post">
+          <input type="image" width="20px" height="20px" src="https://www.pngarts.com/files/1/X-Shape-PNG-High-Quality-Image.png">
+          <input name="card_number" type="hidden" value="{{ card_number }}">
+      </form>
+      {{/if}}
     </div>
   </div>
 </div>

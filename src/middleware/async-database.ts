@@ -4,11 +4,11 @@ import { RequestHandler } from '../../node_modules/@types/express-serve-static-c
 import { ConnectionConfig, Client } from '../../node_modules/@types/pg/index'; // pg types
 import * as express from "express";
 
-// const pool = new Pool(dbConfig);
-//
-// let db = {
-//   query: (text:string, params:any[]) => pool.query(text, params)
-// }
+const pool = new Pool(dbConfig);
+
+let db = {
+  query: (text:string, params:any[]) => pool.query(text, params)
+}
 
 function init(databaseInformation:ConnectionConfig):RequestHandler {
   const pool = new Pool(databaseInformation);
@@ -30,4 +30,4 @@ function init(databaseInformation:ConnectionConfig):RequestHandler {
 }
 
 
-export { init };
+export { init, db };

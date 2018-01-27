@@ -10,6 +10,7 @@ import { init } from "./middleware/async-database";
 import * as session from "express-session";
 import * as sessionCheck from "./middleware/session-check";
 import * as methodOverride from 'method-override';
+
 const app = express();
 
 app.use(methodOverride('_method'))
@@ -69,7 +70,6 @@ app.use(function (err:Error, req:express.Request, res:express.Response, next:exp
 
 // production
 // app.listen(8000, '172.31.31.153')
-
 
 // localhost
 app.listen(8000, 'localhost', function() {

@@ -6,7 +6,6 @@ import { db } from '../middleware/async-database';
 import * as uuidv4 from 'uuid/v4';
 const router = express.Router();
 
-
 router.route('/authorized')
   .post((req, res) => {
     let input:Inputs = {};
@@ -14,7 +13,6 @@ router.route('/authorized')
 
     db.query("SELECT * FROM users WHERE email = $1", [req.body.email])
       .then((result) => {
-        console.log("first query")
         if (result.rows.length === 0) {
           throw new Error("Email not found")
         } else {
@@ -37,25 +35,26 @@ router.route('/authorized')
       })
       .then((result) => {
         cart_uuid = result.rows[0].cart_uuid;
-        console.log('last query')
         req.session.user = {
           email:input.email,
           uuid:input.user_uuid,
           phone:input.phone,
-          cart_uuid:cart_uuid
+          cart_uuid:cart_uuid,
+          permission:input.permission
         }
 
         return req.db.query('select NOW()')
       })
       .then((result) => {
-        req.db.release()
         console.log(result)
-
-
-        res.render('home', {
-          title:"yo",
-          email:req.session.user.email
-        })
+        if (req.session.user.permission === 'admin') {
+          res.render('admin/home')
+        } else if (req.session.user.permission === 'user') {
+          res.render('home', {
+            title:"yo",
+            email:req.session.user.email
+          })
+        }
       })
       .catch((error) => {
         console.log(error)
