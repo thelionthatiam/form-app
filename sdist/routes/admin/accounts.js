@@ -61,30 +61,23 @@ router.route('/accounts')
     });
 });
 router.route('/accounts/:user_uuid')
-    .delete((req, ress => {
+    .delete((req, res) => {
     let user_uuid = req.body.user_uuid;
-    let query = 'DELETEE FROM users WHERE user_uuid = $11;
-    let input = [user_uuiduuid_resu][] = t, pui = tel;
-    d = user_WHERE;
-    sers;
-    uELET;
-    FROM;
-    S;
-    '';
-    '=  yreuq tel    ;
-    query, inputtupni, yrwuq;
-    async_database_1.db.query()();
-    yreuq.bd;
-    diuu_resu.ydob.qer = diuu_resu;
-    tel;
-}), {} >= e, r, qer)();
-();
-eteled.
-    .
-        ////////////
-        //////////// EDIT/DELETE USER CONTACT
-        ////////////
-        router.route('/accounts/:user_uuid/contact')
+    let query = 'DELETE FROM users WHERE user_uuid = $1';
+    let input = [user_uuid];
+    async_database_1.db.query(query, input)
+        .then((result) => {
+        res;
+    })
+        .catch((err) => {
+        console.log(err.stack);
+        res.render('error', { dbError: err.stack });
+    });
+});
+////////////
+//////////// EDIT/DELETE USER CONTACT
+////////////
+router.route('/accounts/:user_uuid/contact')
     .get((req, res) => {
     let user_uuid = req.query.user_uuid;
     let permission = false;

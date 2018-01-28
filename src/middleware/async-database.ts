@@ -14,12 +14,11 @@ function init(databaseInformation:ConnectionConfig):RequestHandler {
   const pool = new Pool(databaseInformation);
 
   return (req, res, next) => {
-    let client:any;
+    let client:Client;
 
     pool.connect()
       .then((client:Client) => {
         req.db = client;
-        console.log('db middleware check out client', req.db.processID, req.db.readyForQuery)
         next();
       })
       .catch((err) => {

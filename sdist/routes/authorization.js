@@ -5,7 +5,72 @@ const help = require("../functions/promise-helpers");
 const bcrypt = require("bcrypt");
 const async_database_1 = require("../middleware/async-database");
 const uuidv4 = require("uuid/v4");
+const test_1 = require("./test");
+const resources_1 = require("../config/resources");
 const router = express.Router();
+class AuthHandler extends test_1.BaseReqestHandler {
+    constructor(req, res, query, input, nextPage, errPage, money) {
+        super(req, res, query, input, nextPage, errPage); // must have parent constructor
+        this.userSelect = 'SELECT * FROM users WHERE email = $1';
+        this.updateSessionID = 'UPDATE session SET sessionid = $1 WHERE user_uuid = $2';
+        this.selectCartID = 'SELECT cart_uuid FROM cart WHERE user_uuid = $1';
+        this.input = req.body;
+    }
+    handler() {
+        let user;
+        let cart;
+        let session = new resources_1.User(this.req.session.user);
+        return this.db.query(this.userSelect, this.input.email)
+            .then((result) => {
+            user = new resources_1.UserDB(result.rows[0]);
+            if (result.rows.length === 0) {
+                throw new Error("Email not found");
+            }
+            else {
+                return bcrypt.compare(this.input.password, user.password);
+            }
+        })
+            .then((result) => {
+            if (result === false) {
+                throw new Error('Password incorrect');
+            }
+            else {
+                return help.regenerateSession(this.req);
+            }
+        })
+            .then(() => {
+            return async_database_1.db.query(this.updateSessionID, [this.req.sessionID, user.user_uuid]);
+        })
+            .then((result) => {
+            return async_database_1.db.query(this.selectCartID, [user.user_uuid]);
+        })
+            .then((result) => {
+            cart = new resources_1.CartDB(result.rows[0]);
+            req.session.user = {
+                email: input.email,
+                uuid: input.user_uuid,
+                cart_uuid: cart_uuid,
+                permission: input.permission
+            };
+            return req.db.query('select NOW()');
+        })
+            .then((result) => {
+            console.log(result);
+            if (req.session.user.permission === 'admin') {
+                res.render('admin/home');
+            }
+            else if (req.session.user.permission === 'user') {
+                res.render('home', {
+                    title: "yo",
+                    email: req.session.user.email
+                });
+            }
+        });
+    }
+}
+router.post('/authorized', (req, res) => {
+    let user = new resources_1.User(req.session.user);
+});
 router.route('/authorized')
     .post((req, res) => {
     let input = {};
@@ -39,7 +104,6 @@ router.route('/authorized')
         req.session.user = {
             email: input.email,
             uuid: input.user_uuid,
-            phone: input.phone,
             cart_uuid: cart_uuid,
             permission: input.permission
         };

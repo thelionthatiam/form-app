@@ -14,7 +14,6 @@ function init(databaseInformation) {
         pool.connect()
             .then((client) => {
             req.db = client;
-            console.log('db middleware check out client', req.db.processID, req.db.readyForQuery);
             next();
         })
             .catch((err) => {

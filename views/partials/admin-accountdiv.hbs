@@ -49,11 +49,13 @@
 				<button class="yes">edit</button>
 			</div>
 		</form> --}}
-    <form class="flex product-cart-form" action="/admin/accounts/{{ user_uuid }}?_method=DELETE" method="post">
-			<div class="flex input-wrapper">
+
+		<div class="flex input-wrapper">
+			<form class="flex product-cart-form" action="/admin/accounts/{{ user_uuid }}?_method=DELETE" method="post">
 				<input type="hidden" name="user_uuid" value="{{ user_uuid }}" />
-				<button class="no">delete user</button>
-			</div>
-		</form>
+				<button class="no" type='submit'>delete user</button>
+			</form>
+		</div>
+
 	</div>
 </div>

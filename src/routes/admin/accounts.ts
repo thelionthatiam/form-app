@@ -71,6 +71,13 @@ router.route('/accounts/:user_uuid')
     let input = [user_uuid]
 
     db.query(query, input)
+      .then((result) => {
+        res
+      })
+      .catch((err) => {
+        console.log(err.stack)
+        res.render('error', { dbError: err.stack });
+      });
   })
 
 
