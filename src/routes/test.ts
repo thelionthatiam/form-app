@@ -3,48 +3,48 @@ import * as help from '../functions/promise-helpers';
 import * as r from '../config/resources';
 import { ConnectionConfig, Client } from '../../node_modules/@types/pg/index'; // pg types
 const router = express.Router();
-
-class BaseReqestHandler {
-  req:Express.Request;
-  res:Response;
-  query:string[];
-  input:AlarmApp.Inputs;
-  db:Client;
-  nextPage:string;
-  errPage:string;
-
-
-  constructor(req:Express.Request, res:Response, query:string[], input:AlarmApp.Inputs, nextPage:string, errPage:string)  {
-    this.req = req;
-    this.res = res;
-    this.query = query;
-    this.input = input;
-    this.db = req.db;
-    this.nextPage = nextPage;
-    this.errPage = errPage;
-  }
-
-
-  handler(promises:any) {
-    return promises
-      .then((ObjDB) => {
-        this.onSuccess(ObjDB);
-      })
-      .catch((error:Error) => {
-        this.onFailure(error)
-      })
-  }
-
-  onSuccess(ObjDB:any) {
-    this.db.release();
-    return this.res.render(this.nextPage, ObjDB)
-  }
-
-  onFailure(error:Error) {
-    this.db.release();
-    return this.res.render(this.errPage, { dbError: error })
-  }
-}
+//
+// class BaseReqestHandler {
+//   req:Express.Request;
+//   res:Response;
+//   query:string[];
+//   input:Inputs;
+//   db:Client;
+//   nextPage:string;
+//   errPage:string;
+//
+//
+//   constructor(req:Express.Request, res:Response, query:string[], input:Inputs, nextPage:string, errPage:string)  {
+//     this.req = req;
+//     this.res = res;
+//     this.query = query;
+//     this.input = input;
+//     this.db = req.db;
+//     this.nextPage = nextPage;
+//     this.errPage = errPage;
+//   }
+//
+//
+//   handler(promises:any, RenderObj:any) {
+//     return promises
+//       .then((renderObj) => {
+//         this.onSuccess(ObjDB);
+//       })
+//       .catch((error:Error) => {
+//         this.onFailure(error)
+//       })
+//   }
+//
+//   onSuccess(renderObj:any, ) {
+//     this.db.release();
+//     return this.res.render(this.nextPage, ObjDB)
+//   }
+//
+//   onFailure(error:Error, ) {
+//     this.db.release();
+//     return this.res.render(this.errPage, { dbError: error })
+//   }
+// }
 
 /////////////////////////
 
