@@ -21,7 +21,6 @@ router.use('/accounts/:email', require('./orders'));
 
 
 router.get('/', function (req, res, next) {
-  req.db.release();
   res.render('login');
 })
 

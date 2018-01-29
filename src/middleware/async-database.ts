@@ -13,8 +13,15 @@ let db = {
 function init(databaseInformation:ConnectionConfig):RequestHandler {
   const pool = new Pool(databaseInformation);
 
+
   return (req, res, next) => {
     let client:Client;
+
+    res.on('finish', function() {
+      console.log("\x1b[36m", 'NEW CLIENT RELEASE')
+      console.log(req.db)
+      req.db.release();
+    })
 
     pool.connect()
       .then((client:Client) => {
@@ -22,6 +29,7 @@ function init(databaseInformation:ConnectionConfig):RequestHandler {
         next();
       })
       .catch((err) => {
+        console.log('fired')
         req.db.release();
         return console.error('Error executing query', err.stack);
       })

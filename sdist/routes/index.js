@@ -18,7 +18,6 @@ router.use('/accounts/:email', require('./cart'));
 router.use('/accounts/:email', require('./coupons'));
 router.use('/accounts/:email', require('./orders'));
 router.get('/', function (req, res, next) {
-    req.db.release();
     res.render('login');
 });
 router.get('/home', (req, res) => {
