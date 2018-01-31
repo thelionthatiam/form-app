@@ -1,67 +1,61 @@
 import * as isUUID from 'is-uuid';
 
-class Validation {
-  emailValid(email:string) {
-    let re = /^[A-Za-z0-9\._\$%\-]+@[A-Za-z0-9\-]+.[A-Za-z0-9]{2,6}$/;
-    try {
-      if (re.test(email)) {
-        return email;
-      } else {
-        throw new Error('Not a real email.')
-      }
-    } catch(e) {
-      console.log(e);
-      // pass failure contition up stream to route and view
-      return 'fail';
+function emailValid(email:string) {
+  let re = /^[A-Za-z0-9\._\$%\-]+@[A-Za-z0-9\-]+.[A-Za-z0-9]{2,6}$/;
+  try {
+    if (re.test(email)) {
+      return email;
+    } else {
+      throw new Error('Not a real email.')
     }
-  }
-
-  uuidValid(uuid:string) {
-    try {
-      if (isUUID.v4(uuid)) {
-        return(uuid)
-      } else {
-        throw new Error('Not a real uuid.')
-      }
-    } catch(e) {
-      console.log(e);
-      // pass failure contition up stream to route and view
-      return 'fail';
-    }
-  }
-
-  permissionValid(permission:string) {
-    let re = /(guest)|(user)|(admin)/
-    try {
-      if (re.test(permission)) {
-        return permission;
-      } else {
-        throw new Error('Not a real permission')
-      }
-    }  catch(e) {
-      console.log(e);
-      // pass failure contition up stream to route and view
-      return 'fail';
-    }
+  } catch(e) {
+    console.log(e);
+    // pass failure contition up stream to route and view
+    return 'fail';
   }
 }
 
-class UserSession extends Validation {
+function uuidValid(uuid:string) {
+  try {
+    if (isUUID.v4(uuid)) {
+      return(uuid)
+    } else {
+      throw new Error('Not a real uuid.')
+    }
+  } catch(e) {
+    console.log(e);
+    // pass failure contition up stream to route and view
+    return 'fail';
+  }
+}
+
+function permissionValid(permission:string) {
+  let re = /(guest)|(user)|(admin)/
+  try {
+    if (re.test(permission)) {
+      return permission;
+    } else {
+      throw new Error('Not a real permission')
+    }
+  }  catch(e) {
+    console.log(e);
+    // pass failure contition up stream to route and view
+    return 'fail';
+  }
+}
+
+
+class UserSession {
   email:string;
   uuid:string;
   cart_uuid:string;
   permission:string;
 
   constructor(userSession:UserSession) {
-    super();
-    try {
-      this.email      = this.emailValid(userSession.email);
-      this.uuid       = this.uuidValid(userSession.uuid);
-      this.cart_uuid  = this.uuidValid(userSession.cart_uuid);
-      this.permission = this.permissionValid(userSession.permission);
-    } catch (e) {
-      // report error upstream
-    }
+    this.email      = emailValid(userSession.email);
+    this.uuid       = uuidValid(userSession.uuid);
+    this.cart_uuid  = uuidValid(userSession.cart_uuid);
+    this.permission = permissionValid(userSession.permission);
   }
 }
 
@@ -132,4 +126,4 @@ class SessionDB {
   }
 }
 
-export { UserDB, OrderDB, SessionDB, UserSession}
+export { UserDB, OrderDB, SessionDB, UserSession, CartDB }

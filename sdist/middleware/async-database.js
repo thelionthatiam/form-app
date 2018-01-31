@@ -1,29 +1,36 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const pg_1 = require("pg");
-const combiner_1 = require("../config/combiner");
-const pool = new pg_1.Pool(combiner_1.dbConfig);
-let db = {
-    query: (text, params) => pool.query(text, params)
-};
-exports.db = db;
+const queries_1 = require("../functions/queries");
+// const pool = new Pool(dbConfig);
+//
+// let db = {
+//   query: (text:string, params:any[]) => pool.query(text, params)
+// }
 function init(databaseInformation) {
     const pool = new pg_1.Pool(databaseInformation);
     return (req, res, next) => {
         let client;
-        res.on('finish', function () {
-            console.log("\x1b[36m", 'NEW CLIENT RELEASE');
-            console.log(req.db);
-            req.db.release();
-        });
         pool.connect()
             .then((client) => {
-            req.db = client;
+            // events to release
+            req.on('abort', () => {
+                client.release();
+            });
+            req.on('timeout', () => {
+                req.abort();
+            });
+            res.on('close', () => {
+                client.release();
+            });
+            res.on('finish', function () {
+                client.release();
+            });
+            req.db = new queries_1.Query(client);
             next();
         })
             .catch((err) => {
-            console.log('fired');
-            req.db.release();
+            client.release();
             return console.error('Error executing query', err.stack);
         });
     };

@@ -1,67 +1,59 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const isUUID = require("is-uuid");
-class Validation {
-    emailValid(email) {
-        let re = /^[A-Za-z0-9\._\$%\-]+@[A-Za-z0-9\-]+.[A-Za-z0-9]{2,6}$/;
-        try {
-            if (re.test(email)) {
-                return email;
-            }
-            else {
-                throw new Error('Not a real email.');
-            }
+function emailValid(email) {
+    let re = /^[A-Za-z0-9\._\$%\-]+@[A-Za-z0-9\-]+.[A-Za-z0-9]{2,6}$/;
+    try {
+        if (re.test(email)) {
+            return email;
         }
-        catch (e) {
-            console.log(e);
-            // pass failure contition up stream to route and view
-            return 'fail';
+        else {
+            throw new Error('Not a real email.');
         }
     }
-    uuidValid(uuid) {
-        try {
-            if (isUUID.v4(uuid)) {
-                return (uuid);
-            }
-            else {
-                throw new Error('Not a real uuid.');
-            }
-        }
-        catch (e) {
-            console.log(e);
-            // pass failure contition up stream to route and view
-            return 'fail';
-        }
-    }
-    permissionValid(permission) {
-        let re = /(guest)|(user)|(admin)/;
-        try {
-            if (re.test(permission)) {
-                return permission;
-            }
-            else {
-                throw new Error('Not a real permission');
-            }
-        }
-        catch (e) {
-            console.log(e);
-            // pass failure contition up stream to route and view
-            return 'fail';
-        }
+    catch (e) {
+        console.log(e);
+        // pass failure contition up stream to route and view
+        return 'fail';
     }
 }
-class UserSession extends Validation {
+function uuidValid(uuid) {
+    try {
+        if (isUUID.v4(uuid)) {
+            return (uuid);
+        }
+        else {
+            throw new Error('Not a real uuid.');
+        }
+    }
+    catch (e) {
+        console.log(e);
+        // pass failure contition up stream to route and view
+        return 'fail';
+    }
+}
+function permissionValid(permission) {
+    let re = /(guest)|(user)|(admin)/;
+    try {
+        if (re.test(permission)) {
+            return permission;
+        }
+        else {
+            throw new Error('Not a real permission');
+        }
+    }
+    catch (e) {
+        console.log(e);
+        // pass failure contition up stream to route and view
+        return 'fail';
+    }
+}
+class UserSession {
     constructor(userSession) {
-        super();
-        try {
-            this.email = this.emailValid(userSession.email);
-            this.uuid = this.uuidValid(userSession.uuid);
-            this.cart_uuid = this.uuidValid(userSession.cart_uuid);
-            this.permission = this.permissionValid(userSession.permission);
-        }
-        catch (e) {
-            // report error upstream
-        }
+        this.email = emailValid(userSession.email);
+        this.uuid = uuidValid(userSession.uuid);
+        this.cart_uuid = uuidValid(userSession.cart_uuid);
+        this.permission = permissionValid(userSession.permission);
     }
 }
 exports.UserSession = UserSession;
@@ -85,6 +77,7 @@ class CartDB {
         this.card_number = cartQueryResult.card_number;
     }
 }
+exports.CartDB = CartDB;
 class OrderDB {
     constructor(orderQueryResult) {
         this.order_id = orderQueryResult.id;

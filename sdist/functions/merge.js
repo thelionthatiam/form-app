@@ -67,4 +67,18 @@ function deepMerge(one, two) {
     return one;
 }
 exports.deepMerge = deepMerge;
+function MergeArray(array) {
+    if (array.length === 0) {
+        return 'error, no object in array';
+    }
+    else if (array.length === 1) {
+        return array[0];
+    }
+    else if (array.length >= 2) {
+        for (let i = 1; i < array.length; i++) {
+            let thisMerge = deepMerge(array[i], array[i - 1]);
+            array.pop();
+        }
+    }
+}
 //# sourceMappingURL=merge.js.map

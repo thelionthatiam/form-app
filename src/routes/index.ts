@@ -1,11 +1,12 @@
 import * as express from 'express';
 const router = express.Router();
+import * as test from './test';
 
 router.use('/', require('./authorization'));
 router.use('/', require('./email'));
 router.use('/', require('./accounts'));
 router.use('/', require('./shopping'));
-router.use('/', require('./test'));
+router.use('/', test.router);
 
 router.use('/admin-auth', require('./admin/authorized'));
 router.use('/admin', require('./admin/products'));
