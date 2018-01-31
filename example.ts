@@ -13,7 +13,7 @@ class V4UUID {
 class UserDB {
   id:number;
   user_id:number;
-  user_uuid:string; // how to access V4UUID class information?
+  user_uuid:V4UUID; // how to access V4UUID class information?
   email:string;
   phone:string;
   password:string;
@@ -22,7 +22,7 @@ class UserDB {
 
   constructor(userQueryResult:UserDB) {
     this.user_id    = userQueryResult.id;
-    this.user_uuid  = userQueryResult.user_uuid; // how to access V4UUID class information?
+    this.user_uuid  = new v4UUID(userQueryResult.user_uuid); // how to access V4UUID class information?
     this.phone      = userQueryResult.phone;
     this.password   = userQueryResult.password;
     this.name       = userQueryResult.name;
