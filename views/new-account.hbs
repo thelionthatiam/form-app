@@ -33,6 +33,10 @@
 
         <p>password</p>
         <input id="password" name="password" class="userFormItem" type="password" placeholder="" />
+        <div id='passIndicator' class='passIndicator'></div>
+        <div id='passScorer' class = 'formErrorReport blackText'><p>
+          no password
+        </p></div>
         <p class="formErrorReport" id="passwordError"></p>
 
         <p>confirm password</p>
@@ -49,4 +53,5 @@
       </form>
   </div>
 </div>
-{{!-- <script src="/behavior/account-action.js"></script> --}}
+<script src="/behavior/account-action.js"></script>
+<script src="/behavior/password-strength.js"></script>

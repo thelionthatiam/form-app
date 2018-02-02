@@ -20,7 +20,7 @@ app.engine('hbs', hbs({
     layoutsDir: __dirname + './../views/layouts'
 }));
 app.set('views', path.join(__dirname, "../views"));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, './public')));
 app.set('trust proxy', 1);
 app.use(async_database_1.init(combiner_1.dbConfig));
 //session using memory storage (I think this is application memory) for now. Will not be the case in production. see readme session stores

@@ -1,40 +1,39 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const isUUID = require("is-uuid");
-function emailValid(email) {
-    let re = /^[A-Za-z0-9\._\$%\-]+@[A-Za-z0-9\-]+.[A-Za-z0-9]{2,6}$/;
-    try {
-        if (re.test(email)) {
-            return email;
+class Email {
+    constructor(value) {
+        this._value = Email.validate(value);
+    }
+    static validate(value) {
+        let re = /^[A-Za-z0-9\._\$%\-]+@[A-Za-z0-9\-]+.[A-Za-z0-9]{2,6}$/;
+        if (re.test(value)) {
+            return value;
         }
         else {
             throw new Error('Not a real email.');
         }
     }
-    catch (e) {
-        console.log(e);
-        // pass failure contition up stream to route and view
-        return 'fail';
-    }
 }
-function uuidValid(uuid) {
-    try {
-        if (isUUID.v4(uuid)) {
-            return (uuid);
+class UUID {
+    constructor(value) {
+        this._value = UUID.validate(value);
+    }
+    static validate(UUID) {
+        if (isUUID.v4(UUID)) {
+            return (UUID);
         }
         else {
             throw new Error('Not a real uuid.');
         }
     }
-    catch (e) {
-        console.log(e);
-        // pass failure contition up stream to route and view
-        return 'fail';
-    }
 }
-function permissionValid(permission) {
-    let re = /(guest)|(user)|(admin)/;
-    try {
+class Permission {
+    constructor(value) {
+        this._value = Permission.validate(value);
+    }
+    static validate(permission) {
+        let re = /(guest)|(user)|(admin)/;
         if (re.test(permission)) {
             return permission;
         }
@@ -42,18 +41,21 @@ function permissionValid(permission) {
             throw new Error('Not a real permission');
         }
     }
-    catch (e) {
-        console.log(e);
-        // pass failure contition up stream to route and view
-        return 'fail';
-    }
 }
 class UserSession {
-    constructor(userSession) {
-        this.email = emailValid(userSession.email);
-        this.uuid = uuidValid(userSession.uuid);
-        this.cart_uuid = uuidValid(userSession.cart_uuid);
-        this.permission = permissionValid(userSession.permission);
+    constructor(userSession = {}) {
+        this.email = Email.validate(userSession.email);
+        this.uuid = UUID.validate(userSession.uuid);
+        this.cart_uuid = UUID.validate(userSession.cart_uuid);
+        this.permission = Permission.validate(userSession.permission);
+    }
+    static validate(userSession) {
+        if (userSession.email && userSession.uuid && userSession.cart_uuid && userSession.permission) {
+            return userSession;
+        }
+        else {
+            throw new Error('User session does not have the right properties');
+        }
     }
 }
 exports.UserSession = UserSession;

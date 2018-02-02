@@ -209,6 +209,44 @@ input:placeholder-shown {
   letter-spacing: 2px;
 }
 
+.passIndicator {
+	width:1%;
+	height:4px;
+	background-color:grey;
+	transition:all 300ms;
+}
+
+.blackText {
+  color:black;
+}
+.veryWeak {
+	width:20%;
+	background-color:red;
+}
+
+.weak {
+	width:40%;
+	background-color:red;
+}
+
+.reasonable {
+	width: 60%;
+	background-color:blue;
+}
+
+
+.strong {
+	width: 80%;
+	background-color:green;
+}
+
+.overkill {
+	width: 100%;
+	background-color:green;
+}
+
+
+
 /*------------------------------PAYMENT QUICK ADD-----------------------------*/
 ul {
  list-style:none;

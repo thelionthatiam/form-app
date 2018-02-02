@@ -3,16 +3,18 @@ import * as coupons from '../functions/coupon-helpers'
 import * as inv from '../functions/invoice';
 import * as express from 'express';
 import { db } from '../middleware/async-database';
-import { transporter, mailOptions } from "../config/mail-config.js";
+import * as mailer from '../middleware/emailer'
 const router = express.Router();
+
+router.use('/orders', mailer.mailer()) // middleware to load email junk
 
 router.route('/orders')
   .post((req, res) => {
-    console.log('post purchase')
     let card_number = req.body.card_number;
     let order_uuid = '';
     let numberOfOrders = 0;
     let discount:number;
+    let recieptContent;
 
     db.query('SELECT * FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid])
       .then((result) => {
@@ -46,32 +48,43 @@ router.route('/orders')
         let sqlVariables = queryVariables(cart_items);
         let values = inputs(cart_items);
         let query = concatQuery(sqlVariables);
-        console.log(query, values)
         return db.query(query, values);
       })
       .then((result) => {
         return db.query('DELETE FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid])
       })
       .then((result) => {
-        let query = 'SELECT p.product_id, name, price, size, description, quantity FROM products p INNER JOIN order_items o ON p.product_id = o.product_id AND (o.order_uuid = $1)';
+        let query = 'SELECT p.product_id, name, price, size, description, quantity, discount FROM products p INNER JOIN order_items o ON p.product_id = o.product_id AND (o.order_uuid = $1)';
         let input = [order_uuid];
         return db.query(query, input)
       })
       .then((result) => {
-        console.log(result.rows)
+        recieptContent = result.rows;
+        let totalQuantity =  inv.totalItems(recieptContent)
+        recieptContent = inv.addDiscount(recieptContent);
+        recieptContent = inv.addEmail(recieptContent, req.session.user.email);
+
         let items = stringifyQueryOutput(inv.invoiceItems(result.rows));
         let total = coupons.percentOff(discount, inv.total(inv.invoiceItems(result.rows))).toString();
-        var mailInvoice = {
-          from: 'juliantheberge@gmail.com',
-          to: req.session.user.email,
-          subject: 'Recent Purchse from Alarm App',
-          text: 'items: \n' + items + '\n' + 'total:\n' + total
-        };
-        console.log(mailInvoice.text);
-        return transporter.sendMail(mailInvoice)
+
+        let  mail = {
+                    from: 'juliantheberge@gmail.com',
+                    to: 'fffff@mailinator.com',
+                    subject: 'Test',
+                    template: 'email/reciept',
+                    context: {
+                      cartContent:recieptContent,
+                      totalCost:total,
+                      totalItems:totalQuantity,
+                      lastFour:'fake card',
+                      email:req.session.user.email,
+                    }
+                };
+
+        return req.transporter.sendMail(mail)
       })
-      .then((result) => {
-        console.log(result);
+      .then((info) => {
+        console.log(info);
         return db.query('UPDATE cart_coupons SET used = $1', [true])
       })
       .then((result) => {
@@ -84,5 +97,6 @@ router.route('/orders')
         res.send(error);
       })
   })
+
 
 module.exports = router;

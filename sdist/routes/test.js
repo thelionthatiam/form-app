@@ -9,12 +9,12 @@ class BaseRequestHandler {
         this.req = req;
         this.res = res;
         this.inputs = req.query;
-        this.db = req.db;
+        this.aQuery = req.aQuery;
         this.nextPage = nextPage;
         this.errPage = errPage;
     }
     handler() {
-        this.db.selectUser([this.inputs.email])
+        this.aQuery.selectUser([this.inputs.email])
             .then((result) => {
             let user = new r.UserDB(result.rows[0]);
             return user;

@@ -17,7 +17,7 @@ class AuthHandler extends test_1.BaseRequestHandler {
         let user;
         let cart;
         let userSession;
-        this.db.selectUser([this.inputs.email])
+        this.aQuery.selectUser([this.inputs.email])
             .then((result) => {
             if (result.rows.length === 0) {
                 throw new Error("Email not found");
@@ -36,10 +36,10 @@ class AuthHandler extends test_1.BaseRequestHandler {
             }
         })
             .then(() => {
-            return this.db.updateSessionID([this.req.sessionID, user.user_uuid]);
+            return this.aQuery.updateSessionID([this.req.sessionID, user.user_uuid]);
         })
             .then((result) => {
-            return this.db.selectCart([user.user_uuid]);
+            return this.aQuery.selectCart([user.user_uuid]);
         })
             .then((result) => {
             cart = new r.CartDB(result.rows[0]);

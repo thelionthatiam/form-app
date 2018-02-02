@@ -1,0 +1,29 @@
+{{!--  MAKE A RECIEPT --}}
+
+<div class="full-page" style="margin: 10%;">
+  <h1 style="font-family: &quot;Roboto&quot;, sans-serif;">Reciept From Alarm App</h1>
+  <p style="font-family: &quot;Roboto&quot;, sans-serif;">
+    Here you should be able to find everything you need to know about a recent purchase.
+  </p>
+  <p>
+    Thanks for your purchase {{email}}!
+  </p>
+
+  <div class="categoryListWrapper" style="position: relative;">
+    {{#each cartContent}}
+      {{> emailcartdiv}}
+    {{/each}}
+  </div>
+  <p style="font-family: &quot;Roboto&quot;, sans-serif;">
+    total number of items: {{ totalItems }}
+  </p>
+  <p style="font-family: &quot;Roboto&quot;, sans-serif;">
+    total cost: ${{ totalCost }}
+  </p>
+  <div class="last-four-wrapper" style="display: flex;justify-content: space-between;align-items: center;padding: 3px;border: 1px solid black;border-radius: 4px;">
+    <p style="font-family: &quot;Roboto&quot;, sans-serif;">
+      Payment Method: credit card ending in <b>{{ lastFour }}</b>
+    </p>
+  </div>
+  <p class="formErrorReport" style="font-family: &quot;Roboto&quot;, sans-serif;font-size: 10px;margin: 2px 0 0px 0;padding: 2px 0 0px;0: ;color: red;">{{ dbError }}</p>
+</div>

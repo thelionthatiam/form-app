@@ -1,0 +1,35 @@
+<div class="column categoryWrapper" style="flex-direction: column;display: flex;align-content: center;justify-content: center;margin: 5px 0 5px 0;background-color: lightgrey;border-radius: 5px;box-shadow: 0px 5px 8px 0px rgba(0, 0, 0, .1);">
+  <div class="row categoryTitle" style="display: flex;flex-direction: row;justify-content: space-between;align-content: center;align-items: center;flex: 1;padding: 10px;transition: all 200ms;">
+    <h4 style="font-family: &quot;Roboto&quot;, sans-serif;">{{ name }}</h4>
+    <div class="time-wrapper flex space-around " style="display: flex;justify-content: space-around;flex-grow: .2;align-content: center;align-items: center;">
+      <p class="self right awakeTime" style="font-family: &quot;Roboto&quot;, sans-serif;font-size: 24px;font-weight: 100;">
+        ${{ price }}
+      </p>
+      <img src="http://icons.iconarchive.com/icons/iconsmind/outline/512/Shopping-Cart-icon.png" style="width: 30px;height: 30px;padding: 1vw;">
+    </div>
+  </div>
+  <div class="box subCategoryWrapper none" style="display:flex;flex-direction: column;background-color: ivory;overflow: hidden;">
+    <div class="row subCategoryTitle" style="display: flex;flex-direction: row;justify-content: space-around;margin: 6px;padding-top: 3px;padding-bottom: 3px;border-bottom: dotted 1px #2a3030;transition: all 100ms ease-in-out;">
+      <p style="font-family: &quot;Roboto&quot;, sans-serif;">
+        size: {{ size }}
+      </p><br />
+      <p style="font-family: &quot;Roboto&quot;, sans-serif;">
+        item sub total: {{ quantity }} {{ id }} {{create_timestamp}}
+      </p>
+      {{#if isDiscount}}
+        <p>
+          Nice coupon, you got {{discount}} percent off on this item.
+        </p>
+      {{else}}
+        <p>
+          No coupon used.
+        </p>
+      {{/if}}
+    </div>
+    <div class="row date-created" style="display: flex;flex-direction: row;justify-content: flex-end;font-size: 10px;margin: 0 4vw 0 0;">
+      <p class="thedate" style="font-family: &quot;Roboto&quot;, sans-serif;">
+        {{ updated_timestamp }}
+      </p>
+    </div>
+  </div>
+</div>

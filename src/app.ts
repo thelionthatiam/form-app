@@ -11,6 +11,8 @@ import * as session from "express-session";
 import * as sessionCheck from "./middleware/session-check";
 import * as methodOverride from 'method-override';
 
+
+
 const app = express();
 
 app.use(methodOverride('_method'))
@@ -23,7 +25,7 @@ app.engine('hbs', hbs({
   layoutsDir:__dirname + './../views/layouts'
 }));
 app.set('views', path.join(__dirname, "../views"));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, './public')));
 app.set('trust proxy', 1);
 
 app.use(init(dbConfig));

@@ -11,23 +11,23 @@ function cardinalityGuess(password) {
       symbols = /[`~!@#$%^&*()\-_=+\[\]\\\{\};"':,<\.>\/?|]/;
 
   if (password.match(lowerCase)) {
-    console.log('positive lowercase search')
     cardinality = cardinality + 26;
+    console.log('positive lowercase search', 'cardinality', cardinality)
   }
 
   if(password.match(upperCase)) {
-    console.log('positive uppercase search')
     cardinality = cardinality + 26;
+    console.log('positive uppercase search', 'cardinality', cardinality)
   }
 
   if(password.match(numbers)) {
-    console.log('positive number search')
     cardinality = cardinality + 10;
+    console.log('positive number search', 'cardinality', cardinality)
   }
 
   if(password.match(symbols)) {
-    console.log('positive symbol search', password.search(symbols))
-    cardinality = cardinality + 31;
+    cardinality = cardinality + 33;
+    console.log('positive symbol search', 'cardinality', cardinality, password.search(symbols))
   }
 
   return cardinality;
@@ -99,7 +99,7 @@ function mixPassScorer(password) {
 }
 
 // this is probably more realistic, could make a sentence case dictionary, l33t dictionary
-function passScorer(password) {
+function scorer(password) {
   let cardinality = cardinalityGuess(password);
   let relevantWords = wordsInPass(password);
   let wordsLength = totalSubtractedLength(relevantWords);
@@ -117,12 +117,16 @@ function passScorer(password) {
   } else {
     console.log('all symbol pass')
     let symbolOptions = Math.pow(cardinality, password.length);
-
-    return password.length * (Math.log2(cardinality));;
+    let entropy = password.length * (Math.log2(cardinality));;
+    return entropy + " bits of entropy."
   }
 }
 
-
-console.log(passScorer('aklsuregfbalkeurksdjf'))
-
 // https://www.bennish.net/password-strength-checker/
+// < 28 bits = Very Weak; might keep out family members
+// 28 - 35 bits = Weak; should keep out most people, often good for desktop login passwords
+// 36 - 59 bits = Reasonable; fairly secure passwords for network and company passwords
+// 60 - 127 bits = Strong; can be good for guarding financial information
+// 128+ bits = Very Strong; often overkill
+
+module.exports = scorer;

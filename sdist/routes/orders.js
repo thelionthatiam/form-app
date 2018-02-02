@@ -5,15 +5,16 @@ const coupons = require("../functions/coupon-helpers");
 const inv = require("../functions/invoice");
 const express = require("express");
 const async_database_1 = require("../middleware/async-database");
-const mail_config_js_1 = require("../config/mail-config.js");
+const mailer = require("../middleware/emailer");
 const router = express.Router();
+router.use('/orders', mailer.mailer()); // middleware to load email junk
 router.route('/orders')
     .post((req, res) => {
-    console.log('post purchase');
     let card_number = req.body.card_number;
     let order_uuid = '';
     let numberOfOrders = 0;
     let discount;
+    let recieptContent;
     async_database_1.db.query('SELECT * FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid])
         .then((result) => {
         if (result.rowCount === 0) {
@@ -46,32 +47,40 @@ router.route('/orders')
         let sqlVariables = promise_helpers_1.queryVariables(cart_items);
         let values = promise_helpers_1.inputs(cart_items);
         let query = promise_helpers_1.concatQuery(sqlVariables);
-        console.log(query, values);
         return async_database_1.db.query(query, values);
     })
         .then((result) => {
         return async_database_1.db.query('DELETE FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid]);
     })
         .then((result) => {
-        let query = 'SELECT p.product_id, name, price, size, description, quantity FROM products p INNER JOIN order_items o ON p.product_id = o.product_id AND (o.order_uuid = $1)';
+        let query = 'SELECT p.product_id, name, price, size, description, quantity, discount FROM products p INNER JOIN order_items o ON p.product_id = o.product_id AND (o.order_uuid = $1)';
         let input = [order_uuid];
         return async_database_1.db.query(query, input);
     })
         .then((result) => {
-        console.log(result.rows);
+        recieptContent = result.rows;
+        let totalQuantity = inv.totalItems(recieptContent);
+        recieptContent = inv.addDiscount(recieptContent);
+        recieptContent = inv.addEmail(recieptContent, req.session.user.email);
         let items = promise_helpers_1.stringifyQueryOutput(inv.invoiceItems(result.rows));
         let total = coupons.percentOff(discount, inv.total(inv.invoiceItems(result.rows))).toString();
-        var mailInvoice = {
+        let mail = {
             from: 'juliantheberge@gmail.com',
-            to: req.session.user.email,
-            subject: 'Recent Purchse from Alarm App',
-            text: 'items: \n' + items + '\n' + 'total:\n' + total
+            to: 'fffff@mailinator.com',
+            subject: 'Test',
+            template: 'email/reciept',
+            context: {
+                cartContent: recieptContent,
+                totalCost: total,
+                totalItems: totalQuantity,
+                lastFour: 'fake card',
+                email: req.session.user.email,
+            }
         };
-        console.log(mailInvoice.text);
-        return mail_config_js_1.transporter.sendMail(mailInvoice);
+        return req.transporter.sendMail(mail);
     })
-        .then((result) => {
-        console.log(result);
+        .then((info) => {
+        console.log(info);
         return async_database_1.db.query('UPDATE cart_coupons SET used = $1', [true]);
     })
         .then((result) => {

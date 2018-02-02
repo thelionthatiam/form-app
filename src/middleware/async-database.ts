@@ -5,11 +5,11 @@ import { ConnectionConfig, Client } from '../../node_modules/@types/pg/index'; /
 import { Query } from '../functions/queries'
 import * as express from "express";
 
-// const pool = new Pool(dbConfig);
-//
-// let db = {
-//   query: (text:string, params:any[]) => pool.query(text, params)
-// }
+const pool = new Pool(dbConfig);
+
+let db = {
+  query: (text:string, params:any[]) => pool.query(text, params)
+}
 
 function init(databaseInformation:ConnectionConfig):RequestHandler {
   const pool = new Pool(databaseInformation);
@@ -22,18 +22,21 @@ function init(databaseInformation:ConnectionConfig):RequestHandler {
         // events to release
         req.on('abort', () => {
           client.release();
+          req.aQuery = null;
         })
         req.on('timeout', () => {
           req.abort();
         })
         res.on('close', () => {
           client.release();
+          req.aQuery = null;
         })
         res.on('finish', function() {
           client.release();
+          req.aQuery = null;
         })
 
-        req.db = new Query(client)
+        req.aQuery = new Query(client)
         next();
       })
       .catch((err) => {
@@ -44,4 +47,4 @@ function init(databaseInformation:ConnectionConfig):RequestHandler {
 }
 
 
-export { init };
+export { init, db };

@@ -88,12 +88,12 @@ function phoneChecker(val) {
     }
 }
 function passwordChecker(val) {
-    var passCheck = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/;
-    if (passCheck.test(val)) {
+    // var passCheck = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/;
+    if ($('#password').hasClass('passing')) {
         return passwordMatcher(val);
     }
     else {
-        return "Password must be at least 8 characters, contain one lowercase letter, one uppercase letter, and a symbol. Try again.";
+        return "Password must be at least 'strong', you credit card may be used in this application!";
     }
 }
 function passwordMatcher(val) {
@@ -198,4 +198,4 @@ $(".userFormItem").keypress(function (e) {
         return false;
     }
 });
-//# sourceMappingURL=formAction.js.map
+//# sourceMappingURL=account-action.js.map

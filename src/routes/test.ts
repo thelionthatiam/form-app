@@ -8,7 +8,7 @@ class BaseRequestHandler {
   req:Express.Request;
   res:Response;
   inputs:any;
-  db:any;
+  aQuery:any;
   nextPage:string;
   errPage:string;
 
@@ -16,13 +16,13 @@ class BaseRequestHandler {
     this.req = req;
     this.res = res;
     this.inputs = req.query;
-    this.db = req.db;
+    this.aQuery = req.aQuery;
     this.nextPage = nextPage;
     this.errPage = errPage;
   }
 
   handler() {
-    this.db.selectUser([this.inputs.email])
+    this.aQuery.selectUser([this.inputs.email])
       .then((result) => {
         let user = new r.UserDB(result.rows[0]);
         return user;
@@ -43,6 +43,7 @@ class BaseRequestHandler {
     return this.res.render(this.errPage, { dbError: error })
   }
 }
+
 
 
 export { router, BaseRequestHandler };
