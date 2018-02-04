@@ -100,4 +100,11 @@ router.route('/:email/password')
       })
   })
 
+  router.route('/:email/settings')
+    .get((req, res) => {
+      res.render(viewPrefix + 'settings', {
+        email:req.session.user.email,
+      })
+    })
+
 module.exports = router;

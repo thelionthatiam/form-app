@@ -4,11 +4,15 @@ body {
 }
 
 div {
-  /*border: .5px solid lightgrey;*/
+/*   border: .5px solid lightgrey; */
 }
 
-h1,h2,h3,h4,h5,h6,p,li,a,button,input {
+h1,h2,h3,h4,h5,h6,p,li,a,button,input,label {
   font-family:"Roboto", sans-serif;
+}
+
+.mini {
+  font-size:10px;
 }
 
 .flex {
@@ -29,9 +33,7 @@ h1,h2,h3,h4,h5,h6,p,li,a,button,input {
 }
 
 .pageWrapper {
-  justify-content:center;
   width:100vw;
-  height:100vh;
 }
 
 .full-page {
@@ -45,7 +47,6 @@ h1,h2,h3,h4,h5,h6,p,li,a,button,input {
   min-width:300px;
   max-width:450px;
   /*height:50vw;*/
-  min-height:500px;
   max-height:700px;
 }
 
@@ -56,6 +57,11 @@ h1,h2,h3,h4,h5,h6,p,li,a,button,input {
 .userFormItem {
   width:100%;
 }
+
+label {
+  font-size:10px;
+}
+
 button {
   border:1px solid grey;
   margin:4px 0 4px 0;
@@ -66,6 +72,13 @@ button {
 
   min-height:20px;
   align-self:flex-end;
+}
+
+.button-titles {
+  align-self:flex-end;
+  margin:0px;
+  padding:0px;
+  margin-bottom:15px;
 }
 
 button:hover {
@@ -143,6 +156,24 @@ input:focus {
 
 input:placeholder-shown {
   color:pink;
+}
+
+textarea {
+  margin:4px;
+  border-top:2px solid black;
+  border-bottom:2px solid black;
+  border-left:0px;
+  border-right:0px;
+  border-radius:2px;
+}
+
+textarea:focus {
+  outline:0;
+}
+
+.input-titles {
+  align-self:flex-start;
+
 }
 
 ::placeholder {
@@ -244,7 +275,16 @@ input:placeholder-shown {
 	width: 100%;
 	background-color:green;
 }
+.hero-img-wrapper {
+  width:100vw;
+}
 
+.hero-img {
+  width:100%;
+}
+.login {
+  border-radius:5px;
+}
 
 
 /*------------------------------PAYMENT QUICK ADD-----------------------------*/
@@ -300,10 +340,38 @@ input:placeholder-shown {
 .shortField {
  width:40px;
 }
+/*------------------------------SEARCH BAR-----------------------------*/
+
+.dropdownSearch {
+	flex-grow:3;
+	margin:5px;
+	padding:3px 0 3px 0;
+}
+
+.dropdownWrapper {
+	margin:5px 5px 15px 5px;
+	max-height:100px;
+	overflow:scroll;
+	border-radius:5px;
+  background-color:black;
+}
+
+.dropdownItem {
+	/*color:white;*/
+	margin-bottom:4px;
+	/*border-bottom:1px solid #2a3030;*/
+  color:floralwhite;
+}
+
+.searchButton {
+	flex-grow:1;
+}
+
 /*------------------------------PRODUCT PAGE-----------------------------*/
 
 .product-wrapper {
 	flex-direction:column;
+	background-color:gray;
 	margin:6vh 0 8vh 0;
 	padding:5px;
 }
@@ -313,9 +381,9 @@ input:placeholder-shown {
   flex-direction:column;
   justify-content: center;
   align-items: center;
-  width:20vw;
+  width:12vw;
   height:auto;
-  max-height:17vw;
+  max-height:10vw;
   overflow:hidden;
 }
 
@@ -329,7 +397,7 @@ input:placeholder-shown {
 	margin-bottom:5px;
 	border-radius:5px;
 	padding:3px;
- 	background-color:darkslategray;
+ 	background-color:black;
 	color:white;
 }
 
@@ -342,9 +410,9 @@ input:placeholder-shown {
 	justify-content:space-between;
 	margin-bottom:10px;
 }
+
 .description-text {
 	font-size:12px;
-	width:50%;
 	max-height:90px;
 	overflow:scroll;
 	border-radius:4px;
@@ -356,7 +424,7 @@ input:placeholder-shown {
 
 .product-action-wrapper {
 	width:100%;
-  flex-direction: row;
+   flex-direction: column;
 	justify-content:flex-end;
 	border-top:1px dotted black;
 	margin-bottom:10px;
@@ -425,6 +493,8 @@ input:focus {
 
 .categoryListWrapper {
   position:relative;
+  background-color: #eaeaea;
+  padding:6px;
 }
 
 .categoryWrapper {

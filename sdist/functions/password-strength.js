@@ -97,9 +97,21 @@ function scorer(password) {
         let symbolOptions = Math.pow(cardinality, password.length);
         let entropy = password.length * (Math.log2(cardinality));
         ;
-        return entropy + " bits of entropy.";
+        return entropy;
     }
 }
+function round(value, precision) {
+    var multiplier = Math.pow(10, precision || 0);
+    return Math.round(value * multiplier) / multiplier;
+}
+function simpleScorer(password) {
+    let cardinality = cardinalityGuess(password);
+    let symbolOptions = Math.pow(cardinality, password.length);
+    let entropy = password.length * (Math.log2(cardinality));
+    ;
+    return round(entropy, 2);
+}
+exports.simpleScorer = simpleScorer;
 // https://www.bennish.net/password-strength-checker/
 // < 28 bits = Very Weak; might keep out family members
 // 28 - 35 bits = Weak; should keep out most people, often good for desktop login passwords

@@ -1,0 +1,59 @@
+<div class="flex pageWrapper center">
+  <div class="flex column userWrapper">
+    <h3 class="formTitle">settings</h3>
+    <p>
+      payment scheme
+    </p>
+    <form class = 'radio' action="" method="post">
+      <div class = 'flex space-around'>
+        <div class = 'flex column center'>
+          <input type="radio"  name="contact" value="email">
+          <label for="contactChoice1">classic</label>
+        </div>
+        <div class = 'flex column center'>
+          <input type="radio"  name="contact" value="phone">
+          <label for="contactChoice2">philanthropy</label>
+        </div>
+      </div>
+      <p class = 'button-titles mini'>
+        <b>classic:</b> choose one organization and the price per snooze and per missed alarm. If you wake up, no money leaves your account.
+      </p>
+      <p class = 'button-titles mini'>
+        <b>altruistic:</b> choose one organization and the price per snooze and per missed alarm. A certain amount goes to your oranization, but if you snooze or dont wake up, the money is diverted to your least favorite organization.
+      </p>
+      <button class="yes" type="submit">upadate scheme</button>
+
+    </form>
+    <p>
+      maximum amount
+    </p>
+    <form action="" method="post">
+      <input type = 'text' value = "20"/>
+      <button class = "yes" type="submit">set limit</button>
+    </form>
+    <p>
+      price per snooze
+    </p>
+    <form action="" method="post">
+      <input type = 'text' value = "20"/>
+      <button class = "yes" type="submit">set snooze price</button>
+      <p class = 'button-titles mini'>
+        Classic: everytime you snooze, this amount will leave your account and go to the organization of choice
+      </p>
+    </form>
+    <p>
+      price per dismiss
+    </p>
+    <form action="" method="post">
+      <input type = 'text' value = "20"/>
+      <button class = "yes" type="submit">set dismiss price</button>
+      <p class = 'button-titles mini'>
+        Classic: everytime you dismiss an alarm, this amount will leave your account and go to the organization of choice
+      </p>
+    </form>
+    <form action="/accounts/{{email}}" method="get">
+      <button class="no" type="submit">my account</button>
+    </form>
+  </div>
+</div>
+{{!-- <script src="/behavior/genericChangeForm.js"></script> --}}

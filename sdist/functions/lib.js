@@ -15,18 +15,6 @@ function logout(req, res, thisPage, param = "Welcome back!") {
     });
 }
 exports.logout = logout;
-function sendMail(mailOptions, transporter, cb) {
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            cb(error);
-        }
-        else {
-            console.log('Email sent: ' + info.response);
-            cb(null, info);
-        }
-    });
-}
-exports.sendMail = sendMail;
 function sessionValid(token, outputs, cb) {
     console.log('sessionValid');
     var nonce = outputs.nonce;

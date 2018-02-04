@@ -1,31 +1,42 @@
-// import { Pool } from 'pg';
-// import { Query } from '../functions/queries';
-// import { ConnectionConfig } from '../../node_modules/@types/pg/index'; // pg types
-// import { ModRequest } from '../../typings/typings';
-// import { RequestHandler } from '../../node_modules/@types/express-serve-static-core/index'
-// import * as express from "express";
-//
-// function init(databaseInformation:ConnectionConfig):RequestHandler {
-//   const pool = new Pool(databaseInformation);
-//
-//   return function(req, res, next) { // extend express Request
-//     pool.connect((err, client, release) => {
-//       req.conn = client;
-//       req.querySvc = new Query(req.conn);
-//       next();
-//       if (err) {
-//         return console.error('Error acquiring client', err.stack);
-//       }
-//       client.query('SELECT NOW()', (err, result) => {
-//         release();
-//
-//         if (err) {
-//           return console.error('Error executing query', err.stack);
-//         }
-//       });
-//     });
-//   };
-// }
-//
-// export { init };
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const pg_1 = require("pg");
+const combiner_1 = require("../config/combiner");
+const queries_1 = require("../functions/queries");
+const pool = new pg_1.Pool(combiner_1.dbConfig);
+let db = {
+    query: (text, params) => pool.query(text, params)
+};
+exports.db = db;
+function init(databaseInformation) {
+    const pool = new pg_1.Pool(databaseInformation);
+    return (req, res, next) => {
+        let client;
+        pool.connect()
+            .then((client) => {
+            // events to release
+            req.on('abort', () => {
+                client.release();
+                req.aQuery = null;
+            });
+            req.on('timeout', () => {
+                req.abort();
+            });
+            res.on('close', () => {
+                client.release();
+                req.aQuery = null;
+            });
+            res.on('finish', function () {
+                client.release();
+                req.aQuery = null;
+            });
+            req.aQuery = new queries_1.Query(client);
+            next();
+        })
+            .catch((err) => {
+            client.release();
+            return console.error('Error executing query', err.stack);
+        });
+    };
+}
 //# sourceMappingURL=database.js.map

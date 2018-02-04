@@ -1,4 +1,4 @@
-<div class="flex pageWrapper">
+<div class='flex column pageWrapper center'>
   <div class="flex column userWrapper">
 
 
@@ -13,12 +13,11 @@
 
 
     {{ else }}
-      <h1>A Budding Alarm App</h1>
-      <p class="noMarginsPadding">things will be more RESTful soon, promise ;)</p>
-      <br />
-      <br />
-      <br />
-      <h3 class="formTitle"> login </h3>
+      <h1>Snooze you Lose</h1>
+      <p class="noMarginsPadding">or how sleeping in really hurts your bottom line</p>
+   </div>
+
+    <div class="flex column userWrapper login">
       <form action="/authorized" method="post">
         <p>email</p>
         <input id="email" name="email" class="userFormItem" type="text" placeholder="email" value="b@b.bb" />
@@ -32,13 +31,14 @@
       </form>
 
 
-      <form action="/test-route" method="get">
+      {{!-- <form action="/test-route" method="get">
         <p>test space</p>
         <input id="email" name="email" class="userFormItem" type="text" placeholder="email" value="b@b.bb" />
         <p class="formErrorReport" id="emailError"></p>
 
         <button id="formSubmitter" class="unavailable submit" type="submit"> test </button>
-      </form>
+      </form> --}}
+
 
 
       <form action="/new-account" method="get">
@@ -47,6 +47,9 @@
       <form action="/forgot-password" method="get">
         <button class="no" type="submit">forgot password</button>
       </form>
+      <form method='get' action='/splash' >
+        <button type='submit' class='no'>splash page</button>
+      </form>
     {{/if }}
 
     <p class="noMarginsPassing preInputMimic">{{ message }}</p>
@@ -54,4 +57,5 @@
   </div>
 
 </div>
+
 {{!-- <script src="/behavior/login-action.js"></script> --}}

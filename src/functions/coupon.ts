@@ -1,5 +1,4 @@
-import { ModResponse } from '../../typings/typings';
-import { db } from '../middleware/async-database';
+import { db } from '../middleware/database';
 
 
 function percentOff(percent:number, price:number) {

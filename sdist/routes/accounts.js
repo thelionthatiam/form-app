@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
-const help = require("../functions/promise-helpers");
+const helper = require("../functions/helpers");
 const bcrypt = require("bcrypt");
-const async_database_1 = require("../middleware/async-database");
+const database_1 = require("../middleware/database");
 const router = express.Router();
 //to sign up page
 router.get('/new-account', function (req, res, next) {
@@ -23,32 +23,31 @@ router.route('/accounts')
         uuid: '',
         nonce: ''
     };
-    console.log('POST account');
     bcrypt.hash(inputs.password, 10)
         .then((hash) => {
         inputs.password = hash;
         let query = 'INSERT INTO users(email, phone, password) VALUES($1, $2, $3) RETURNING *';
         let input = [inputs.email, inputs.phone, inputs.password];
-        return async_database_1.db.query(query, input);
+        return database_1.db.query(query, input);
     })
         .then((result) => {
         inputs.uuid = result.rows[0].user_uuid;
-        return help.randomString;
+        return helper.randomString;
     })
         .then((string) => {
         return bcrypt.hash(string, 10);
     })
         .then((hash) => {
         inputs.nonce = hash;
-        return async_database_1.db.query('INSERT INTO nonce(user_uuid, nonce) VALUES ($1, $2) RETURNING *', [inputs.uuid, inputs.nonce]);
+        return database_1.db.query('INSERT INTO nonce(user_uuid, nonce) VALUES ($1, $2) RETURNING *', [inputs.uuid, inputs.nonce]);
     })
         .then((result) => {
         let query = 'INSERT INTO session (user_uuid, sessionID) VALUES ($1, $2)';
         let input = [inputs.uuid, req.sessionID];
-        return async_database_1.db.query(query, input);
+        return database_1.db.query(query, input);
     })
         .then((result) => {
-        return async_database_1.db.query('INSERT INTO cart (user_uuid) VALUES ($1) RETURNING *', [inputs.uuid]);
+        return database_1.db.query('INSERT INTO cart (user_uuid) VALUES ($1) RETURNING *', [inputs.uuid]);
     })
         .then((result) => {
         console.log(result.rows);

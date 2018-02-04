@@ -8,7 +8,6 @@ const router = express.Router();
 
 
 function check(req:Express.Request, res:ModResponse, next:Function) {
-  console.log('sessionCheck')
   if (req.session.user && req.sessionID) {
     db.query('SELECT sessionID FROM session WHERE user_uuid = $1', [req.session.user.uuid])
       .then((result) => {
@@ -20,7 +19,6 @@ function check(req:Express.Request, res:ModResponse, next:Function) {
       })
       .then((result) => {
         if (result.rows[0].permission === 'admin') {
-          console.log('admin approved')
           next();
         } else if (result.rows[0].permission === 'user') {
           next();
@@ -39,7 +37,6 @@ function check(req:Express.Request, res:ModResponse, next:Function) {
 }
 
 function adminCheck(req:Express.Request, res:ModResponse, next:Function) {
-  console.log('ADMIN sessionCheck')
   if (req.session.user && req.sessionID && req.session.user.permission === 'admin') {
     db.query('SELECT sessionID FROM session WHERE user_uuid = $1', [req.session.user.uuid])
       .then((result) => {

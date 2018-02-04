@@ -1,0 +1,38 @@
+
+<div class="full-page">
+  <h1>Organizations</h1>
+  <p>
+     This is where you can select which organizations you would like to support, and which organizations you'd rather not.
+  </p>
+  <div class="column searchWrapper">
+    <form action='/search-test' method="post">
+    <div class="row">
+        <input id="search" name="search" class="userFormItem dropdownSearch" type="text" placeholder="search for an organization"/>
+        <button class="searchButton" type="submit">go</button>
+    </div>
+    <div class="dropdownWrapper none">
+      <ul class="dropdownList"></ul>
+    </div>
+    </form>
+    <p>
+      {{error}}
+    </p>
+  </div>
+  <div class= "categoryListWrapper">
+    {{#each organizationsContent}}
+      {{> organizationsdiv}}
+    {{/each}}
+  </div>
+  <p class="formErrorReport">{{ dbError }}</p>
+  <div class= 'flex column'>
+    <form action="/accounts/{{email}}/cart" method="get">
+      <button class="yes" type="submit">my organizations</button>
+    </form>
+    <form action="/home" method="get">
+      <button class="no" type="submit">back</button>
+    </form>
+
+  </div>
+</div>
+{{!-- <script src="/behavior/.js"></script> --}}
+<script src="/behavior/search-bar.js"></script>

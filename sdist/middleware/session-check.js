@@ -5,7 +5,6 @@ const async_database_1 = require("../middleware/async-database");
 const express = require("express");
 const router = express.Router();
 function check(req, res, next) {
-    console.log('sessionCheck');
     if (req.session.user && req.sessionID) {
         async_database_1.db.query('SELECT sessionID FROM session WHERE user_uuid = $1', [req.session.user.uuid])
             .then((result) => {
@@ -18,7 +17,6 @@ function check(req, res, next) {
         })
             .then((result) => {
             if (result.rows[0].permission === 'admin') {
-                console.log('admin approved');
                 next();
             }
             else if (result.rows[0].permission === 'user') {
@@ -39,7 +37,6 @@ function check(req, res, next) {
 }
 exports.check = check;
 function adminCheck(req, res, next) {
-    console.log('ADMIN sessionCheck');
     if (req.session.user && req.sessionID && req.session.user.permission === 'admin') {
         async_database_1.db.query('SELECT sessionID FROM session WHERE user_uuid = $1', [req.session.user.uuid])
             .then((result) => {

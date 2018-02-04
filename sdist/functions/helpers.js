@@ -1,7 +1,31 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const bcrypt = require("bcrypt");
-// expand to include bcrypt?
+const merge = require("./merge");
+// REMOVE OR REWORK THESE FUNCTIONS---------------------------------
+// want to remove req, but session.regenerate doesn't return promise
+function regenerateSession(req) {
+    return new Promise((resolve, reject) => {
+        req.session.regenerate(function (err) {
+            if (err)
+                reject(err);
+            else
+                resolve();
+        });
+    });
+}
+exports.regenerateSession = regenerateSession;
+// these error functions will be removed entirely with new structure, no res being passed in
+// could latch on to the error event
+function dbError(res, thisPage, err) {
+    res.render(thisPage, { dbError: dbErrTranslator(err) });
+}
+exports.dbError = dbError;
+function genError(res, thisPage, param) {
+    res.render(thisPage, { dbError: param });
+}
+exports.genError = genError;
+// REMOVE OR REWORK THESE FUNCTIONS---------------------------------
+// BUSINESS LOGIC TIER
 function dbErrTranslator(error) {
     let emailChecker = /(email)/g, phoneChecker = /(phone)/g, keyChecker = /(key)/g, checkChecker = /(check)/g, passChecker = /(password)/g, lengthChecker = /(value too long)/g, alarms = /(alarms)/g, awake = /(awake)/g, title = /(title)/g;
     if (emailChecker.test(error)) {
@@ -40,67 +64,6 @@ function dbErrTranslator(error) {
     }
 }
 exports.dbErrTranslator = dbErrTranslator;
-function hash(string, cb) {
-    bcrypt.hash(string, 10, function (err, hash) {
-        if (err) {
-            cb(err);
-        }
-        else {
-            cb(null, hash);
-        }
-    });
-}
-exports.hash = hash;
-function passChecker(string) {
-    let passCheck = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/;
-    if (passCheck.test(string) === true) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-exports.passChecker = passChecker;
-function passHash(string, cb) {
-    let err = "";
-    if (passChecker(string)) {
-        return hash(string, cb);
-    }
-    else {
-        err = "Password must be at least 8 characters, contain two uppercase letters, three lower case letters, one of these '!@#$&*', and two digits. Try again.";
-        cb(err);
-    }
-}
-exports.passHash = passHash;
-function hashCheck(string, hash, cb) {
-    bcrypt.compare(string, hash, function (err, result) {
-        if (err) {
-            cb(err);
-        }
-        else {
-            cb(null, result);
-        }
-    });
-}
-exports.hashCheck = hashCheck;
-function makeHashedString(cb) {
-    console.log('makeHashedString');
-    let string = "";
-    let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=`,.<>/?;:'{}[]|";
-    for (let i = 0; i <= 40; i++) {
-        string += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    hash(string, cb);
-}
-exports.makeHashedString = makeHashedString;
-function dbError(res, thisPage, err) {
-    res.render(thisPage, { dbError: dbErrTranslator(err) });
-}
-exports.dbError = dbError;
-function genError(res, thisPage, param) {
-    res.render(thisPage, { dbError: param });
-}
-exports.genError = genError;
 function compare(a, b) {
     const awakeA = parseInt(a.awake);
     const awakeB = parseInt(b.awake);
@@ -114,4 +77,61 @@ function compare(a, b) {
     return comp;
 }
 exports.compare = compare;
+let randomString = new Promise((resolve, reject) => {
+    let string = "";
+    let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+-=`,.<>/?;:'{}[]|";
+    for (let i = 0; i <= 40; i++) {
+        string += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    if (typeof string === "undefined") {
+        reject("randomString failed to create anything ");
+    }
+    resolve(string);
+});
+exports.randomString = randomString;
+let isSessionValid = (token, outputs) => {
+    return new Promise((resolve, reject) => {
+        let nonce = outputs.nonce, oldDate = new Date(outputs.thetime), oldTime = oldDate.getTime(), currentDate = new Date(), currentTime = currentDate.getTime();
+        if (token === nonce && currentTime < oldTime + 120000) {
+            resolve(true);
+        }
+        else {
+            let failure = new Error('Token has expired, please try again.');
+            reject(failure);
+        }
+    });
+};
+exports.isSessionValid = isSessionValid;
+let merger = (objectOne, objectTwo) => {
+    return new Promise((resolve, reject) => {
+        let ans = merge.deepMerge(objectOne, objectTwo);
+        if (ans === 'circular object') {
+            let failure = new Error('Circular object');
+            reject(failure);
+        }
+        else {
+            resolve(ans);
+        }
+    });
+};
+exports.merger = merger;
+function lastFourOnly(cardNumber) {
+    let arr = [];
+    cardNumber = cardNumber.split('');
+    for (let i = cardNumber.length; arr.length < 5; i--) {
+        arr.push(cardNumber[i]);
+    }
+    arr.reverse();
+    return arr.join('');
+}
+exports.lastFourOnly = lastFourOnly;
+// COULD GENERALIZE THIS FUNCTION: ADD KEY/VALUE(S) PAIR TO OBJCT
+function addOrderUUIDItemNumber(queryResult, order_uuid) {
+    for (let i = 0; i < queryResult.length; i++) {
+        queryResult[i].order_uuid = order_uuid;
+        queryResult[i].item_number = i + 1;
+    }
+    return queryResult;
+}
+exports.addOrderUUIDItemNumber = addOrderUUIDItemNumber;
 //# sourceMappingURL=helpers.js.map

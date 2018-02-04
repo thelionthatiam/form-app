@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
-const async_database_1 = require("../../middleware/async-database");
+const database_1 = require("../../middleware/database");
 const router = express.Router();
 //////////////
 ////////////// SHOW/CREATE USERS
@@ -20,11 +20,11 @@ router.route('/accounts')
     else {
         permission = false;
     }
-    async_database_1.db.query("SELECT * FROM users", [])
+    database_1.db.query("SELECT * FROM users", [])
         .then((result) => {
         accountContent = result.rows;
         for (let i = 0; i < accountContent.length; i++) {
-            alarmArray.push(async_database_1.db.query('SELECT * FROM alarms WHERE user_uuid = $1', [accountContent[i].user_uuid]));
+            alarmArray.push(database_1.db.query('SELECT * FROM alarms WHERE user_uuid = $1', [accountContent[i].user_uuid]));
         }
         return Promise.all(alarmArray);
     })
@@ -36,7 +36,7 @@ router.route('/accounts')
             }
         }
         for (let i = 0; i < accountContent.length; i++) {
-            paymentArray.push(async_database_1.db.query('SELECT * FROM payment_credit WHERE user_uuid = $1', [accountContent[i].user_uuid]));
+            paymentArray.push(database_1.db.query('SELECT * FROM payment_credit WHERE user_uuid = $1', [accountContent[i].user_uuid]));
         }
         return Promise.all(paymentArray);
     })
@@ -65,7 +65,7 @@ router.route('/accounts/:user_uuid')
     let user_uuid = req.body.user_uuid;
     let query = 'DELETE FROM users WHERE user_uuid = $1';
     let input = [user_uuid];
-    async_database_1.db.query(query, input)
+    database_1.db.query(query, input)
         .then((result) => {
         res;
     })
@@ -81,7 +81,7 @@ router.route('/accounts/:user_uuid/contact')
     .get((req, res) => {
     let user_uuid = req.query.user_uuid;
     let permission = false;
-    async_database_1.db.query("SELECT * FROM users WHERE user_uuid = $1", [user_uuid])
+    database_1.db.query("SELECT * FROM users WHERE user_uuid = $1", [user_uuid])
         .then((result) => {
         let user = result.rows[0];
         if (req.session.user.permission === 'admin') {
@@ -106,7 +106,7 @@ router.route('/accounts/:user_uuid/contact')
     let email = req.body.a, phone = req.body.phone, user_uuid = req.body.user_uuid;
     let query = 'UPDATE users SET (email, phone) = ($1, $2) WHERE user_uuid = $3';
     let input = [email, phone, user_uuid];
-    async_database_1.db.query(query, input)
+    database_1.db.query(query, input)
         .then((result) => {
         res.redirect('/admin/accounts');
     })
@@ -117,7 +117,7 @@ router.route('/accounts/:user_uuid/contact')
 })
     .delete((req, res) => {
     let user_uuid = req.body.user_uuid;
-    async_database_1.db.query('DELETE FROM users WHERE user_uuid = $1', [user_uuid])
+    database_1.db.query('DELETE FROM users WHERE user_uuid = $1', [user_uuid])
         .then((result) => {
         res.redirect('/admin/accounts');
     })
@@ -137,7 +137,7 @@ router.route('/accounts/:user_uuid/alarms/:alarm_uuid')
     let permission = false;
     let alarm;
     console.log(user_uuid, alarm_uuid, permission);
-    async_database_1.db.query("SELECT * FROM alarms WHERE user_uuid = $1 AND alarm_uuid = $2", [user_uuid, alarm_uuid])
+    database_1.db.query("SELECT * FROM alarms WHERE user_uuid = $1 AND alarm_uuid = $2", [user_uuid, alarm_uuid])
         .then((result) => {
         alarm = result.rows[0];
         console.log(alarm);
@@ -169,7 +169,7 @@ router.route('/accounts/:user_uuid/alarms/:alarm_uuid')
     let active = req.body.active;
     let query = 'UPDATE alarms SET (title, awake, active) = ($1, $2, $3) WHERE user_uuid = $4 AND alarm_uuid = $5';
     let input = [title, awake, active, user_uuid, alarm_uuid];
-    async_database_1.db.query(query, input)
+    database_1.db.query(query, input)
         .then((result) => {
         res.redirect('/admin/accounts');
     })
@@ -181,7 +181,7 @@ router.route('/accounts/:user_uuid/alarms/:alarm_uuid')
     .delete((req, res) => {
     let user_uuid = req.body.user_uuid;
     let alarm_uuid = req.body.alarm_uuid;
-    async_database_1.db.query('DELETE FROM alarms WHERE user_uuid = $1 AND alarm_uuid =$2', [user_uuid, alarm_uuid])
+    database_1.db.query('DELETE FROM alarms WHERE user_uuid = $1 AND alarm_uuid =$2', [user_uuid, alarm_uuid])
         .then((result) => {
         res.redirect('/admin/accounts');
     })
@@ -200,7 +200,7 @@ router.route('/accounts/:user_uuid/payment/:card_number')
     let permission = false;
     let payment;
     console.log(user_uuid, card_number, permission);
-    async_database_1.db.query("SELECT * FROM payment_credit WHERE user_uuid = $1 AND card_number = $2", [user_uuid, card_number])
+    database_1.db.query("SELECT * FROM payment_credit WHERE user_uuid = $1 AND card_number = $2", [user_uuid, card_number])
         .then((result) => {
         payment = result.rows[0];
         console.log(payment);
@@ -245,7 +245,7 @@ router.route('/accounts/:user_uuid/payment/:card_number')
     let user_uuid = req.body.user_uuid;
     let query = 'UPDATE payment_credit SET (card_number, name, exp_month, exp_date, cvv, address_1, city, state, zip) = ($1, $2, $3, $4, $5, $6, $7, $8, $9) WHERE user_uuid = $10 AND card_number = $11';
     let input = [inputs.cardNumber, inputs.name, inputs.expMonth, inputs.expDay, inputs.cvv, inputs.address, inputs.city, inputs.state, inputs.zip, user_uuid, oldCard];
-    async_database_1.db.query(query, input)
+    database_1.db.query(query, input)
         .then((result) => {
         res.redirect('/admin/accounts');
     })
@@ -259,7 +259,7 @@ router.route('/accounts/:user_uuid/payment/:card_number')
     let card_number = req.body.card_number;
     let query = 'DELETE FROM payment_credit WHERE user_uuid = $1 AND card_number =$2';
     let input = [req.session.user.uuid, card_number];
-    async_database_1.db.query(query, input)
+    database_1.db.query(query, input)
         .then((result) => {
         res.redirect('/admin/accounts');
     })

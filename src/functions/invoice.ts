@@ -1,5 +1,5 @@
-import { lastFourOnly, queryVariables, inputs, concatQuery, addOrderUUIDItemNumber, stringifyQueryOutput } from './promise-helpers';
-import { percentOff } from './coupon-helpers';
+import { lastFourOnly, addOrderUUIDItemNumber } from './helpers';
+import { percentOff } from './coupon';
 
 
 let test:any = [];
@@ -24,10 +24,8 @@ function invoiceItems(result:any[]) {
       quantity: quantity,
       name: name
     }
-
     invoiceItems.push(obj);
   }
-
   return invoiceItems;
 }
 
@@ -39,27 +37,6 @@ function total(invoiceItems:InvoiceItem[]) {
 
   return total;
 }
-
-let flan = [ {
-    product_id: 'NRA0-S-GUNS-4233',
-    name: 'National Rifle Association',
-    price: '2.00',
-    size: 's',
-    description: 'Advocates for gun-owners rights in America.',
-    quantity: '1',
-    discount: 0,
-    email: 'b@b.bb'
-  },
- {
-    product_id: 'PPH0-S-FEM0-5783',
-    name: 'Planned Parenthood',
-    price: '2.00',
-    size: 's',
-    description: 'Advocates for womens rights in America.',
-    quantity: '25',
-    discount: 0,
-    email: 'b@b.bb' } ]
-
 
 function addDiscount(recieptContent:any[]) {
   for (let i = 0; i < recieptContent.length; i++) {
@@ -87,5 +64,27 @@ function totalItems(recieptContent:any[]){
   }
   return totalQuantity
 }
+
+// DUMMY DATA
+
+// let flan = [ {
+//     product_id: 'NRA0-S-GUNS-4233',
+//     name: 'National Rifle Association',
+//     price: '2.00',
+//     size: 's',
+//     description: 'Advocates for gun-owners rights in America.',
+//     quantity: '1',
+//     discount: 0,
+//     email: 'b@b.bb'
+//   },
+//    {
+//       product_id: 'PPH0-S-FEM0-5783',
+//       name: 'Planned Parenthood',
+//       price: '2.00',
+//       size: 's',
+//       description: 'Advocates for womens rights in America.',
+//       quantity: '25',
+//       discount: 0,
+//       email: 'b@b.bb' } ]
 
 export {invoiceItems, total, addDiscount, addEmail, totalItems};

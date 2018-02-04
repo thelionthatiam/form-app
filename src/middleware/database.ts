@@ -6,7 +6,6 @@ import { Query } from '../functions/queries'
 import * as express from "express";
 
 const pool = new Pool(dbConfig);
-
 let db = {
   query: (text:string, params:any[]) => pool.query(text, params)
 }
@@ -47,4 +46,4 @@ function init(databaseInformation:ConnectionConfig):RequestHandler {
 }
 
 
-export { init, db };
+export { db };

@@ -1,8 +1,8 @@
-import { lastFourOnly, queryVariables, inputs, concatQuery, addOrderUUIDItemNumber, stringifyQueryOutput } from '../functions/promise-helpers';
-import * as coupons from '../functions/coupon-helpers'
+import { lastFourOnly, addOrderUUIDItemNumber } from '../functions/helpers';
+import * as coupons from '../functions/coupon'
 import * as inv from '../functions/invoice';
 import * as express from 'express';
-import { db } from '../middleware/async-database';
+import { db } from '../middleware/database';
 import * as mailer from '../middleware/emailer'
 const router = express.Router();
 
@@ -39,16 +39,26 @@ router.route('/orders')
       })
       .then((result) => {
         order_uuid = result.rows[0].order_uuid;
-        console.log('order uuid', order_uuid)
         return db.query('SELECT product_id, quantity, product_history_id, discount FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid])
       })
       .then((result) => {
         discount = result.rows[0].discount
         let cart_items = addOrderUUIDItemNumber(result.rows, order_uuid);
-        let sqlVariables = queryVariables(cart_items);
-        let values = inputs(cart_items);
-        let query = concatQuery(sqlVariables);
-        return db.query(query, values);
+        let query = 'INSERT INTO order_items (product_id, quantity, product_history_id, discount, order_uuid, item_number) VALUES ($1, $2, $3, $4, $5, $6)'
+        let itemArray:any[] = [];
+        for (let i = 0; i < cart_items.length; i++) {
+          let itemProperties:any[] = [
+            cart_items[i].product_id,
+            cart_items[i].quantity,
+            cart_items[i].product_history_id,
+            cart_items[i].discount,
+            cart_items[i].order_uuid,
+            cart_items[i].item_number
+          ]
+          itemArray.push(db.query(query, itemProperties))
+        }
+        return Promise.all(itemArray);
+
       })
       .then((result) => {
         return db.query('DELETE FROM cart_items WHERE cart_uuid = $1', [req.session.user.cart_uuid])
@@ -63,8 +73,6 @@ router.route('/orders')
         let totalQuantity =  inv.totalItems(recieptContent)
         recieptContent = inv.addDiscount(recieptContent);
         recieptContent = inv.addEmail(recieptContent, req.session.user.email);
-
-        let items = stringifyQueryOutput(inv.invoiceItems(result.rows));
         let total = coupons.percentOff(discount, inv.total(inv.invoiceItems(result.rows))).toString();
 
         let  mail = {
@@ -84,7 +92,6 @@ router.route('/orders')
         return req.transporter.sendMail(mail)
       })
       .then((info) => {
-        console.log(info);
         return db.query('UPDATE cart_coupons SET used = $1', [true])
       })
       .then((result) => {

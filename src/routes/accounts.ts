@@ -1,10 +1,9 @@
 import * as express from 'express';
-import * as help from '../functions/promise-helpers';
 import * as helper from '../functions/helpers';
 import * as bcrypt from 'bcrypt';
 import * as url from 'url';
 import { Inputs, PGOutput } from '../../typings/typings';
-import { db } from '../middleware/async-database';
+import { db } from '../middleware/database';
 const router = express.Router();
 
 //to sign up page
@@ -22,7 +21,6 @@ router.post('/delete', function (req, res, next) {
 
 router.route('/accounts')
   .post((req,res) => {
-
     let inputs = {
       email: req.body.email,
       phone: req.body.phone,
@@ -30,7 +28,7 @@ router.route('/accounts')
       uuid:'',
       nonce:''
     };
-    console.log('POST account')
+
     bcrypt.hash(inputs.password, 10)
       .then((hash) => {
         inputs.password = hash;
@@ -41,7 +39,7 @@ router.route('/accounts')
       .then((result) => {
         inputs.uuid = result.rows[0].user_uuid;
 
-        return help.randomString;
+        return helper.randomString;
       })
       .then((string) => {
         return bcrypt.hash(string, 10)

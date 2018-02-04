@@ -1,22 +1,38 @@
-<div class="flex pageWrapper">
+<div class="flex pageWrapper center">
   <div class="flex column userWrapper">
-    <h3 class="formTitle">manage your account information</h3>
-    <p class="formTitle"><b>email: </b>{{ email }}</p>
-    <p>{{ title }}</p>
+    <h3 class="formTitle">manage account</h3>
+    <form action="/accounts/{{email}}/settings" method="get">
+      <button class="yes" type="submit">settings</button>
+      <p class = 'button-titles mini'>
+        choose how how your alarms will wake you up.
+      </p>
+    </form>
     <form action="/accounts/{{email}}/contact" method="get">
-      <button class="yes" type="submit">change contact information</button>
+      <button class="yes" type="submit">contact information</button>
+      <p class = 'button-titles mini'>
+        Update your contact information
+      </p>
     </form>
     <form action="/accounts/{{email}}/password" method="get">
-      <button class="yes"> change password </button>
+      <button class="yes"> security </button>
+      <p class = 'button-titles mini'>
+        Change your password
+      </p>
     </form>
     <form action="/accounts/{{email}}/payment" method="get">
-      <button class="yes" type="submit">manage payment information</button>
+      <button class="yes" type="submit">payment information</button>
+      <p class = 'button-titles mini'>
+        Add, update, and delet payment information. Set defaults.
+      </p>
     </form>
     <form action="/accounts/{{email}}?_method=DELETE" method="post">
-      <button class="no" type="submit"> delete account </button>
+      <button class="no" type="submit"> delete </button>
+      <p class = 'button-titles mini'>
+        Delete your account, this cannot be undone.
+      </p>
     </form>
     <form action="/home" method="get">
-      <button class="no" type="submit">back</button>
+      <button class="no" type="submit">home</button>
     </form>
   </div>
 </div>

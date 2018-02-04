@@ -1,23 +1,53 @@
 <div class="full-page">
-  <h1>Yo</h1>
-  <h4>Form submitted successfully, you are now logged in as {{ email }}</h4>
-  <p>
-    You are now in the body of the app!
-  </p>
+  <h1>Home</h1>
+  <h3>Welcome, {{ email }}.</h3>
+  <div>
+    <p>
+      <b>about</b>
+    </p>
+    <p class = 'mini'>
+      You can manage everything from your alarms, to your donations to your pricing here. Please don't hesitate to use the contact with any questions, concerns or refunds.
+    </p>
+  </div>
   <form action="/accounts/{{email}}/alarms" method="get">
-    <button class="yes">alarms</button>
+    <button class="yes">my alarms</button>
+    <p class = 'button-titles mini'>
+      Add, update and delete your alarms
+    </p>
   </form>
   <form action="/products">
-    <button class="yes">shopping center</button>
+    <button class="yes">donation center</button>
+    <p class = 'button-titles mini'>
+      Choose which organization you will donate to, and how much
+    </p>
   </form>
   <form action="/accounts/{{email}}/cart" method="get">
-    <button class="yes" type="submit">my cart</button>
+    <button class="yes" type="submit">current donations</button>
+    <p class = 'button-titles mini'>
+      Quick way to see where your money is going
+    </p>
   </form>
   <form action="/accounts/{{email}}" method="get">
     <button class="yes">my account</button>
+    <p class = 'button-titles mini'>
+      Contact information, credit card numbers, passwords and more
+    </p>
+  </form>
+  <form action="/contact" method="get">
+    <button class="yes">contact</button>
+    <p class = 'button-titles mini'>
+      Get your questions answered -- fast.
+    </p>
   </form>
   <form action="/log-out" method='post'>
     <button class="no">sign out</button>
   </form>
 
+
+  <form action="/accounts/{{email}}/cart" method="get">
+    <button class="yes" type="submit">cart</button>
+    <p class = 'button-titles mini'>
+      This is the old cart, which may be a useful system in the future
+    </p>
+  </form>
 </div>

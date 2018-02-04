@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const helpers_1 = require("../functions/helpers");
 const express = require("express");
-const async_database_1 = require("../middleware/async-database");
+const database_1 = require("../middleware/database");
 const router = express.Router();
 let viewPrefix = 'shopping/';
 router.route('/products')
@@ -11,8 +11,7 @@ router.route('/products')
 })
     .get((req, res) => {
     let email = req.session.user.email;
-    console.log('GET products');
-    async_database_1.db.query('SELECT * FROM products', [])
+    database_1.db.query('SELECT * FROM products', [])
         .then((result) => {
         let productContent = result.rows;
         for (let i = 0; i < productContent.length; i++) {

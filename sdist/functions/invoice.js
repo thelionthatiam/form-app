@@ -26,26 +26,6 @@ function total(invoiceItems) {
     return total;
 }
 exports.total = total;
-let flan = [{
-        product_id: 'NRA0-S-GUNS-4233',
-        name: 'National Rifle Association',
-        price: '2.00',
-        size: 's',
-        description: 'Advocates for gun-owners rights in America.',
-        quantity: '1',
-        discount: 0,
-        email: 'b@b.bb'
-    },
-    {
-        product_id: 'PPH0-S-FEM0-5783',
-        name: 'Planned Parenthood',
-        price: '2.00',
-        size: 's',
-        description: 'Advocates for womens rights in America.',
-        quantity: '25',
-        discount: 0,
-        email: 'b@b.bb'
-    }];
 function addDiscount(recieptContent) {
     for (let i = 0; i < recieptContent.length; i++) {
         if (recieptContent[i].discount === 0) {
