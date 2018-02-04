@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const isUUID = require("is-uuid");
 const password_strength_1 = require("../functions/password-strength");
+// ADDITIONAL VALIDATION
 // credit card
 // timestamp?
 // sessionid

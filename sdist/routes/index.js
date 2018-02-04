@@ -16,7 +16,7 @@ router.use('/admin', require('./admin/accounts'));
 router.use('/accounts', require('./account'));
 router.use('/accounts/:email', require('./payment'));
 router.use('/accounts/:email', require('./alarms'));
-router.use('/accounts/:email', require('./donations'));
+router.use('/accounts/:email', require('./donation'));
 router.use('/accounts/:email', require('./cart'));
 router.use('/accounts/:email', require('./coupons'));
 router.use('/accounts/:email', require('./orders'));

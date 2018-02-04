@@ -17,7 +17,7 @@ CREATE TRIGGER user_settings_update_timestamp
 CREATE TABLE orgs (
   id BIGSERIAL PRIMARY KEY NOT NULL,
   org_uuid UUID UNIQUE NOT NULL default uuid_generate_v4(),
-  org_sku varchar(20) UNIQUE NOT NULL CHECK (product_id ~ '([A-Z\d]{4})-([A-Z]{1})-([A-Z\d]{4})-([\d]{4})'),
+  org_sku varchar(20) UNIQUE NOT NULL CHECK (org_sku ~ '([A-Z\d]{4})-([A-Z]{1})-([A-Z\d]{4})-([\d]{4})'),
   name varchar(100) NOT NULL UNIQUE CHECK (name ~ '^[A-Za-z\d ]{1,30}$'),
   description varchar(100) NOT NULL CHECK (description ~ '^[A-Za-z\d ]{1,99}$'),
   cause varchar(50) NOT NULL CHECK (cause ~ '^[A-Za-z\d ]{1,30}$'),
@@ -34,7 +34,7 @@ CREATE TABLE user_orgs (
   id BIGSERIAL PRIMARY KEY NOT NULL,
   user_uuid UUID NOT NULL REFERENCES users(user_uuid),
   org_uuid UUID NOT NULL REFERENCES orgs(org_uuid),
-  active NOT NULL boolean default FALSE,
+  active boolean default FALSE,
   create_timestamp timestamptz NOT NULL DEFAULT now(),
   updated_timestamp timestamptz NOT NULL DEFAULT now()
 );

@@ -1,10 +1,11 @@
 import * as isUUID from 'is-uuid';
 import { simpleScorer } from '../functions/password-strength'
 
-
+// ADDITIONAL VALIDATION
 // credit card
 // timestamp?
 // sessionid
+
 class UserException {
   message:string;
   name:string;
