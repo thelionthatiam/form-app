@@ -16,19 +16,65 @@ class UserException {
   }
 }
 
+interface ValidationResult {
+  readonly isOkay : boolean;
+}
 
+class ValidationError extends Error implements ValidationResult {
+  readonly name: string;
+  constructor(name: string, message: string) {
+    super(message);
+    Error.captureStackTrace(this); // will creae a stack trace.
+    this.name = name;
+  }
+  get isOkay() { return false; }
+
+  toJSON() {
+    return {
+      error: this.name,
+      ...
+    }
+  }
+}
 
 class Email {
-  _value:Email;
-  constructor(value:string) {
-    this._value = Email.validate(value);
+  private _value:string;
+
+  private constructor(value:string) {
+    this._value = value;
   }
-  static validate(email:string):Email {
+
+  valueOf() : string {
+    return this._value;
+  }
+
+  toString() : string {
+    return this._value;
+  }
+
+  toJSON() : string {
+    return this._value;
+  }
+
+  static fromJSON(value : string) : Email {
+    return Email.create(value);
+  }
+
+  static create(value : string) : Email {
+    let res = Email.validate(value);
+    if (!res.isOkay)
+      throw res;
+    return new Email(value);
+  }
+
+  static validate(email:string) : ValidationResult {
     let re = /^[A-Za-z0-9\._\$%\-]+@[A-Za-z0-9\-]+.[A-Za-z0-9]{2,6}$/;
+    // if we are not returning the string value, we just need to return the validation result. which either is an error result or okay result.
+
     if (re.test(email)) {
-      return email;
+      return { isOkay: true };
     } else {
-      throw new UserException('invalid type', 'This value -- ' + email + ' -- is not an email.')
+      return new ValidationError('invalid type', 'This value -- ' + email + ' -- is not an email.')
     }
   }
 }
@@ -128,35 +174,72 @@ class Name {
 
 
 class UserSession {
-  email?:Email;
-  uuid?:UUID;
-  cart_uuid?:UUID;
-  permission?:Permission;
+  readonly email: Email;
+  readonly uuid: UUID;
+  readonly cart_uuid: UUID;
+  readonly permission: Permission;
+  private constructor() {
 
-  static create(userSession:{
+  }
+
+  static create(args:{
     email?:Email;
     uuid?:UUID;
     cart_uuid?:UUID;
     permission?:Permission;
   } = {}) {
-    let output:UserSession = {};
+    // all hese objects already validatted
+    if (!args.email)
+      throw new Error(); // whatever error you want to throw.
+    if (!args.uuid) // ...
+    // ...
+    return new UserSession(...);
+  }
 
-    for (let k in userSession) {
-      if (k === 'email' ||
-          k === 'permission' ||
-          k === 'uuid' ||
-          k === 'cart_uuid') {
-            output.email      = userSession.email._value;
-            output.uuid       = userSession.uuid._value;
-            output.cart_uuid  = userSession.cart_uuid._value;
-            output.permission = userSession.permission._value;
-          } else {
-            throw new UserException('Unknown property present on object', 'userSession should not contain property ' + k)
-          }
+  static fromJSON(args: {[key: string]: any}) : UserSession {
+    let res = UserSession.validate(args);
+    if (res.isOkay) {
+      return create({ email: Email.create(args.email),
+        uuid : UUID.create(args.uuid),
+        ...
+      });
+    } else {
+      throw res;
     }
-    return output;
+  }
+
+  static validate(args: {[key: string] : any}) : ValidationResult {
+    if (args.hasOwnProperty('email')) {
+      let res = Email.validate(args.email);
+      if (!res.isOkay)
+        return res;
+    }
+    // ...
+    return { isOkay: true };
+  }
+
+  static toJSON() : any {
+    return {
+      email: this.email.toJSON(),
+      uuid : this.uuid.toJSON(),
+      ...
+    };
   }
 }
+
+
+db.query('select * from some table')
+  .then((records) => {
+
+    //return records.map((rec) => UserSession.fromJSON(rec));
+    return UserSession.fromJSON(records[0]); // need to ensure there is only 1 rec.
+  })
+  .then((userSession) => {
+    return res.json(userSession);
+  })
+  .catch((e) => {
+    return res.json(e);
+  })
 
 class UserDB {
   id?:Number;
