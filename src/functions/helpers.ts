@@ -151,6 +151,22 @@ function addOrderUUIDItemNumber(queryResult, order_uuid) {
   return queryResult;
 }
 
+let orgName = 'United Nations Childrens Fund';
+
+function idMaker(name:string) {
+  name = name.toLowerCase();
+  let arrName = name.split('');
+  for (let i = 0; i < arrName.length; i++) {
+    if (arrName[i] === ' ') {
+      arrName[i] = '-';
+    }
+  }
+  return arrName.join('');
+}
+
+console.log(idMaker(orgName))
+
+
 export {
   dbErrTranslator,
   dbError,
@@ -161,5 +177,6 @@ export {
   regenerateSession,
   lastFourOnly,
   addOrderUUIDItemNumber,
-  merger
+  merger,
+  idMaker
 };

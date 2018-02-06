@@ -134,4 +134,17 @@ function addOrderUUIDItemNumber(queryResult, order_uuid) {
     return queryResult;
 }
 exports.addOrderUUIDItemNumber = addOrderUUIDItemNumber;
+let orgName = 'United Nations Childrens Fund';
+function idMaker(name) {
+    name = name.toLowerCase();
+    let arrName = name.split('');
+    for (let i = 0; i < arrName.length; i++) {
+        if (arrName[i] === ' ') {
+            arrName[i] = '-';
+        }
+    }
+    return arrName.join('');
+}
+exports.idMaker = idMaker;
+console.log(idMaker(orgName));
 //# sourceMappingURL=helpers.js.map

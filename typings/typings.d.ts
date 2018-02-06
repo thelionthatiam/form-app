@@ -16,6 +16,7 @@ interface User {
   uuid:string;
   cart_uuid:string;
   permission:string;
+  name:string;
 }
 
 interface DB extends Client {

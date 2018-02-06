@@ -15,6 +15,16 @@ h1,h2,h3,h4,h5,h6,p,li,a,button,input,label {
   font-size:10px;
 }
 
+.small {
+  font-size:12px;
+}
+
+.current-selection {
+  font-size:10px;
+  text-transform:uppercase;
+  font-weight:bold;
+}
+
 .flex {
   display:flex;
 }
@@ -38,6 +48,14 @@ h1,h2,h3,h4,h5,h6,p,li,a,button,input,label {
 
 .full-page {
   margin:10%;
+}
+
+.small-margin {
+  margin-bottom:8px;
+}
+
+.med-margin {
+  margin-bottom:12px;
 }
 
 .userWrapper {
@@ -148,6 +166,7 @@ input {
   border:none;
   border-bottom:2px solid lightgrey;
   color:lightgrey;
+  flex-grow:1;
 }
 
 input:focus {

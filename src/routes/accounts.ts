@@ -25,6 +25,7 @@ router.route('/accounts')
       email: req.body.email,
       phone: req.body.phone,
       password:req.body.password,
+      name:req.body.name,
       uuid:'',
       nonce:''
     };
@@ -32,8 +33,8 @@ router.route('/accounts')
     bcrypt.hash(inputs.password, 10)
       .then((hash) => {
         inputs.password = hash;
-        let query = 'INSERT INTO users(email, phone, password) VALUES($1, $2, $3) RETURNING *';
-        let input = [inputs.email, inputs.phone, inputs.password];
+        let query = 'INSERT INTO users(email, phone, password, name) VALUES($1, $2, $3, $4) RETURNING *';
+        let input = [inputs.email, inputs.phone, inputs.password, inputs.name];
         return db.query(query, input)
       })
       .then((result) => {
@@ -54,9 +55,15 @@ router.route('/accounts')
         return db.query(query, input);
       })
       .then((result) => {
-        return db.query('INSERT INTO cart (user_uuid) VALUES ($1) RETURNING *', [inputs.uuid])
+        return db.query('INSERT INTO cart (user_uuid) VALUES ($1)', [inputs.uuid])
+      })
+      .then((result)=> {
+        return db.query('INSERT INTO user_settings(user_uuid) VALUES ($1)', [inputs.uuid])
       })
       .then((result) => {
+        return db.query('UPDATE users SET permission = $1 WHERE user_uuid = $2', ['user', inputs.uuid])
+      })
+      .then((result)=> {
         console.log(result.rows);
         res.render('new-account', {
           success: true,
@@ -66,9 +73,28 @@ router.route('/accounts')
       })
       .catch((err) => {
         console.log(err);
-        res.render('new-account', {
-          dbError:err.message
-        })
+        db.query('DELETE FROM users WHERE user_uuid = $1', [inputs.uuid])
+          .then((result) => {
+            return db.query('DELETE FROM nonce WHERE user_uuid = $1', [inputs.uuid])
+          })
+          .then((result) => {
+            return db.query('DELETE FROM cart WHERE user_uuid = $1', [inputs.uuid])
+          })
+          .then((result) => {
+            return db.query('DELETE FROM session WHERE user_uuid = $1', [inputs.uuid])
+          })
+          .then((result) => {
+            return db.query('DELETE FROM user_settings WHERE user_uuid = $1', [inputs.uuid])
+          })
+          .then((result) => {
+            res.render('new-account', {
+              dbError:err.message
+            })
+          })
+          .catch((err) => {
+            console.log(err)
+            res.render('error')
+          })
       })
   })
 

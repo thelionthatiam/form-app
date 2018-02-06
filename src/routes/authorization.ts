@@ -4,21 +4,25 @@ import * as bcrypt from 'bcrypt';
 import * as uuidv4 from 'uuid/v4';
 import { BaseRequestHandler } from './test'
 import { db } from '../middleware/database'
-import * as r from '../config/resources'
+// import * as r from '../config/resources'
 const router = express.Router();
+
 
 
 router.route('/authorized')
   .post((req, res) => {
+    console.log('auth running')
     let input:Inputs = {};
     let cart_uuid;
 
     db.query("SELECT * FROM users WHERE email = $1", [req.body.email])
       .then((result) => {
         if (result.rows.length === 0) {
+          console.log()
           throw new Error("Email not found")
         } else {
           input = result.rows[0];
+          console.log(input)
           return bcrypt.compare(req.body.password, result.rows[0].password)
         }
       })
@@ -26,6 +30,7 @@ router.route('/authorized')
         if (result === false) {
           throw new Error('Password incorrect');
         } else {
+          console.log(req.sessionID)
           return help.regenerateSession(req);
         }
       })
@@ -33,6 +38,7 @@ router.route('/authorized')
         return db.query('UPDATE session SET sessionid = $1 WHERE user_uuid = $2', [req.sessionID, input.user_uuid]);
       })
       .then((result) => {
+        console.log(result)
         return db.query('SELECT cart_uuid FROM cart WHERE user_uuid = $1', [input.user_uuid])
       })
       .then((result) => {
@@ -41,9 +47,10 @@ router.route('/authorized')
           email:input.email,
           uuid:input.user_uuid,
           cart_uuid:cart_uuid,
-          permission:input.permission
+          permission:input.permission,
+          name:input.name
         }
-
+        console.log(req.session.user)
         return db.query('select NOW()', [])
       })
       .then((result) => {
@@ -51,7 +58,8 @@ router.route('/authorized')
           res.render('admin/home')
         } else if (req.session.user.permission === 'user') {
           res.render('home', {
-            email:req.session.user.email
+            email:req.session.user.email,
+            name:req.session.user.name
           })
         }
       })

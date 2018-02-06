@@ -1,0 +1,20 @@
+{{!-- variables unchanged --}}
+<div class="full-page">
+  <h1>My Organizations</h1>
+  <p>
+    This is where you can view your organizations and set them to alarms for the month.
+  </p>
+  <div class= "categoryListWrapper">
+    {{#each organizationContent}}
+      {{> organizationsdiv}}
+    {{/each}}
+  </div>
+  <p class="formErrorReport">{{ dbError }}</p>
+  <p class = 'fromErrorReport'>
+    {{error}}
+  </p>
+  <form action="/home" method="get">
+    <button class="no " type="submit"> home </button>
+  </form>
+</div>
+<script src="/behavior/alarm-display.js"></script>

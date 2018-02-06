@@ -1,31 +1,30 @@
-
-<div class="full-page">
+<div class="full-page" id="top">
   <h1>Organizations</h1>
   <p>
      This is where you can select which organizations you would like to support, and which organizations you'd rather not.
   </p>
   <div class="column searchWrapper">
-    <form action='/search-test' method="post">
+    {{!-- <form action='/search-test' method="post"> --}}
     <div class="row">
         <input id="search" name="search" class="userFormItem dropdownSearch" type="text" placeholder="search for an organization"/>
-        <button class="searchButton" type="submit">go</button>
+        <button class="searchButton" id='org-search'>go</button>
     </div>
     <div class="dropdownWrapper none">
       <ul class="dropdownList"></ul>
     </div>
-    </form>
+    {{!-- </form> --}}
     <p>
       {{error}}
     </p>
   </div>
   <div class= "categoryListWrapper">
-    {{#each organizationsContent}}
+    {{#each organizationContent}}
       {{> organizationsdiv}}
     {{/each}}
   </div>
   <p class="formErrorReport">{{ dbError }}</p>
   <div class= 'flex column'>
-    <form action="/accounts/{{email}}/cart" method="get">
+    <form action="/accounts/{{email}}/organizations" method="get">
       <button class="yes" type="submit">my organizations</button>
     </form>
     <form action="/home" method="get">

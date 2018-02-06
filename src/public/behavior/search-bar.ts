@@ -1,22 +1,17 @@
 var topicList = [
  "United Nations Childrens Fund",
- "UNICEF",
  "Human Rights Watch",
- "HRW",
  "Museum of Modern Art",
- "MOMA",
  "Human Rights Campaign",
  "Do Something",
  "American Civil Liberties Union",
- "ACLU",
  "Doctors Without Borders",
  "Kiva",
  "Rotary International",
  "Rotary",
  "Sierra Club",
- "NPR",
+ "National Public Radio",
  "Republican National Committee",
- "RNC",
  "The Heritage Foundation",
  "The Cato Institute",
  "Citizens Against Government Waste",
@@ -25,7 +20,6 @@ var topicList = [
  "National Federation of Republican Women",
  "National Right to Life",
  "National Rifle Association",
- "NRA",
  "American Enterprise Institute"
 ];
 // $('.dropdownList').scrollTop(1).scrollTop(0);
@@ -83,4 +77,34 @@ $(document).click(function(){
 //stops event from window click
 $('.dropdownWrapper, .dropdownSearch').click(function(e){
  e.stopPropagation();
+})
+
+//go to a searched org
+
+function idMaker(name:string) {
+  name = name.toLowerCase();
+  let arrName = name.split('');
+  for (let i = 0; i < arrName.length; i++) {
+    if (arrName[i] === ' ') {
+      arrName[i] = '-';
+    }
+  }
+  return arrName.join('');
+}
+
+$('#org-search').click(function() {
+  let itemID = '#top'
+  let searchItem = $('.dropdownSearch').val();
+  if (searchItem === '') {
+    window.scrollBy({
+      top: 0, // could be negative value
+      left: 0,
+      behavior: 'smooth'
+    });
+  } else {
+    itemID = '#' + idMaker(searchItem);
+    document.querySelector(itemID).scrollIntoView({
+      behavior: 'smooth'
+    });
+  }
 })

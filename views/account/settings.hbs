@@ -1,20 +1,25 @@
 <div class="flex pageWrapper center">
   <div class="flex column userWrapper">
     <h3 class="formTitle">settings</h3>
+
     <p>
       payment scheme
+      <br /><span class = 'current-selection'>current: {{payment_scheme}}</span>
     </p>
-    <form class = 'radio' action="" method="post">
-      <div class = 'flex space-around'>
+    <form class = 'radio' action="/accounts/{{email}}/settings/payment-scheme?_method=PUT" method="post">
+      <div class = 'flex space-around med-margin'>
         <div class = 'flex column center'>
-          <input type="radio"  name="contact" value="email">
+          <input type="radio"  name="payment_scheme" value="classic">
           <label for="contactChoice1">classic</label>
         </div>
         <div class = 'flex column center'>
-          <input type="radio"  name="contact" value="phone">
-          <label for="contactChoice2">philanthropy</label>
+          <input type="radio"  name="payment_scheme" value="altruistic">
+          <label for="contactChoice2">altruistic</label>
         </div>
       </div>
+      <p>
+        about
+      </p>
       <p class = 'button-titles mini'>
         <b>classic:</b> choose one organization and the price per snooze and per missed alarm. If you wake up, no money leaves your account.
       </p>
@@ -22,35 +27,58 @@
         <b>altruistic:</b> choose one organization and the price per snooze and per missed alarm. A certain amount goes to your oranization, but if you snooze or dont wake up, the money is diverted to your least favorite organization.
       </p>
       <button class="yes" type="submit">upadate scheme</button>
-
     </form>
+
     <p>
-      maximum amount
+      monthly max
+      <br /><span class = 'current-selection'>current: ${{month_max}}</span>
     </p>
-    <form action="" method="post">
-      <input type = 'text' value = "20"/>
+    <form action="/accounts/{{email}}/settings/monthly-max?_method=PUT" method="post">
+      <div class = 'flex center'>
+        <p>
+          $
+        </p>
+        <input type = 'text' name="month_max" value = "{{month_max}}"/>
+      </div>
       <button class = "yes" type="submit">set limit</button>
     </form>
+
     <p>
       price per snooze
+      <br /><span class = 'current-selection'>current: ${{snooze_price}}</span>
     </p>
-    <form action="" method="post">
-      <input type = 'text' value = "20"/>
+    <form action="/accounts/{{email}}/settings/price-per-snooze?_method=PUT" method="post">
+      <div class = 'flex center'>
+        <p>
+          $
+        </p>
+        <input type = 'text' name='snooze_price' value = "{{snooze_price}}"/>
+      </div>
       <button class = "yes" type="submit">set snooze price</button>
       <p class = 'button-titles mini'>
-        Classic: everytime you snooze, this amount will leave your account and go to the organization of choice
+        everytime you snooze, this amount will leave your account and go to the organization of choice
       </p>
     </form>
+
     <p>
       price per dismiss
+      <br /><span class = 'current-selection'>current: ${{dismiss_price}}</span>
     </p>
-    <form action="" method="post">
-      <input type = 'text' value = "20"/>
+    <form action="/accounts/{{email}}/settings/price-per-dismiss?_method=PUT" method="post">
+      <div class = 'flex center'>
+        <p>
+          $
+        </p>
+        <input type = 'text' name='dismiss_price' value = "{{dismiss_price}}"/>
+      </div>
       <button class = "yes" type="submit">set dismiss price</button>
       <p class = 'button-titles mini'>
-        Classic: everytime you dismiss an alarm, this amount will leave your account and go to the organization of choice
+        everytime you dismiss an alarm, this amount will leave your account and go to the organization of choice
       </p>
     </form>
+    <p class = "formErrorReport">
+      {{ error }}
+    </p>
     <form action="/accounts/{{email}}" method="get">
       <button class="no" type="submit">my account</button>
     </form>

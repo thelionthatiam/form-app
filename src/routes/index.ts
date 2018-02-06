@@ -9,18 +9,18 @@ router.use('/', require('./shopping'));
 router.use('/', require('./organizations'));
 router.use('/', test.router);
 
-router.use('/admin-auth', require('./admin/authorized'));
 router.use('/admin', require('./admin/products'));
 router.use('/admin', require('./admin/coupons'));
 router.use('/admin', require('./admin/accounts'));
 
 router.use('/accounts', require('./account'));
-router.use('/accounts/:email', require('./payment'));
-router.use('/accounts/:email', require('./alarms'));
-router.use('/accounts/:email', require('./donation'));
-router.use('/accounts/:email', require('./cart'));
-router.use('/accounts/:email', require('./coupons'));
-router.use('/accounts/:email', require('./orders'));
+router.use('/accounts/:email', require('./account/alarms'));
+router.use('/accounts/:email', require('./account/payment'));
+router.use('/accounts/:email', require('./account/organizations'));
+router.use('/accounts/:email', require('./account/cart'));
+router.use('/accounts/:email', require('./account/coupons'));
+router.use('/accounts/:email', require('./account/orders'));
+router.use('/accounts/:email', require('./account/settings'));
 
 
 router.get('/', function (req, res, next) {

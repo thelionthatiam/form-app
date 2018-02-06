@@ -1,6 +1,6 @@
 <div class="full-page">
   <h1>Home</h1>
-  <h3>Welcome, {{ email }}.</h3>
+  <h3>Welcome, {{ name }}.</h3>
   <div>
     <p>
       <b>about</b>
@@ -15,14 +15,14 @@
       Add, update and delete your alarms
     </p>
   </form>
-  <form action="/products">
-    <button class="yes">donation center</button>
+  <form action="/organizations">
+    <button class="yes">organizations</button>
     <p class = 'button-titles mini'>
       Choose which organization you will donate to, and how much
     </p>
   </form>
   <form action="/accounts/{{email}}/cart" method="get">
-    <button class="yes" type="submit">current donations</button>
+    <button class="yes" type="submit">my organizations</button>
     <p class = 'button-titles mini'>
       Quick way to see where your money is going
     </p>

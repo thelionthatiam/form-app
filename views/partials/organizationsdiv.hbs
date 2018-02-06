@@ -1,13 +1,13 @@
-<div class="flex column">
+<div class="flex column" id = '{{frontEndID}}'>
 	<div class="flex product-name-price-wrapper">
 		<h3 class="product-title">{{ name }}</h3>
-		<h4>cause</h4>
+		<p class = "small">{{ cause }}</p>
 	</div>
 
 	<div class="flex description-img-wrapper">
     <div class="flex column">
       <p class="description-text">{{ description }}</p>
-      <a hreg=''>link to the website</a>
+      <a href='{{link}}'>link to the website</a>
     </div>
 
 		<div class = "organization-img">
@@ -15,13 +15,13 @@
 		</div>
 	</div>
 	<div class="flex product-action-wrapper">
-		<form class="flex product-cart-form" action="/accounts/{{email}}/cart" method="post">
-				<input type="hidden" name="product" value="{{ product_id }},{{ name }},{{ price }},{{ size }}" />
-				<button class="yes">favorite</button>
+		<form class="flex product-cart-form" action="/accounts/{{email}}/organizations" method="post">
+				<input type="hidden" name="org_uuid" value="{{ org_uuid }}" />
+				<button class="yes">save to favs</button>
 		</form>
-		<form class="flex product-cart-form" action="" method="post">
-			<input type="hidden" name="product" value="{{ product_id }},{{ name }},{{ price }},{{ size }}" />
-			<button class = 'yes'>+</button>
+		<form class="flex product-cart-form" action="/accounts/{{email}}/organizations/{{org_sku}}?_method=PUT" method="post">
+			<input type="hidden" name="org_uuid" value="{{ org_uuid }}}" />
+			<button class = 'yes'>set as default</button>
 		<form>
 	</div>
 </div>

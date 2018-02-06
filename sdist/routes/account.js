@@ -90,11 +90,5 @@ router.route('/:email/password')
         res.render(viewPrefix + 'new-password', { dbError: error });
     });
 });
-router.route('/:email/settings')
-    .get((req, res) => {
-    res.render(viewPrefix + 'settings', {
-        email: req.session.user.email,
-    });
-});
 module.exports = router;
 //# sourceMappingURL=account.js.map
