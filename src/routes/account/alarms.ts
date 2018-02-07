@@ -1,6 +1,6 @@
-import { dbErrTranslator, compare } from '../functions/helpers';
 import * as express from 'express';
-import { db } from '../middleware/database';
+import { dbErrTranslator, compare } from '../../functions/helpers';
+import { db } from '../../middleware/database';
 const router = express.Router();
 
 let viewPrefix = 'alarms/'

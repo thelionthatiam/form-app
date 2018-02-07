@@ -1,7 +1,7 @@
-import { dbErrTranslator, compare } from '../functions/helpers';
-import { lastFourOnly } from '../functions/promise-helpers'
+import { dbErrTranslator, compare } from '../../functions/helpers';
+import { lastFourOnly } from '../../functions/promise-helpers'
 import * as express from 'express';
-import { db } from '../middleware/async-database';
+import { db } from '../../middleware/async-database';
 const router = express.Router();
 
 interface CouponContent {

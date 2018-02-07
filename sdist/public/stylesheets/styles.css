@@ -58,6 +58,15 @@ h1,h2,h3,h4,h5,h6,p,li,a,button,input,label {
   margin-bottom:12px;
 }
 
+.boxBorder {
+  border:1px solid black;
+  border-radius: 5px;
+}
+
+.padding {
+  padding:5px;
+}
+
 .userWrapper {
   margin:10px;
   padding:10px;
@@ -269,6 +278,11 @@ textarea:focus {
 .blackText {
   color:black;
 }
+
+.greenText {
+  color: green;
+}
+
 .veryWeak {
 	width:20%;
 	background-color:red;
@@ -283,7 +297,6 @@ textarea:focus {
 	width: 60%;
 	background-color:blue;
 }
-
 
 .strong {
 	width: 80%;

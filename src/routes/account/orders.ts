@@ -1,9 +1,9 @@
-import { lastFourOnly, addOrderUUIDItemNumber } from '../functions/helpers';
-import * as coupons from '../functions/coupon'
-import * as inv from '../functions/invoice';
+import { lastFourOnly, addOrderUUIDItemNumber } from '../../functions/helpers';
+import * as coupons from '../../functions/coupon'
+import * as inv from '../../functions/invoice';
 import * as express from 'express';
-import { db } from '../middleware/database';
-import * as mailer from '../middleware/emailer'
+import { db } from '../../middleware/database';
+import * as mailer from '../../middleware/emailer'
 const router = express.Router();
 
 router.use('/orders', mailer.mailer()) // middleware to load email junk

@@ -1,9 +1,9 @@
 import * as express from 'express';
 import * as bcrypt from 'bcrypt';
 import * as url from 'url';
-import { deepMerge } from '../functions/merge'
-import { Inputs, PGOutput } from '../../typings/typings';
-import { db } from '../middleware/database';
+import { deepMerge } from '../../functions/merge'
+import { Inputs, PGOutput } from '../../../typings/typings';
+import { db } from '../../middleware/database';
 const router = express.Router();
 
 router.route('/settings')

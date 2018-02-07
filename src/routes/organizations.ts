@@ -22,7 +22,7 @@ router.route('/organizations')
           organizationContent[i].frontEndID = idMaker(organizationContent[i].name)
         }
         console.log(organizationContent)
-        res.render('organizations', {
+        res.render('shopping/organizations', {
           organizationContent:organizationContent,
           email: email
         })
@@ -30,7 +30,7 @@ router.route('/organizations')
       .catch((err) => {
         console.log(err);
         let userError = dbErrTranslator(err.message)
-        res.render('organizations', { dbError: userError });
+        res.render('shopping/organizations', { dbError: userError });
       });
   })
 

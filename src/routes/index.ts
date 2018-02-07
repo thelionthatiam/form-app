@@ -13,6 +13,7 @@ router.use('/admin', require('./admin/products'));
 router.use('/admin', require('./admin/coupons'));
 router.use('/admin', require('./admin/accounts'));
 
+
 router.use('/accounts', require('./account'));
 router.use('/accounts/:email', require('./account/alarms'));
 router.use('/accounts/:email', require('./account/payment'));
@@ -39,7 +40,8 @@ router.get('/splash', function (req, res, next) {
 router.get('/home', (req, res) => {
   console.log("home page", req.session)
   res.render('home', {
-    email:req.session.user.email
+    email:req.session.user.email,
+    name: req.session.user.name
   })
 })
 

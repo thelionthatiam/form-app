@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as bcrypt from 'bcrypt';
 import * as url from 'url';
 import { Inputs, PGOutput } from '../../typings/typings';
-import { db } from '../middleware/async-database';
+import { db } from '../../middleware/async-database';
 const router = express.Router();
 
 let viewPefix = 'payment/'

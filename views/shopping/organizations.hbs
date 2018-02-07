@@ -4,7 +4,6 @@
      This is where you can select which organizations you would like to support, and which organizations you'd rather not.
   </p>
   <div class="column searchWrapper">
-    {{!-- <form action='/search-test' method="post"> --}}
     <div class="row">
         <input id="search" name="search" class="userFormItem dropdownSearch" type="text" placeholder="search for an organization"/>
         <button class="searchButton" id='org-search'>go</button>
@@ -12,10 +11,7 @@
     <div class="dropdownWrapper none">
       <ul class="dropdownList"></ul>
     </div>
-    {{!-- </form> --}}
-    <p>
-      {{error}}
-    </p>
+      <p class="formErrorReport">{{ error }}</p>
   </div>
   <div class= "categoryListWrapper">
     {{#each organizationContent}}
@@ -30,7 +26,6 @@
     <form action="/home" method="get">
       <button class="no" type="submit">back</button>
     </form>
-
   </div>
 </div>
 {{!-- <script src="/behavior/.js"></script> --}}

@@ -4,9 +4,52 @@
   <p>
     This is where you can view your organizations and set them to alarms for the month.
   </p>
+  {{#if defaultSet}}
+  <h4>
+    currently donating to:
+  </h4>
+  <div class='categoryListWrapper boxBorder'>
+
+    <div class="flex column" id = '{{frontEndID}}'>
+    	<div class="flex product-name-price-wrapper">
+    		<h3 class="product-title">{{ name }}</h3>
+    		<p class = "small">{{ cause }}</p>
+    	</div>
+
+    	<div class="flex description-img-wrapper">
+        <div class="flex column">
+          <p class="description-text">{{ description }}</p>
+          <a href='{{link}}'>link to the website</a>
+        </div>
+
+    		<div class = "organization-img">
+    			<img src = "/product-pictures/{{ image }}" />
+    		</div>
+    	</div>
+    	<div class="flex product-action-wrapper">
+    		<form class="flex product-cart-form" action="/accounts/{{email}}/organizations/{{org_sku}}?_method=PUT" method="post">
+    			<input type="hidden" name="org_uuid" value="{{ org_uuid }}" />
+    			<button class = 'yes'>remove default</button>
+    		</form>
+    	</div>
+    </div>
+  </div>
+  {{else}}
+  <div class = 'boxBorder padding'>
+    <h4>
+      Not currently donating to any org.
+    </h4>
+    <p class = 'button-titles'>
+      Add an organization from your saved orgs below or go to the organization area from the home menu.
+    </p>
+  </div>
+  {{/if}}
+  <h4>
+    saved organizations:
+  </h4>
   <div class= "categoryListWrapper">
     {{#each organizationContent}}
-      {{> organizationsdiv}}
+      {{> my-organizationsdiv}}
     {{/each}}
   </div>
   <p class="formErrorReport">{{ dbError }}</p>
