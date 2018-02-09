@@ -9,12 +9,20 @@ class Query {
         const query = "SELECT * FROM users WHERE email = $1";
         return this.conn.query(query, values);
     }
+    selectUserOrgs(values) {
+        const query = "SELECT * FROM user_orgs WHERE user_uuid = $1";
+        return this.conn.query(query, values);
+    }
     selectOrder(values) {
         const query = "SELECT * FROM orders WHERE user_uuid = $1";
         return this.conn.query(query, values);
     }
     selectCart(values) {
-        const query = 'SELECT cart_uuid FROM cart WHERE user_uuid = $1';
+        const query = 'SELECT * FROM cart WHERE user_uuid = $1';
+        return this.conn.query(query, values);
+    }
+    selectOrgs(values) {
+        const query = 'SELECT * FROM orgs';
         return this.conn.query(query, values);
     }
     updateSessionID(values) {

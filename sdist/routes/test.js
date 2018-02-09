@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
-const r = require("../config/resources");
+const r = require("../resources/value-objects");
 const router = express.Router();
 exports.router = router;
 class BaseRequestHandler {
@@ -16,10 +16,11 @@ class BaseRequestHandler {
     handler() {
         this.aQuery.selectUser([this.inputs.email])
             .then((result) => {
-            let user = new r.UserDB(result.rows[0]);
-            return user;
+            console.log(result);
+            return r.UserDB.fromJSON(result.rows[0]);
         })
             .then((result) => {
+            console.log(result);
             this.onSuccess(result);
         })
             .catch((error) => {
@@ -34,4 +35,8 @@ class BaseRequestHandler {
     }
 }
 exports.BaseRequestHandler = BaseRequestHandler;
+router.get('/test', (req, res) => {
+    let run = new BaseRequestHandler(req, res, 'test', 'login');
+    run.handler();
+});
 //# sourceMappingURL=test.js.map

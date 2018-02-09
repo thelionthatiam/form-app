@@ -2,6 +2,7 @@ import { Pool } from 'pg';
 import { dbConfig } from "../config/combiner";
 import { RequestHandler } from '../../node_modules/@types/express-serve-static-core/index'
 import { ConnectionConfig, Client } from '../../node_modules/@types/pg/index'; // pg types
+import * as r from '../resources/value-objects';
 import { Query } from '../functions/queries'
 import * as express from "express";
 
@@ -21,21 +22,21 @@ function init(databaseInformation:ConnectionConfig):RequestHandler {
         // events to release
         req.on('abort', () => {
           client.release();
-          req.aQuery = null;
+          req.Query = null;
         })
         req.on('timeout', () => {
           req.abort();
         })
         res.on('close', () => {
           client.release();
-          req.aQuery = null;
+          req.Query = null;
         })
         res.on('finish', function() {
           client.release();
-          req.aQuery = null;
+          req.Query = null;
         })
 
-        req.aQuery = new Query(client)
+        req.Query = new Query(client)
         next();
       })
       .catch((err) => {

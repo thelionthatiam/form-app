@@ -11,14 +11,6 @@ interface Alarm {
   active: boolean;
 }
 
-interface User {
-  email:string;
-  uuid:string;
-  cart_uuid:string;
-  permission:string;
-  name:string;
-}
-
 interface DB extends Client {
   query:Function;
   release:() => void;

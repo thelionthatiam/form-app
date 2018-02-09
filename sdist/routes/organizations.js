@@ -1,29 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const helpers_1 = require("../functions/helpers");
 const express = require("express");
-const database_1 = require("../middleware/database");
+const r = require("../resources/value-objects");
+const helpers_1 = require("../functions/helpers");
 const router = express.Router();
-// GENERAL ORGS
-// GENERAL ORGS
-// GENERAL ORGS
 router.route('/organizations')
     .post((req, res) => {
     // all happens via admin
 })
     .get((req, res) => {
-    let email = req.session.user.email;
-    database_1.db.query('SELECT * FROM orgs', [])
+    let user = r.UserSession.fromJSON(req.session.user);
+    req.Query.selectOrgs([])
         .then((result) => {
         let organizationContent = result.rows;
         for (let i = 0; i < organizationContent.length; i++) {
-            organizationContent[i].email = email;
+            let org = r.OrgsDB.fromJSON(organizationContent[i]); // at least it catches problems
+            organizationContent[i].email = user.email;
             organizationContent[i].frontEndID = helpers_1.idMaker(organizationContent[i].name);
         }
-        console.log(organizationContent);
         res.render('shopping/organizations', {
             organizationContent: organizationContent,
-            email: email
+            email: user.email
         });
     })
         .catch((err) => {
