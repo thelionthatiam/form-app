@@ -18,6 +18,7 @@ interface ValidationResult {
 class ValidationError extends Error implements ValidationResult {
   readonly name: string;
   message: string;
+  isOkay: boolean;
 
   constructor(name: string, message:string) {
     super(message);
@@ -26,7 +27,9 @@ class ValidationError extends Error implements ValidationResult {
     this.name = name;
   }
 
-  get isOkay() { return false; }
+  static isOkay() {
+    return false;
+  }
 
   toJSON() {
     return {
@@ -36,23 +39,23 @@ class ValidationError extends Error implements ValidationResult {
   }
 }
 
-class ValueScalar {
-  private _value:string;
-  constructor(value:string) {
+class ValueScalar<T> {
+  private _value:T;
+  constructor(value:T) {
     this._value = value;
   }
-  valueOf() : string {
+  valueOf() : T {
     return this._value;
   }
-  toString() : string {
+  toString() : T {
     return this._value;
   }
-  toJSON() : string {
+  toJSON() : T {
     return this._value;
   }
 }
 
-class Email extends ValueScalar {
+class Email extends ValueScalar<string> {
   static fromJSON(value : string) : Email {
     return Email.create(value);
   }

@@ -147,4 +147,6 @@ function idMaker(name) {
 }
 exports.idMaker = idMaker;
 console.log(idMaker(orgName));
+function convertToSeconds(time) {
+}
 //# sourceMappingURL=helpers.js.map

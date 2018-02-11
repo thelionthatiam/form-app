@@ -55,7 +55,7 @@ router.route('/accounts')
         return db.query(query, input);
       })
       .then((result) => {
-        return db.query('INSERT INTO cart (user_uuid) VALUES ($1)', [inputs.uuid])
+        return db.query('INSERT INTO cart (user_uuid, card_number) VALUES ($1, $2)', [inputs.uuid, '42424242424242'])
       })
       .then((result)=> {
         return db.query('INSERT INTO user_settings(user_uuid) VALUES ($1)', [inputs.uuid])

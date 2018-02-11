@@ -4,7 +4,7 @@ body {
 }
 
 div {
-/*   border: .5px solid lightgrey; */
+  /* border: .5px solid lightgrey; */
 }
 
 h1,h2,h3,h4,h5,h6,p,li,a,button,input,label {
@@ -55,7 +55,7 @@ h1,h2,h3,h4,h5,h6,p,li,a,button,input,label {
 }
 
 .med-margin {
-  margin-bottom:12px;
+  margin:12px;
 }
 
 .boxBorder {
@@ -73,8 +73,6 @@ h1,h2,h3,h4,h5,h6,p,li,a,button,input,label {
   width:50vw;
   min-width:300px;
   max-width:450px;
-  /*height:50vw;*/
-  max-height:700px;
 }
 
 .formTitle {
@@ -95,7 +93,6 @@ button {
   border-radius:5px;
   box-shadow: 3px 3px 6px 1px rgba(0, 0, 0, .1);
   min-width:20%;
-  max-width:50%;
 
   min-height:20px;
   align-self:flex-end;

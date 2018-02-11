@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const validation_1 = require("./validation");
 // THIS COULD LIVE SOMEWHERE ELSE
-class ValueObject {
+class ValidationResult {
     static isValid(args, obj) {
         for (let k in obj) {
             if (args.hasOwnProperty(k)) {
@@ -16,6 +16,7 @@ class ValueObject {
             }
         }
     }
+    get isOkay() { return false; }
 }
 class UserSession {
     constructor(args = {}) {
@@ -49,7 +50,7 @@ class UserSession {
             cart_uuid: validation_1.UUID.validate(args.cart_uuid),
             name: validation_1.CharOnly.validate(args.name),
         };
-        ValueObject.isValid(args, propValidation);
+        ValidationResult.isValid(args, propValidation);
         return { isOkay: true };
     }
     toJSON() {
@@ -98,7 +99,7 @@ class UserDB {
             name: validation_1.CharOnly.validate(args.name),
             password: validation_1.String.validate(args.password)
         };
-        ValueObject.isValid(args, propValidation);
+        ValidationResult.isValid(args, propValidation);
         return { isOkay: true };
     }
     toJSON() {
@@ -142,7 +143,7 @@ class UserOrgsDB {
             org_uuid: validation_1.UUID.validate(args.org_uuid),
             active: validation_1.Bool.validate(args.active),
         };
-        ValueObject.isValid(args, propValidation);
+        ValidationResult.isValid(args, propValidation);
         return { isOkay: true };
     }
     toJSON() {
@@ -180,7 +181,7 @@ class CartDB {
             cart_uuid: validation_1.UUID.validate(args.cart_uuid),
             card_number: validation_1.NumOnly.validate(args.card_number),
         };
-        ValueObject.isValid(args, propValidation);
+        ValidationResult.isValid(args, propValidation);
         return { isOkay: true };
     }
     toJSON() {
@@ -227,7 +228,7 @@ class OrgsDB {
             cause: validation_1.CharOnly.validate(args.cause),
             link: validation_1.String.validate(args.link),
         };
-        ValueObject.isValid(args, propValidation);
+        ValidationResult.isValid(args, propValidation);
         return { isOkay: true };
     }
     toJSON() {

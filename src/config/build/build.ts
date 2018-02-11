@@ -90,15 +90,16 @@ function build(dbConnect:string, result:func.Result , cb:Function) {
     }
   })
 }
+console.log(func.fileChecker('../connect-config.json'))
 
 
-if (func.fileChecker('../config/connect-config.json')) {
+if (func.fileChecker('../connect-config.json')) {
   // build with connect string made by passing other prompt obj through
   func.prompter(obj.prevConn, function(err:string, result:func.Result) {
     if (err) {
       console.log(err);
     } else if (result.prevConn || result.prevConn === '') {
-      let connConfig = require('../config/connect-config.json');
+      let connConfig = require('../connect-config.json');
       let dbConnect = func.connectCommand(connConfig.user, connConfig.host, connConfig.database, connConfig.password)
       build(dbConnect, connConfig, function (err:Error) {
         if (err) {

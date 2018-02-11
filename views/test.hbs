@@ -1,36 +1,22 @@
-<h1> TEST PAGE </h1>
-<h3>HERE IS SOME USER JUNK </h3>
-<p>
-  {{phone}}
-</p>
-<p>
-  {{user_uuid}}
-</p>
-<p>
-  {{email}}
-</p>
-<p>
-  {{permission}}
-</p>
-<p>
-  {{user_id}}
-</p>
-<h3>HERE IS SOME USERS ORDER JUNK </h3>
-<p>
-  {{order_id}}
-</p>
-<p>
-  {{order_uuid}}
-</p>
-<p>
-  {{card_number}}
-</p>
-<p>
-  {{create_timestamp}}
-</p>
-<p>
-  {{updated_timestamp}}
-</p>
-<p>
-  {{user_uuid}}
-</p>
+<div class="full-page">
+
+
+ <h1>mock alarm</h1>
+ <div class='flex space-around'>
+   <div class = 'flex center'>
+      <h2 id = 'clock'></h2>
+   </div>
+ </div>
+ <h2>my alarms</h2>
+ <div class= "categoryListWrapper">
+   {{#each alarmContent}}
+     {{> alarmdiv}}
+   {{/each}}
+ </div>
+
+ {{ action }}
+
+</div>
+<script src='behavior/clock.js'></script>
+<script src="/behavior/alarm-display.js"></script>
+{{!-- <script src="/behavior/login-action.js"></script> --}}

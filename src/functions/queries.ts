@@ -12,6 +12,7 @@ class Query {
     this.conn = conn;
   }
 
+  // select
   selectUser(values:string[]) {
     const query = "SELECT * FROM users WHERE email = $1"
     return this.conn.query(query, values);
@@ -37,10 +38,24 @@ class Query {
     return this.conn.query(query, values);
   }
 
+  selectAlarms(values:string[]) {
+    const query = 'SELECT * FROM alarms WHERE user_uuid = $1'
+    return this.conn.query(query, values);
+  }
+
+  // insert
+  insertSnooze(values:string[]) {
+    const query = 'INSERT snooze(user_uuid, alarm_uuid) VALUES ($1, $2)';
+    return this.conn.query(query, values);
+  }
+
+  // update
   updateSessionID(values:string[]) {
     const query = 'UPDATE session SET sessionid = $1 WHERE user_uuid = $2';
     return this.conn.query(query, values);
   }
+  // delete
+
 };
 
 

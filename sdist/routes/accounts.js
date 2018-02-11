@@ -48,7 +48,7 @@ router.route('/accounts')
         return database_1.db.query(query, input);
     })
         .then((result) => {
-        return database_1.db.query('INSERT INTO cart (user_uuid) VALUES ($1)', [inputs.uuid]);
+        return database_1.db.query('INSERT INTO cart (user_uuid, card_number) VALUES ($1, $2)', [inputs.uuid, '42424242424242']);
     })
         .then((result) => {
         return database_1.db.query('INSERT INTO user_settings(user_uuid) VALUES ($1)', [inputs.uuid]);

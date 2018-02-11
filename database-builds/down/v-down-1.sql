@@ -1,1 +1,14 @@
-ALTER TABLE users DROP name;
+DROP TABLE session CASCADE;
+DROP TABLE order_items CASCADE;
+DROP TABLE orders CASCADE;
+DROP TABLE cart_items CASCADE;
+DROP TABLE cart CASCADE;
+DROP TABLE product_history CASCADE;
+DROP TABLE products CASCADE;
+DROP TABLE payment_credit CASCADE;
+ALTER TABLE alarms DROP COLUMN id;
+ALTER TABLE alarms DROP COLUMN alarm_uuid;
+ALTER TABLE alarms DROP COLUMN alarm_id;
+ALTER TABLE alarms DROP COLUMN updated_timestamp;
+ALTER TABLE users DROP COLUMN create_timestamp;
+ALTER TABLE users DROP COLUMN updated_timestamp;

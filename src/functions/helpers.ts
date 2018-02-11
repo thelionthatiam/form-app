@@ -166,6 +166,10 @@ function idMaker(name:string) {
 
 console.log(idMaker(orgName))
 
+function convertToSeconds(time:string) {
+
+}
+
 
 export {
   dbErrTranslator,

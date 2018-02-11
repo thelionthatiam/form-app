@@ -15,7 +15,9 @@ class ValidationError extends Error {
         this.message = message;
         this.name = name;
     }
-    get isOkay() { return false; }
+    static isOkay() {
+        return false;
+    }
     toJSON() {
         return {
             name: this.name,

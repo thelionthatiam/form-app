@@ -3,7 +3,7 @@
     <h4>{{title}}</h4>
     <div class="time-wrapper flex space-around ">
       <p class="self right awakeTime">
-        {{awake}}
+        {{time}}
       </p>
       <img src="https://png.icons8.com/ios/540/alarm-clock.png" />
     </div>
@@ -51,5 +51,26 @@
         {{thedate}}
       </p>
     </div>
+  </div>
+  <div class="flex space-around med-margin">
+    <h1>
+      {{ message }}
+    </h1>
+    <form class = 'flex center' action="/snooze" method="post">
+      <button class="yes med-margin" type="submit">snooze</button>
+      <input name="alarm_uuid" type="hidden" value="{{ alarm_uuid }}">
+    </form>
+    <form action="/dismiss" method="post">
+      <button class="no med-margin" type="submit">dismiss</button>
+      <input name="alarm_uuid" type="hidden" value="{{ alarm_uuid }}">
+    </form>
+    <form action='/wake' method='post'>
+      <button type='submit' class='no med-margin'>wake</button>
+      <input name="alarm_uuid" type="hidden" value="{{ alarm_uuid }}">
+    </form>
+
+
+    <p class="noMarginsPassing preInputMimic">{{ message }}</p>
+    <p class="formErrorReport">{{ dbError }}</p>
   </div>
 </div>

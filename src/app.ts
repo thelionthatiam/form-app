@@ -11,8 +11,6 @@ import * as session from "express-session";
 import * as sessionCheck from "./middleware/session-check";
 import * as methodOverride from 'method-override';
 
-
-
 const app = express();
 
 app.use(methodOverride('_method'))

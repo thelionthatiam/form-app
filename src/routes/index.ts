@@ -8,6 +8,7 @@ router.use('/', require('./accounts'));
 router.use('/', require('./shopping'));
 router.use('/', require('./organizations'));
 router.use('/', test.router);
+router.use('/', require('./mock-alarm'));
 
 router.use('/admin', require('./admin/products'));
 router.use('/admin', require('./admin/coupons'));
@@ -24,7 +25,7 @@ router.use('/accounts/:email', require('./account/orders'));
 router.use('/accounts/:email', require('./account/settings'));
 
 
-router.get('/', function (req, res, next) {
+router.get('/login', function (req, res, next) {
   res.render('login');
 })
 

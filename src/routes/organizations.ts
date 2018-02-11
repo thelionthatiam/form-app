@@ -12,7 +12,7 @@ router.route('/organizations')
   .get((req, res) => {
     let user = r.UserSession.fromJSON(req.session.user)
 
-    req.Query.selectOrgs([])
+    req.aQuery.selectOrgs([])
       .then((result) => {
         let organizationContent = result.rows;
 

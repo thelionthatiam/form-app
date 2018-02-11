@@ -14,7 +14,7 @@ import {
 
 
 // THIS COULD LIVE SOMEWHERE ELSE
-class ValueObject {
+class ValidationResult {
   static isValid(args:any, obj:any) {
     for (let k in obj) {
       if (args.hasOwnProperty(k)) {
@@ -27,6 +27,8 @@ class ValueObject {
       }
     }
   }
+
+  get isOkay() { return false; }
 }
 
 
@@ -69,7 +71,7 @@ class UserSession {
       cart_uuid: UUID.validate(args.cart_uuid),
       name: CharOnly.validate(args.name),
     }
-    ValueObject.isValid(args, propValidation)
+    ValidationResult.isValid(args, propValidation)
     return { isOkay: true };
   }
 
@@ -127,7 +129,7 @@ class UserDB {
       name: CharOnly.validate(args.name),
       password: String.validate(args.password)
     }
-    ValueObject.isValid(args, propValidation)
+    ValidationResult.isValid(args, propValidation)
     return { isOkay: true };
   }
 
@@ -183,7 +185,7 @@ class UserOrgsDB {
       org_uuid: UUID.validate(args.org_uuid),
       active: Bool.validate(args.active),
     }
-    ValueObject.isValid(args, propValidation)
+    ValidationResult.isValid(args, propValidation)
     return { isOkay: true };
   }
 
@@ -200,7 +202,7 @@ class UserOrgsDB {
 class CartDB {
   readonly user_uuid?: UUID;
   readonly cart_uuid?: UUID;
-  readonly card_number?: Bool;
+  readonly card_number?: NumOnly;
 
   private constructor(args:{
     user_uuid?: UUID;
@@ -232,7 +234,7 @@ class CartDB {
       cart_uuid: UUID.validate(args.cart_uuid),
       card_number: NumOnly.validate(args.card_number),
     }
-    ValueObject.isValid(args, propValidation)
+    ValidationResult.isValid(args, propValidation)
     return { isOkay: true };
   }
 
@@ -296,7 +298,7 @@ class OrgsDB {
       cause: CharOnly.validate(args.cause),
       link: String.validate(args.link),
     }
-    ValueObject.isValid(args, propValidation)
+    ValidationResult.isValid(args, propValidation)
     return { isOkay: true };
   }
 
@@ -346,7 +348,7 @@ class OrgsDB {
 //     let propValidation = {
 //       email: Email.validate(args.email),
 //     }
-//     ValueObject.isValid(args, propValidation)
+//     ValidationResult.isValid(args, propValidation)
 //     return { isOkay: true };
 //   }
 //

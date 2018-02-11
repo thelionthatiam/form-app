@@ -7,8 +7,8 @@ const router = express.Router();
 let viewPrefix = 'alarms/';
 router.route('/alarms')
     .post((req, res) => {
-    let query = 'INSERT INTO alarms(user_uuid, title, awake) VALUES ($1, $2, $3) RETURNING *';
-    let input = [req.session.user.uuid, req.body.title, req.body.awake];
+    let query = 'INSERT INTO alarms(user_uuid, title, time) VALUES ($1, $2, $3) RETURNING *';
+    let input = [req.session.user.uuid, req.body.title, req.body.time];
     database_1.db.query(query, input)
         .then((result) => {
         res.redirect('alarms');
@@ -49,7 +49,7 @@ router.route('/alarms/:title')
         .then((result) => {
         res.render(viewPrefix + 'edit-alarm', {
             title: result.rows[0].title,
-            awake: result.rows[0].awake,
+            time: result.rows[0].time,
             active: result.rows[0].active,
             email: req.session.user.email
         });
@@ -63,11 +63,11 @@ router.route('/alarms/:title')
     let inputs = {
         prevTitle: req.body.prevTitle,
         title: req.body.title,
-        awake: req.body.awake,
+        time: req.body.time,
         active: req.body.active
     };
-    let query = 'UPDATE alarms SET (title, awake, active) = ($1, $2, $3) WHERE title = $4 RETURNING *';
-    let input = [inputs.title, inputs.awake, inputs.active, inputs.prevTitle];
+    let query = 'UPDATE alarms SET (title, time, active) = ($1, $2, $3) WHERE title = $4 RETURNING *';
+    let input = [inputs.title, inputs.time, inputs.active, inputs.prevTitle];
     database_1.db.query(query, input)
         .then((result) => {
         console.log(result);
