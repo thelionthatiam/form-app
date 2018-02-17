@@ -56,15 +56,15 @@
     <h1>
       {{ message }}
     </h1>
-    <form class = 'flex center' action="/snooze" method="post">
+    <form class = 'flex center' action="/accounts/{{user_uuid}}/alarms/{{title}}/snooze" method="post">
       <button class="yes med-margin" type="submit">snooze</button>
       <input name="alarm_uuid" type="hidden" value="{{ alarm_uuid }}">
     </form>
-    <form action="/dismiss" method="post">
+    <form action="/accounts/{{user_uuid}}/alarms/{{title}}/dismiss" method="post">
       <button class="no med-margin" type="submit">dismiss</button>
       <input name="alarm_uuid" type="hidden" value="{{ alarm_uuid }}">
     </form>
-    <form action='/wake' method='post'>
+    <form action='/accounts/{{user_uuid}}/alarms/{{title}}/wake' method='post'>
       <button type='submit' class='no med-margin'>wake</button>
       <input name="alarm_uuid" type="hidden" value="{{ alarm_uuid }}">
     </form>

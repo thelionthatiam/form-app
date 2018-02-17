@@ -3,8 +3,10 @@ import * as help from '../functions/helpers';
 import * as bcrypt from 'bcrypt';
 import * as uuidv4 from 'uuid/v4';
 import * as r from '../resources/value-objects'
+import { watchAlarms } from '../functions/alarm'
 import { BaseRequestHandler } from '../resources/handlers';
-import { db } from '../middleware/database'
+import { db } from '../middleware/database';
+
 const router = express.Router();
 
 class AuthHandler extends BaseRequestHandler {
@@ -40,21 +42,18 @@ class AuthHandler extends BaseRequestHandler {
       .then(() => {
         return this.aQuery.updateSessionID([this.req.sessionID, user.user_uuid]);
       })
-      .then(() => {
-        return this.aQuery.selectCart([user.user_uuid]);
-      })
       .then((result ) => {
-        cart = r.CartDB.fromJSON(result.rows[0]);
 
         userSession = r.UserSession.fromJSON({
           email:user.email,
           uuid:user.user_uuid,
           permission:user.permission,
-          cart_uuid:cart.cart_uuid,
           name:user.name
         })
 
         this.req.session.user = userSession;
+
+        watchAlarms(userSession);
 
         renderObj = {
           email:user.email,

@@ -34,6 +34,13 @@ const googlePlayInfo:Transactor = {
   max: null
 }
 
+const stripeInfo:Transactor = {
+  name:'payPal',
+  percent: .029,
+  fixed: .30,
+  max: null
+}
+
 
 class Cut implements Transactor {
   readonly name:string;
@@ -52,43 +59,54 @@ class Cut implements Transactor {
     this.sylStatic = 0
   }
 
-  cut(total:number) {
-    let transCut = (this.percent * total) + this.fixed;
-    let sylCut = (this.sylPercent * total) + this.sylStatic;
+  orgCut(total:number) {
+    let transCut = this.transactionCut(total);
+    let revenue = this.revenue(total);
     let withTransCut = total - transCut;
-    let withAllCuts = total - (transCut + sylCut);
+    let orgTotal = total - (transCut + revenue);
 
     let obj = {
       total:total,
       transPercent:this.percent * total,
       transCut:transCut,
       sylPercent:this.sylPercent * total,
-      sylCut:sylCut,
+      revenue:revenue,
       withTransCut:withTransCut,
-      withAllCuts: withAllCuts
+      withAllCuts: orgTotal
     }
 
     console.log(obj)
 
     if (withTransCut < 0) {
-      throw Error ('Total not enough to pay transactor: $' + Number((withAllCuts).toFixed(3)));
-    } else if (withAllCuts < 0) {
-      throw Error ('Total not enough to cover costs: $' + Number((withAllCuts).toFixed(3)));
+      throw Error ('Total not enough to pay transactor: $' + Number((orgTotal).toFixed(3)));
+    } else if (orgTotal < 0) {
+      throw Error ('Total not enough to cover costs: $' + Number((orgTotal).toFixed(3)));
     } else {
-      return Number((withAllCuts).toFixed(3))
+      return Number((orgTotal).toFixed(3))
     }
+  }
+
+  revenue(total:number) {
+    let sylSubTotal = (this.sylPercent * total) + this.sylStatic;
+    return sylSubTotal;
+  }
+
+  transactionCut(total:number) {
+    let transCut = (this.percent * total) + this.fixed;
+    return transCut;
   }
 }
 
-let payPal = new Cut (payPalInfo);
-let ach = new Cut (achInfo);
-let aliPay = new Cut (aliPayInfo);
+let payPal     = new Cut (payPalInfo);
+let ach        = new Cut (achInfo);
+let aliPay     = new Cut (aliPayInfo);
 let googlePlay = new Cut (googlePlayInfo);
-
+let stripe     = new Cut (stripeInfo)
 
 export {
   payPal,
   ach,
   aliPay,
-  googlePlay
+  googlePlay,
+  stripe
 }

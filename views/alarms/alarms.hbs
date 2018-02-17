@@ -1,16 +1,24 @@
 
 <div class="full-page">
-  <h1>Alarms</h1>
+  <h1>Clock</h1>
   <p>
     This is where you can view, add, remove and edit your alarms
   </p>
-
+  <div class='flex space-around'>
+    <div class = 'flex center'>
+       <h2 id = 'clock'></h2>
+    </div>
+  </div>
+  <h1>My alarms</h1>
   <div class= "categoryListWrapper">
     {{#each alarmContent}}
       {{> alarmdiv}}
     {{/each}}
   </div>
   <p class="formErrorReport">{{ dbError }}</p>
+  <form action='/accounts/{{email}}/transact' method='post'>
+    <button class = 'yes'>finish month</button>
+  </form>
   <form action="/accounts/{{email}}/new-alarm" method="get">
       <button class="yes"> add alarm </button>
   </form>
@@ -19,3 +27,4 @@
   </form>
 </div>
 <script src="/behavior/alarm-display.js"></script>
+<script src='/behavior/clock.js'></script>

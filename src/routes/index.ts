@@ -8,7 +8,6 @@ router.use('/', require('./accounts'));
 router.use('/', require('./shopping'));
 router.use('/', require('./organizations'));
 router.use('/', test.router);
-router.use('/', require('./mock-alarm'));
 
 router.use('/admin', require('./admin/products'));
 router.use('/admin', require('./admin/coupons'));
@@ -23,9 +22,10 @@ router.use('/accounts/:email', require('./account/cart'));
 router.use('/accounts/:email', require('./account/coupons'));
 router.use('/accounts/:email', require('./account/orders'));
 router.use('/accounts/:email', require('./account/settings'));
+router.use('/accounts/:email', require('./account/transactions'));
 
 
-router.get('/login', function (req, res, next) {
+router.get('/', function (req, res, next) {
   res.render('login');
 })
 
@@ -40,6 +40,7 @@ router.get('/splash', function (req, res, next) {
 
 router.get('/home', (req, res) => {
   console.log("home page", req.session)
+
   res.render('home', {
     email:req.session.user.email,
     name: req.session.user.name

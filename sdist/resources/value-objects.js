@@ -22,7 +22,6 @@ class UserSession {
     constructor(args = {}) {
         this.email = args.email;
         this.uuid = args.uuid;
-        this.cart_uuid = args.cart_uuid;
         this.permission = args.permission;
         this.name = args.name;
     }
@@ -33,7 +32,6 @@ class UserSession {
                 email: validation_1.Email.create(args.email),
                 uuid: validation_1.UUID.create(args.uuid),
                 permission: validation_1.Permission.create(args.permission),
-                cart_uuid: validation_1.UUID.create(args.cart_uuid),
                 name: validation_1.CharOnly.create(args.name),
             });
             return res.toJSON();
@@ -47,7 +45,6 @@ class UserSession {
             email: validation_1.Email.validate(args.email),
             uuid: validation_1.UUID.validate(args.uuid),
             permission: validation_1.Permission.validate(args.permission),
-            cart_uuid: validation_1.UUID.validate(args.cart_uuid),
             name: validation_1.CharOnly.validate(args.name),
         };
         ValidationResult.isValid(args, propValidation);
@@ -58,7 +55,6 @@ class UserSession {
             email: this.email.toString(),
             uuid: this.uuid.toString(),
             permission: this.permission.toString(),
-            cart_uuid: this.cart_uuid.toString(),
             name: this.name.toString()
         };
     }
@@ -243,4 +239,62 @@ class OrgsDB {
     }
 }
 exports.OrgsDB = OrgsDB;
+class UserSettings {
+    constructor(args = {}) {
+        this.user_uuid = args.user_uuid;
+        this.payment_scheme = args.payment_scheme;
+        this.snooze_price = args.snooze_price;
+        this.dismiss_price = args.dismiss_price;
+        this.wake_price = args.wake_price;
+        this.month_max = args.month_max;
+        this.snooze_max = args.snooze_max;
+        this.active_payment = args.active_payment;
+    }
+    static fromJSON(args) {
+        let res = UserSettings.validate(args);
+        if (res.isOkay) {
+            let res = new UserSettings({
+                user_uuid: validation_1.UUID.create(args.user_uuid),
+                payment_scheme: validation_1.String.create(args.payment_scheme),
+                snooze_price: validation_1.NumOnly.create(args.snooze_price),
+                dismiss_price: validation_1.NumOnly.create(args.dismiss_price),
+                wake_price: validation_1.NumOnly.create(args.wake_price),
+                month_max: validation_1.NumOnly.create(args.month_max),
+                snooze_max: validation_1.NumOnly.create(args.snooze_max),
+                active_payment: validation_1.UUID.create(args.active_payment)
+            });
+            return res.toJSON();
+        }
+        else {
+            throw new Error('error happens at fromJSON');
+        }
+    }
+    static validate(args) {
+        let propValidation = {
+            user_uuid: validation_1.UUID.validate(args.user_uuid),
+            payment_scheme: validation_1.String.validate(args.payment_scheme),
+            snooze_price: validation_1.NumOnly.validate(args.snooze_price),
+            dismiss_price: validation_1.NumOnly.validate(args.dismiss_price),
+            wake_price: validation_1.NumOnly.validate(args.wake_price),
+            month_max: validation_1.NumOnly.validate(args.month_max),
+            snooze_max: validation_1.NumOnly.validate(args.snooze_max),
+            active_payment: validation_1.UUID.validate(args.active_payment)
+        };
+        ValidationResult.isValid(args, propValidation);
+        return { isOkay: true };
+    }
+    toJSON() {
+        return {
+            user_uuid: this.user_uuid.toString(),
+            payment_scheme: this.payment_scheme.toString(),
+            snooze_price: this.snooze_price.toString(),
+            dismiss_price: this.dismiss_price.toString(),
+            wake_price: this.wake_price.toString(),
+            month_max: this.month_max.toString(),
+            snooze_max: this.snooze_max.toString(),
+            active_payment: this.active_payment.toString()
+        };
+    }
+}
+exports.UserSettings = UserSettings;
 //# sourceMappingURL=value-objects.js.map

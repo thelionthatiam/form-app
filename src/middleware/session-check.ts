@@ -21,6 +21,7 @@ function check(req:Express.Request, res:ModResponse, next:Function) {
         if (result.rows[0].permission === 'admin') {
           next();
         } else if (result.rows[0].permission === 'user') {
+
           next();
         } else if (result.rows[0].permission === 'guest') {
 

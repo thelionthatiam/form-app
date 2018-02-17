@@ -1,20 +1,8 @@
-import * as express from 'express';
 import * as r from '../resources/value-objects';
 import { dbErrTranslator, compare } from '../functions/helpers';
 import { intervalTimer } from '../functions/clock';
 import { db } from '../middleware/database';
 const EventEmitter = require('events').EventEmitter
-const router = express.Router();
-
-const mockUser = {
-  uuid:'700fb850-ac21-4418-b843-8e4a0999bdf1',
-  name:'timothy',
-  permission:'user',
-  cart_uuid:'70cf640a-cf9d-439c-98b5-0cfd8473ba02',
-  email:'g@g.gg'
-}
-
-const user = r.UserSession.fromJSON(mockUser)
 
 function addLeadingZeros(number:number) {
   if (number < 10) {
@@ -41,28 +29,28 @@ eventEmitter.on('ringingCountdown', () => {
   console.log('ringing countdown');
 })
 
-function triggerAlarm(alarm:string) {
-  db.query('UPDATE alarms SET state = $1 WHERE user_uuid = $2 AND alarm_uuid = $3', ['ringing', user.uuid, alarm])
+function triggerAlarm(alarm:string, user:r.UserSession) {
+  db.query('UPDATE alarms SET state = $1 WHERE user_uuid = $2 AND alarm_uuid = $3', ['ringing', user.uuid, alarm]);
   .then((result) =>{
-    console.log(result)
+    console.log(result);
   })
   .catch((error) => {
-    console.log(error)
+    console.log(error);
   })
 }
 
-function addSnooze(alarm:string) {
+function addSnooze(alarm:string, user:r.UserSession) {
   console.log('------YOU SNOOZED! Now you have a snooze, but dont snooze to much!------')
-  db.query('UPDATE alarms SET state = $1 WHERE user_uuid = $2 AND alarm_uuid = $3', ['snoozing', user.uuid, alarm])
+  db.query('UPDATE alarms SET state = $1 WHERE user_uuid = $2 AND alarm_uuid = $3', ['snoozing', user.uuid, alarm]);
     .then((result) => {
-      return db.query('INSERT INTO snoozes(user_uuid, alarm_uuid) VALUES ($1, $2)', [user.uuid, alarm])
+      return db.query('INSERT INTO snoozes(user_uuid, alarm_uuid) VALUES ($1, $2)', [user.uuid, alarm]);
     })
     .catch((error) => {
-      console.log(error)
+      console.log(error);
     })
 }
 
-function addDismiss(alarm:string) {
+function addDismiss(alarm:string, user:r.UserSession) {
   console.log('------YOU SLEPT IN! Now you have a dismiss under your belt.------')
   db.query('UPDATE alarms SET state = $1 WHERE user_uuid = $2 AND alarm_uuid = $3', ['dismissed', user.uuid, alarm])
     .then((result) => {
@@ -73,7 +61,7 @@ function addDismiss(alarm:string) {
     })
 }
 
-function addWake(alarm:string) {
+function addWake(alarm:string, user:r.UserSession) {
   console.log('------NICE JOB, YOU WORK UP! CARPE DIEM!------')
   db.query('UPDATE alarms SET state = $1 WHERE user_uuid = $2 AND alarm_uuid = $3', ['woke', user.uuid, alarm])
     .then((result) => {
@@ -84,7 +72,7 @@ function addWake(alarm:string) {
     })
 }
 
-function alarmReset(alarm:string) {
+function alarmReset(alarm:string, user:r.UserSession) {
   db.query('UPDATE alarms SET state = $1 WHERE user_uuid = $2 AND alarm_uuid = $3', ['pending', user.uuid, alarm])
   .then((result) =>{
     console.log(result)
@@ -95,10 +83,10 @@ function alarmReset(alarm:string) {
 }
 
 
-function snoozing(alarm:string) {
+function snoozing(alarm:string, user:r.UserSession) {
   let currentTime = Date.now();
   let endTime = currentTime + 10000; // ten second snooze
-  addSnooze(alarm);
+  addSnooze(alarm, user);
 
   let thing = setInterval(() => {
     let timeLeft = endTime - Date.now()
@@ -111,15 +99,15 @@ function snoozing(alarm:string) {
         if (state === 'snoozing') {
           if (timeLeft < 0 ) {
             clearInterval(thing)
-            triggerAlarm(alarm)
-            ringing(alarm)
+            triggerAlarm(alarm, user)
+            ringing(alarm, user)
           }
         } else if (state === 'dismiss') {
           clearInterval(thing)
-          addDismiss(alarm)
+          addDismiss(alarm, user)
         } else if (state === 'woke') {
           clearInterval(thing)
-          addWake(alarm)
+          addWake(alarm, user)
         }
       })
 
@@ -128,7 +116,7 @@ function snoozing(alarm:string) {
 }
 
 
-function ringing(alarm:string) {
+function ringing(alarm:string, user:r.UserSession) {
   let currentTime = Date.now()
   let endTime = currentTime + 6000;
 
@@ -143,17 +131,17 @@ function ringing(alarm:string) {
         if (state === 'ringing') {
           if (timeLeft < 0 ) {
             clearInterval(thing)
-            addDismiss(alarm)
+            addDismiss(alarm, user)
           }
         } else if (state === 'snoozing') {
           clearInterval(thing)
-          snoozing(alarm)
+          snoozing(alarm, user)
         } else if (state === 'dismiss') {
           clearInterval(thing)
-          addDismiss(alarm)
+          addDismiss(alarm, user)
         } else if (state === 'woke') {
           clearInterval(thing)
-          addWake(alarm)
+          addWake(alarm, user)
         }
       })
 
@@ -161,7 +149,7 @@ function ringing(alarm:string) {
 
 }
 
-function watchUserAlarms() {
+function watchUserAlarms(user:r.UserSession) {
   db.query('SELECT * FROM alarms WHERE user_uuid = $1 AND active = $2', [user.uuid, true]) // and active = true
     .then((result) => {
       let alarms = result.rows;
@@ -173,8 +161,8 @@ function watchUserAlarms() {
         if (time === theTime()) {
           if (state === 'pending') {
             console.log('-----STARTS RINGING!!!------')
-            eventEmitter.emit('ring', triggerAlarm(alarm))
-            eventEmitter.emit('ringingCountdown', ringing(alarm))
+            eventEmitter.emit('ring', triggerAlarm(alarm, user))
+            eventEmitter.emit('ringingCountdown', ringing(alarm, user))
 
           } else if (state === 'ringing') {
             console.log('-----RINGING!!!------')
@@ -192,11 +180,11 @@ function watchUserAlarms() {
         } else {
           if (state === 'woke') {
             console.log('-----WOKE AND RESET------')
-            eventEmitter.emit('alarmReset', alarmReset(alarm))
+            eventEmitter.emit('alarmReset', alarmReset(alarm, user))
 
           } else if (state === 'dismissed') {
             console.log('-----DISMISSED AND RESET------')
-            eventEmitter.emit('alarmReset', alarmReset(alarm))
+            eventEmitter.emit('alarmReset', alarmReset(alarm, user))
 
           } else if (state === 'snoozing') {
             console.log('-----SNOOZING------')
@@ -214,68 +202,10 @@ function watchUserAlarms() {
     })
 }
 
-function watchAlarms() {
-  setInterval(() => { watchUserAlarms() }, 1000)
+function watchAlarms(user:r.UserSession) {
+  setInterval(() => { watchUserAlarms(user) }, 1000)
 }
 
-watchAlarms()
-
-
-
-
-router.get('/', (req, res) => {
-  req.aQuery.selectAlarms([user.uuid])
-    .then((result) => {
-      let alarmContent = result.rows;
-      let sortedAlarms = alarmContent.sort(compare)
-
-      res.render('test', {
-        alarmContent:sortedAlarms,
-        email:user.email
-      })
-    })
-    .catch((error) => {
-      console.log(error)
-      res.render('test')
-    })
-})
-
-
-router.post('/snooze', (req, res) => {
-  let alarm = req.body.alarm_uuid
-  console.log(alarm)
-  db.query('UPDATE alarms SET state = $1 WHERE user_uuid = $2 AND alarm_uuid = $3', ['snoozing', user.uuid, alarm])
-  .then((result) =>{
-    console.log(result)
-    res.redirect('/')
-  })
-  .catch((error) => {
-    console.log(error)
-  })
-})
-
-router.post('/dismiss', (req, res) => {
-  let alarm = req.body.alarm_uuid
-  db.query('UPDATE alarms SET state = $1 WHERE user_uuid = $2 AND alarm_uuid = $3', ['dismissed', user.uuid, alarm])
-  .then((result) =>{
-    console.log(result)
-    res.redirect('/')
-  })
-  .catch((error) => {
-    console.log(error)
-  })
-})
-
-router.post('/wake', (req, res) => {
-  let alarm = req.body.alarm_uuid
-  db.query('UPDATE alarms SET state = $1 WHERE user_uuid = $2 AND alarm_uuid = $3', ['woke', user.uuid, alarm])
-  .then((result) =>{
-    console.log(result)
-    res.redirect('/')
-  })
-  .catch((error) => {
-    console.log(error)
-  })
-})
-
-module.exports = router;
+export {
+  watchAlarms
+}

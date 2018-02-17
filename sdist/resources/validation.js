@@ -115,7 +115,7 @@ class NumOnly extends ValueScalar {
         return new NumOnly(value);
     }
     static validate(numOnly) {
-        let re = /^[0-9]+$/;
+        let re = /^[0-9.]+$/;
         if (re.test(numOnly)) {
             return { isOkay: true };
         }

@@ -1,9 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const express = require("express");
 const database_1 = require("../middleware/database");
 const EventEmitter = require('events').EventEmitter;
-const router = express.Router();
 function addLeadingZeros(number) {
     if (number < 10) {
         return '0' + number.toString();
@@ -25,8 +23,8 @@ eventEmitter.on('ringingCountdown', () => {
     console.log('ringing countdown');
 });
 function triggerAlarm(alarm, user) {
-    database_1.db.query('UPDATE alarms SET state = $1 WHERE user_uuid = $2 AND alarm_uuid = $3', ['ringing', user.uuid, alarm])
-        .then((result) => {
+    database_1.db.query('UPDATE alarms SET state = $1 WHERE user_uuid = $2 AND alarm_uuid = $3', ['ringing', user.uuid, alarm]);
+    then((result) => {
         console.log(result);
     })
         .catch((error) => {
@@ -35,8 +33,8 @@ function triggerAlarm(alarm, user) {
 }
 function addSnooze(alarm, user) {
     console.log('------YOU SNOOZED! Now you have a snooze, but dont snooze to much!------');
-    database_1.db.query('UPDATE alarms SET state = $1 WHERE user_uuid = $2 AND alarm_uuid = $3', ['snoozing', user.uuid, alarm])
-        .then((result) => {
+    database_1.db.query('UPDATE alarms SET state = $1 WHERE user_uuid = $2 AND alarm_uuid = $3', ['snoozing', user.uuid, alarm]);
+    then((result) => {
         return database_1.db.query('INSERT INTO snoozes(user_uuid, alarm_uuid) VALUES ($1, $2)', [user.uuid, alarm]);
     })
         .catch((error) => {
@@ -186,5 +184,4 @@ function watchAlarms(user) {
     setInterval(() => { watchUserAlarms(user); }, 1000);
 }
 exports.watchAlarms = watchAlarms;
-module.exports = router;
-//# sourceMappingURL=mock-alarm.js.map
+//# sourceMappingURL=alarm.js.map

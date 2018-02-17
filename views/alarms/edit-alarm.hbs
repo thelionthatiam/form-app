@@ -67,11 +67,15 @@
          </b>
          {{#if active}}
             currently on<br/>
+            <input type="radio" name="active" value='t' checked>keep on<br/>
             <input type="radio" name="active" value='f'>turn off<br/>
+
          {{else}}
             curently off<br/>
             <input type="radio" name="active" value='t'>turn on<br/>
+            <input type="radio" name="active" value='f' checked>keep off<br/>
          {{/if}}
+
         </p>
         <input type="hidden" name="prevTitle" value="{{ title }}" />
         <p class="formErrorReport" id="timeError"></p>

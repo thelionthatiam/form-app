@@ -36,13 +36,11 @@ class UserSession {
   readonly      email?: Email;
   readonly       uuid?: UUID;
   readonly permission?: Permission;
-  readonly  cart_uuid?: UUID;
   readonly       name?: CharOnly | null;
 
   private constructor(args:{ email?: Email; uuid?: UUID; permission?: Permission; cart_uuid?: UUID; name?: CharOnly | null; } = {}) {
     this.email      = args.email;
     this.uuid       = args.uuid;
-    this.cart_uuid  = args.cart_uuid;
     this.permission = args.permission;
     this.name       = args.name;
   }
@@ -54,7 +52,6 @@ class UserSession {
         email: Email.create(args.email),
         uuid : UUID.create(args.uuid),
         permission: Permission.create(args.permission),
-        cart_uuid: UUID.create(args.cart_uuid),
         name: CharOnly.create(args.name),
       })
       return res.toJSON();
@@ -68,7 +65,6 @@ class UserSession {
       email: Email.validate(args.email),
       uuid: UUID.validate(args.uuid),
       permission: Permission.validate(args.permission),
-      cart_uuid: UUID.validate(args.cart_uuid),
       name: CharOnly.validate(args.name),
     }
     ValidationResult.isValid(args, propValidation)
@@ -80,7 +76,6 @@ class UserSession {
       email: this.email.toString(),
       uuid: this.uuid.toString(),
       permission: this.permission.toString(),
-      cart_uuid: this.cart_uuid.toString(),
       name: this.name.toString()
     };
   }
@@ -315,9 +310,135 @@ class OrgsDB {
 }
 
 
+class UserSettings {
+  readonly user_uuid?: UUID;
+  readonly payment_scheme?: CharOnly;
+  readonly snooze_price?: NumOnly;
+  readonly dismiss_price?: NumOnly;
+  readonly wake_price?: NumOnly;
+  readonly month_max?: NumOnly;
+  readonly snooze_max?: NumOnly;
+  readonly active_payment?:UUID;
+
+  private constructor(args:{
+    user_uuid?: UUID;
+    payment_scheme?: CharOnly;
+    snooze_price?: NumOnly;
+    dismiss_price?: NumOnly;
+    wake_price?: NumOnly;
+    month_max?: NumOnly;
+    snooze_max?: NumOnly;
+    active_payment?:UUID;
+  } = {}) {
+    this.user_uuid = args.user_uuid;
+    this.payment_scheme = args.payment_scheme;
+    this.snooze_price = args.snooze_price;
+    this.dismiss_price = args.dismiss_price;
+    this.wake_price = args.wake_price;
+    this.month_max = args.month_max;
+    this.snooze_max = args.snooze_max;
+    this.active_payment = args.active_payment;
+  }
+
+  static fromJSON(args: {[key: string]: any}) : UserSettings {
+    let res = UserSettings.validate(args);
+    if (res.isOkay) {
+      let res = new UserSettings({
+        user_uuid: UUID.create(args.user_uuid),
+        payment_scheme: String.create(args.payment_scheme),
+        snooze_price: NumOnly.create(args.snooze_price),
+        dismiss_price: NumOnly.create(args.dismiss_price),
+        wake_price: NumOnly.create(args.wake_price),
+        month_max: NumOnly.create(args.month_max),
+        snooze_max: NumOnly.create(args.snooze_max),
+        active_payment: UUID.create(args.active_payment)
+      })
+      return res.toJSON();
+    } else {
+      throw new Error ('error happens at fromJSON');
+    }
+  }
+
+  static validate(args: {[key: string] : any}) : ValidationResult {
+    let propValidation = {
+      user_uuid: UUID.validate(args.user_uuid),
+      payment_scheme: String.validate(args.payment_scheme),
+      snooze_price: NumOnly.validate(args.snooze_price),
+      dismiss_price: NumOnly.validate(args.dismiss_price),
+      wake_price: NumOnly.validate(args.wake_price),
+      month_max: NumOnly.validate(args.month_max),
+      snooze_max: NumOnly.validate(args.snooze_max),
+      active_payment:UUID.validate(args.active_payment)
+    }
+    ValidationResult.isValid(args, propValidation)
+    return { isOkay: true };
+  }
+
+  toJSON() : any {
+    return {
+      user_uuid: this.user_uuid.toString(),
+      payment_scheme: this.payment_scheme.toString(),
+      snooze_price: this.snooze_price.toString(),
+      dismiss_price: this.dismiss_price.toString(),
+      wake_price: this.wake_price.toString(),
+      month_max: this.month_max.toString(),
+      snooze_max: this.snooze_max.toString(),
+      active_payment:this.active_payment.toString()
+    };
+  }
+}
+
+
+// NOT COMPLETED
+// class Transactions {
+//   readonly user_uuid?: UUID;
+//   recipient?: CharOnly;
+//   payment_uuid?: UUID;
+//   snoozes?: NumOnly;
+//   dismisses?: NumOnly;
+//   wakes?: NumOnly;
+//   total?: NumOnly;
+//
+//
+//   private constructor(args:{
+//     user_uuid?: UUID;
+//     org_uuid?: UUID;
+//     active?: Bool;
+//   } = {}) {
+//     this.user_uuid   = args.user_uuid;
+//     this.org_uuid  = args.org_uuid;
+//     this.active = args.active;
+//   }
+//
+//   static fromJSON(args: {[key: string]: any}) : Transactions {
+//     let res = Transactions.validate(args);
+//     if (res.isOkay) {
+//       let res = new Transactions({
+//         email: Email.create(args.email),
+//       })
+//       return res.toJSON();
+//     } else {
+//       throw new Error ('error happens at fromJSON');
+//     }
+//   }
+//
+//   static validate(args: {[key: string] : any}) : ValidationResult {
+//     let propValidation = {
+//       email: Email.validate(args.email),
+//     }
+//     ValidationResult.isValid(args, propValidation)
+//     return { isOkay: true };
+//   }
+//
+//   toJSON() : any {
+//     return {
+//       email: this.email.toString(),
+//     };
+//   }
+// }
 
 // DUMMY COPY
-// class UserOrgDB {
+// class User {
 //   readonly user_uuid?: UUID;
 //   readonly org_uuid?: UUID;
 //   readonly active?: Bool;
@@ -364,5 +485,6 @@ export {
   UserDB,
   UserOrgsDB,
   CartDB,
-  OrgsDB
+  OrgsDB,
+  UserSettings
 }

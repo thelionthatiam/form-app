@@ -66,11 +66,11 @@ router.route('/alarms/:title')
         time: req.body.time,
         active: req.body.active
     };
-    let query = 'UPDATE alarms SET (title, time, active) = ($1, $2, $3) WHERE title = $4 RETURNING *';
+    console.log(inputs);
+    let query = 'UPDATE alarms SET (title, time, active) = ($1, $2, $3) WHERE title = $4';
     let input = [inputs.title, inputs.time, inputs.active, inputs.prevTitle];
     database_1.db.query(query, input)
         .then((result) => {
-        console.log(result);
         res.redirect('/accounts/' + req.session.user.email + '/alarms');
     })
         .catch((err) => {
@@ -87,6 +87,41 @@ router.route('/alarms/:title')
         .catch((err) => {
         console.log(err.stack);
         res.render(viewPrefix + 'alarms', { dbError: err.stack });
+    });
+});
+// alarm functionality
+router.post('/alarms/:title/snooze', (req, res) => {
+    let alarm = req.body.alarm_uuid;
+    console.log(alarm);
+    database_1.db.query('UPDATE alarms SET state = $1 WHERE user_uuid = $2 AND alarm_uuid = $3', ['snoozing', req.session.user.uuid, alarm])
+        .then((result) => {
+        console.log(result);
+        res.redirect('/accounts/' + req.session.user.uuid + '/alarms');
+    })
+        .catch((error) => {
+        console.log(error);
+    });
+});
+router.post('/alarms/:title/dismiss', (req, res) => {
+    let alarm = req.body.alarm_uuid;
+    database_1.db.query('UPDATE alarms SET state = $1 WHERE user_uuid = $2 AND alarm_uuid = $3', ['dismissed', req.session.user.uuid, alarm])
+        .then((result) => {
+        console.log(result);
+        res.redirect('/accounts/' + req.session.user.uuid + '/alarms');
+    })
+        .catch((error) => {
+        console.log(error);
+    });
+});
+router.post('/alarms/:title/wake', (req, res) => {
+    let alarm = req.body.alarm_uuid;
+    database_1.db.query('UPDATE alarms SET state = $1 WHERE user_uuid = $2 AND alarm_uuid = $3', ['woke', req.session.user.uuid, alarm])
+        .then((result) => {
+        console.log(result);
+        res.redirect('/accounts/' + req.session.user.uuid + '/alarms');
+    })
+        .catch((error) => {
+        console.log(error);
     });
 });
 module.exports = router;

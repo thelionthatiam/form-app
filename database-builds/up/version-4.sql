@@ -4,6 +4,7 @@ CREATE TABLE user_settings (
   payment_scheme varchar(50) NOT NULL default 'classic' CHECK (payment_scheme ~ '^[A-Za-z\d ]{1,30}$'),
   snooze_price numeric(10,2) NOT NULL default .50,
   dismiss_price numeric(10,2) NOT NULL default 3.00,
+  wake_price numeric(10,2) NOT NULL default 0,
   month_max numeric(10,2) NOT NULL default 20.00,
   snooze_max numeric(10,2) NOT NULL default 6,
   create_timestamp timestamptz NOT NULL DEFAULT now(),
@@ -69,6 +70,7 @@ CREATE TABLE wakes (
   user_uuid UUID NOT NULL REFERENCES users(user_uuid),
   alarm_uuid UUID NOT NULL REFERENCES alarms(alarm_uuid),
   wake_uuid UUID UNIQUE NOT NULL default uuid_generate_v4(),
+  paid boolean default false,
   timestamp timestamptz NOT NULL DEFAULT now()
 );
 

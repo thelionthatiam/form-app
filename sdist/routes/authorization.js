@@ -5,6 +5,7 @@ const help = require("../functions/helpers");
 const bcrypt = require("bcrypt");
 const uuidv4 = require("uuid/v4");
 const r = require("../resources/value-objects");
+const alarm_1 = require("../functions/alarm");
 const handlers_1 = require("../resources/handlers");
 const database_1 = require("../middleware/database");
 const router = express.Router();
@@ -39,19 +40,15 @@ class AuthHandler extends handlers_1.BaseRequestHandler {
             .then(() => {
             return this.aQuery.updateSessionID([this.req.sessionID, user.user_uuid]);
         })
-            .then(() => {
-            return this.aQuery.selectCart([user.user_uuid]);
-        })
             .then((result) => {
-            cart = r.CartDB.fromJSON(result.rows[0]);
             userSession = r.UserSession.fromJSON({
                 email: user.email,
                 uuid: user.user_uuid,
                 permission: user.permission,
-                cart_uuid: cart.cart_uuid,
                 name: user.name
             });
             this.req.session.user = userSession;
+            alarm_1.watchAlarms(userSession);
             renderObj = {
                 email: user.email,
                 name: user.name

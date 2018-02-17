@@ -30,14 +30,54 @@ class Query {
         const query = 'SELECT * FROM alarms WHERE user_uuid = $1';
         return this.conn.query(query, values);
     }
+    selectUnpaidSnoozes(values) {
+        const query = 'SELECT * FROM snoozes WHERE user_uuid = $1 AND paid = $2';
+        return this.conn.query(query, values);
+    }
+    selectUnpaidDismisses(values) {
+        const query = 'SELECT * FROM dismisses WHERE user_uuid = $1 AND paid = $2';
+        return this.conn.query(query, values);
+    }
+    selectUnpaidWakes(values) {
+        const query = 'SELECT * FROM wakes WHERE user_uuid = $1 AND paid = $2';
+        return this.conn.query(query, values);
+    }
+    selectUserSettings(values) {
+        const query = 'SELECT * FROM user_settings where user_uuid = $1';
+        return this.conn.query(query, values);
+    }
     // insert
     insertSnooze(values) {
-        const query = 'INSERT snooze(user_uuid, alarm_uuid) VALUES ($1, $2)';
+        const query = 'INSERT INTO snooze(user_uuid, alarm_uuid, recipient, org_trans_total, sent) VALUES ($1, $2, $3, $4, $5)';
+        return this.conn.query(query, values);
+    }
+    insertTransaction(values) {
+        const query = 'INSERT INTO transactions(user_uuid, recipient, payment_uuid, snoozes, dismisses, wakes, total) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
+        return this.conn.query(query, values);
+    }
+    insertOrgPayment(values) {
+        const query = 'INSERT INTO org_transactions(trans_uuid, user_uuid, recipient, org_trans_total, sent) VALUES ($1, $2, $3, $4, $5)';
+        return this.conn.query(query, values);
+    }
+    insertRevenue(values) {
+        const query = 'INSERT INTO revenue(trans_uuid, user_uuid, trans_revenue_total) VALUES ($1, $2, $3)';
         return this.conn.query(query, values);
     }
     // update
     updateSessionID(values) {
         const query = 'UPDATE session SET sessionid = $1 WHERE user_uuid = $2';
+        return this.conn.query(query, values);
+    }
+    snoozesToPaid(values) {
+        const query = 'UPDATE snoozes SET paid = $1 WHERE snooze_uuid = $2';
+        return this.conn.query(query, values);
+    }
+    dismissesToPaid(values) {
+        const query = 'UPDATE dismisses SET paid = $1 WHERE dismiss_uuid = $2';
+        return this.conn.query(query, values);
+    }
+    wakesToPaid(values) {
+        const query = 'UPDATE wakes SET paid = $1 WHERE wake_uuid = $2';
         return this.conn.query(query, values);
     }
 }
