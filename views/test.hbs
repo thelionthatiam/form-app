@@ -1,24 +1,3 @@
-<div class="full-page">
-
-
- <h1>mock alarm</h1>
- <div class='flex space-around'>
-   <div class = 'flex center'>
-      <h2 id = 'clock'></h2>
-   </div>
- </div>
- <h2>my alarms</h2>
- <div class= "categoryListWrapper">
-   {{#each alarmContent}}
-     {{> alarmdiv}}
-   {{/each}}
- </div>
- <form action='/finish-month' type='post'>
-   <button class = 'yes' type = 'submit'>finish month</button>
- </form>
- {{ action }}
-
+<div id="root">
+  <!-- This div's content will be managed by React. -->
 </div>
-<script src='behavior/clock.js'></script>
-<script src="/behavior/alarm-display.js"></script>
-{{!-- <script src="/behavior/login-action.js"></script> --}}

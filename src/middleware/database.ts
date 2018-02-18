@@ -47,4 +47,4 @@ function init(databaseInformation:ConnectionConfig):RequestHandler {
 }
 
 
-export { db };
+export { db, init };

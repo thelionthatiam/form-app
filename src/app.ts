@@ -6,15 +6,17 @@ import * as bodyParser from "body-parser";
 import * as hbs from "express-handlebars";
 import * as path from "path";
 import { dbConfig } from "./config/combiner";
-import { init } from "./middleware/async-database";
+import { init } from "./middleware/database";
 import * as session from "express-session";
 import * as sessionCheck from "./middleware/session-check";
 import * as methodOverride from 'method-override';
-
 const app = express();
+
 
 app.use(methodOverride('_method'))
 app.use(bodyParser.urlencoded({ extended: false,limit:'50kb'}));
+
+app.use(express.static('public'));
 app.set('view engine', "hbs");
 app.engine('hbs', hbs({
   extname: 'hbs',
@@ -28,8 +30,8 @@ app.set('trust proxy', 1);
 
 app.use(init(dbConfig));
 
-//session using memory storage (I think this is application memory) for now. Will not be the case in production. see readme session stores
-// app.set('trust proxy', 1) // necessary of server is behind a proxy and using secure:true for cookie
+// session using memory storage (I think this is application memory) for now. Will not be the case in production. see readme session stores
+app.set('trust proxy', 1) // necessary of server is behind a proxy and using secure:true for cookie
 app.use(session({
   name:'id',
   secret: 'this is my secret',

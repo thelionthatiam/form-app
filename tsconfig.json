@@ -4,9 +4,10 @@
     "module": "commonjs",
     "target":"es6",
     "allowJs": true,
-    "outDir": "sdist",
+    "outDir": "build",
     "sourceMap":true,
-    "noImplicitAny":true
+    "noImplicitAny":true,
+    "allowSyntheticDefaultImports": true,
   },
   "exclude": [
     "node_modules",

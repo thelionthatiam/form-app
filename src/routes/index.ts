@@ -24,8 +24,7 @@ router.use('/accounts/:email', require('./account/orders'));
 router.use('/accounts/:email', require('./account/settings'));
 router.use('/accounts/:email', require('./account/transactions'));
 
-
-router.get('/', function (req, res, next) {
+router.get('/login', function (req, res, next) {
   res.render('login');
 })
 
